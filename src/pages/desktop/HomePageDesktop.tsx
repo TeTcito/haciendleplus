@@ -27,6 +27,13 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useDocumentMeta } from '../../utils/seo';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { saveReviewToSupabase, fetchReviewsFromSupabase } from '../../lib/supabase';
+import {
+  getHeroStopCards,
+  getSection2Cards,
+  getPortfolioServices,
+  getClientReviews,
+  ClientReviewItem,
+} from '../../data/resortSpaces';
 
 /* ============================================================================
    REAL-TIME VIEWPORT SCROLL REVEAL (ENTRANCE & EXIT ON SCROLL DOWN / UP)
@@ -201,132 +208,13 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
   );
 };
 
-interface ClientReviewItem {
-  id: string;
-  author: string;
-  role: string;
-  rating: number;
-  comment: string;
-  avatarUrl: string;
-}
-
-const INITIAL_CLIENT_REVIEWS: ClientReviewItem[] = [
-  {
-    id: 'rev-1',
-    author: 'Misión HXP · ONG',
-    role: 'Larga Estadía · Delegación',
-    rating: 5,
-    comment: 'Privacidad, internet fibra óptica y 3 comidas diarias impecables para nuestros 75 voluntarios durante varias semanas.',
-    avatarUrl: '/images/avatars/mision-hxp.jpg',
-  },
-  {
-    id: 'rev-2',
-    author: 'IMC Cooperación',
-    role: 'Hospedaje Empresas y Grupos',
-    rating: 5,
-    comment: 'Ubicación estratégica en Quito–Píntag a 30 min del aeropuerto, amplios parqueaderos, habitaciones cómodas y atención directa.',
-    avatarUrl: '/images/avatars/imc-cooperacion.jpg',
-  },
-  {
-    id: 'rev-3',
-    author: 'GAD de Pichincha',
-    role: 'Grandes Eventos Corporativos',
-    rating: 5,
-    comment: 'Carpas, jardines, tarima, canchas deportivas, piscina y un catering puntual y abundante para nuestra jornada de integración.',
-    avatarUrl: '/images/avatars/gad-pichincha.jpg',
-  },
-  {
-    id: 'rev-4',
-    author: 'Dir. Banco & Finanzas',
-    role: 'Fin de Año & Convención',
-    rating: 5,
-    comment: 'Un solo proveedor para nuestro gran evento, pista de baile, parrillada y hospedaje complementario. Facilitó todo el presupuesto.',
-    avatarUrl: '/images/avatars/banco-finanzas.jpg',
-  },
-  {
-    id: 'rev-5',
-    author: 'Sofía & Sebastián',
-    role: 'Bodas y Celebraciones',
-    rating: 5,
-    comment: 'Celebramos nuestra ceremonia y recepción en los jardines y alojamos a los invitados que vinieron de fuera en las 14 habitaciones.',
-    avatarUrl: '/images/avatars/sofia-sebastian.jpg',
-  },
-  {
-    id: 'rev-6',
-    author: 'Dr. Carlos Mendoza',
-    role: 'Encuentro Empresarial',
-    rating: 5,
-    comment: 'Instalaciones de primer nivel en Quito–Píntag, salones equipados y piscina y restaurante como complementos extraordinarios.',
-    avatarUrl: '/images/avatars/dr-carlos.jpg',
-  },
-  {
-    id: 'rev-7',
-    author: 'Valeria & Mateo',
-    role: 'Boda & Catering Propio',
-    rating: 5,
-    comment: 'La decoración, la recepción bajo carpa y el catering propio dejaron encantados a nuestros 220 invitados.',
-    avatarUrl: '/images/avatars/valeria-mateo.jpg',
-  },
-  {
-    id: 'rev-8',
-    author: 'Familia Andrade',
-    role: 'Celebración & Hospedaje',
-    rating: 5,
-    comment: 'El complemento de la piscina temperada de 14×6m, los hidromasajes y el restaurante hicieron inolvidable la estadía del grupo.',
-    avatarUrl: '/images/avatars/familia-andrade.jpg',
-  },
-];
-
-const HERO_STOP_CARDS = [
-  {
-    id: 'larga-estadia',
-    location: 'Quito–Píntag · Prioridad Comercial',
-    title: 'Hospedaje para empresas, delegaciones y ONGs',
-    subtitle: '14 habitaciones (28 a 80 personas), alimentación, internet fibra óptica y parqueaderos.',
-    meta: 'Larga Estadía · Cotización por personas y duración',
-    cardImage: '/images/hacienda/grupos-hxp.jpg',
-    bgImage: '/images/hacienda/vista-aerea.jpg',
-    route: '/hospedaje',
-    serviceType: 'grupos' as const,
-  },
-  {
-    id: 'grandes-eventos',
-    location: 'Explanada 5.000 m² & Carpas · Quito–Píntag',
-    title: 'Grandes eventos y experiencias corporativas',
-    subtitle: 'Fin de año, integración y convenciones: carpas, jardines, catering, tarima, pista de baile, canchas y piscina.',
-    meta: 'Macroeventos de 50 a 350 pax · Hospedaje complementario',
-    cardImage: '/images/hacienda/jardines-teambuilding.jpg',
-    bgImage: '/images/hacienda/hero-atardecer.jpg',
-    route: '/corporativo',
-    serviceType: 'corporativo' as const,
-  },
-  {
-    id: 'bodas',
-    location: 'Jardines & Recepción de Gala · Quito–Píntag',
-    title: 'Bodas y celebraciones sociales',
-    subtitle: 'Ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados.',
-    meta: 'Bodas & Eventos Sociales · Hasta 300 invitados',
-    cardImage: '/images/hacienda/montaje-banquete.jpg',
-    bgImage: '/images/hacienda/bodas-exteriores.jpg',
-    route: '/bodas',
-    serviceType: 'bodas' as const,
-  },
-  {
-    id: 'instalaciones',
-    location: 'Quito–Píntag · A 30 min del Aeropuerto',
-    title: 'Piscina, restaurante y actividades recreativas',
-    subtitle: 'Complementos que fortalecen tu larga estadía o gran evento en un mismo predio privado.',
-    meta: 'Piscina 14×6m, Canchas Deportivas y Gastronomía Propia',
-    cardImage: '/images/hacienda/piscina-aerea.jpg',
-    bgImage: '/images/hacienda/piscina-nocturna.jpg',
-    route: '/hospedaje',
-    serviceType: 'hospedaje' as const,
-  },
-];
-
 export const HomePageDesktop: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
   const { language, isEn, t } = useLanguage();
+
+  const heroStopCards = getHeroStopCards(isEn);
+  const portfolioServices = getPortfolioServices(isEn);
+  const section2Cards = getSection2Cards(isEn);
 
   useDocumentMeta({
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
@@ -350,7 +238,7 @@ export const HomePageDesktop: React.FC = () => {
   const [portfolioDir, setPortfolioDir] = useState<'up' | 'down'>('down');
 
   // Estado y transiciones de entrada/salida del carrusel de reseñas de clientes
-  const [reviews, setReviews] = useState<ClientReviewItem[]>(() => {
+  const [userReviews, setUserReviews] = useState<ClientReviewItem[]>(() => {
     try {
       const saved = localStorage.getItem('hacienda_leplus_client_reviews_v2');
       if (saved) {
@@ -360,8 +248,11 @@ export const HomePageDesktop: React.FC = () => {
     } catch {
       // ignore storage errors
     }
-    return INITIAL_CLIENT_REVIEWS;
+    return [];
   });
+  const defaultReviews = getClientReviews(isEn);
+  const reviews = userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
+
   const [reviewStartIndex, setReviewStartIndex] = useState(0);
   const [reviewTransition, setReviewTransition] = useState<'visible' | 'exiting-left' | 'exiting-right'>('visible');
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -390,7 +281,7 @@ export const HomePageDesktop: React.FC = () => {
           comment: r.comment,
           avatarUrl: avatarMap[r.role] || '/images/avatars/dr-carlos.jpg',
         }));
-        setReviews((prev) => {
+        setUserReviews((prev) => {
           const remoteIds = new Set(mapped.map((m) => m.id));
           const uniqueLocal = prev.filter((p) => !remoteIds.has(p.id));
           return [...mapped, ...uniqueLocal];
@@ -410,7 +301,7 @@ export const HomePageDesktop: React.FC = () => {
   };
 
   const handleNextStop = () => {
-    const nextIdx = (activeCardIndex + 1) % HERO_STOP_CARDS.length;
+    const nextIdx = (activeCardIndex + 1) % heroStopCards.length;
     handleSelectHeroStop(nextIdx);
   };
 
@@ -476,11 +367,11 @@ export const HomePageDesktop: React.FC = () => {
       avatarUrl: avatarMap[newReviewRole] || '/images/avatars/dr-carlos.jpg',
     };
 
-    const updated = [created, ...reviews];
-    setReviews(updated);
+    const updated = [created, ...userReviews];
+    setUserReviews(updated);
     setReviewStartIndex(0);
     try {
-      localStorage.setItem('hacienda_leplus_client_reviews_v1', JSON.stringify(updated));
+      localStorage.setItem('hacienda_leplus_client_reviews_v2', JSON.stringify(updated));
     } catch {
       // ignore storage errors
     }
@@ -503,171 +394,7 @@ export const HomePageDesktop: React.FC = () => {
     }, 1100);
   };
 
-  const currentStop = HERO_STOP_CARDS[activeCardIndex];
-
-  const bodaPkg = packages.find((p) => p.id === 'pkg-boda-gala') || packages.find((p) => p.category === 'bodas');
-  const bodaHospPkg = packages.find((p) => p.id === 'pkg-boda-hospedaje');
-  const corpPkg = packages.find((p) => p.id === 'pkg-corp-jornada') || packages.find((p) => p.category === 'corporativo');
-  const corpRetiroPkg = packages.find((p) => p.id === 'pkg-corp-retiro');
-  const ongPkg = packages.find((p) => p.id === 'pkg-grupos-largas') || packages.find((p) => p.category === 'hospedaje');
-  const escapePkg = packages.find((p) => p.id === 'pkg-escapada-pareja') || packages.find((p) => p.category === 'escapadas');
-
-  const portfolioServices = [
-    {
-      id: 'srv-larga-estadia',
-      overline: 'PRIORIDAD COMERCIAL · LARGA ESTADÍA EN QUITO–PÍNTAG',
-      title: ongPkg?.title || 'Hospedaje para Empresas y Grupos (Larga Estadía)',
-      description:
-        'Alojamiento estratégico para personal de empresas, delegaciones, ONG (IMC · HXP), voluntarios y grupos internacionales. Habitaciones configurables, alimentación diaria, internet fibra óptica, parqueaderos y cotización según número de personas y duración.',
-      inclusions: [
-        '14 habitaciones configurables (28 a 80 personas) con limpieza y lavandería',
-        'Alimentación completa en restaurante, internet fibra óptica y parqueaderos privados',
-        'Cotización flexible por número de personas y duración (días, semanas o meses)',
-      ],
-      priceText: `${ongPkg?.priceLabel || 'Desde'} $${ongPkg?.priceValue ?? 35} / persona / noche`,
-      capacityText: ongPkg?.capacity || '28 a 80 personas · 14 habitaciones',
-      image: ongPkg?.image || '/images/hacienda/grupos-hxp.jpg',
-      imageCaption: 'PRIORIDAD COMERCIAL · LARGA ESTADÍA PARA EMPRESAS Y GRUPOS',
-      selectorTitle: '1. Hospedaje Empresas y Grupos (Larga Estadía)',
-      selectorDesc: 'Personal de empresas, delegaciones, ONGs y grupos internacionales.',
-      circleBg: '#113B4F',
-      route: '/hospedaje',
-      serviceType: 'grupos' as const,
-      Icon: HeartHandshake,
-    },
-    {
-      id: 'srv-grandes-eventos',
-      overline: 'PRIORIDAD COMERCIAL · MACROEVENTOS Y EMPRESAS',
-      title: corpPkg?.title || 'Grandes Eventos y Experiencias Corporativas',
-      description:
-        'Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Incluye carpas, 5.000 m² de jardines, catering, tarima, pista de baile, actividades deportivas, piscina y hospedaje complementario.',
-      inclusions: [
-        'Carpas estructurales, salones, tarima, sonido profesional y pista de baile',
-        'Jardines de 5.000 m², canchas deportivas (fútbol, vóley, básquet) y catering propio',
-        'Piscina temperada 14×6m y 14 habitaciones de hospedaje complementario',
-      ],
-      priceText: `${corpPkg?.priceLabel || 'Desde'} $${corpPkg?.priceValue ?? 45} / participante`,
-      capacityText: corpPkg?.capacity || '50 a 350 participantes',
-      image: corpPkg?.image || '/images/hacienda/jardines-teambuilding.jpg',
-      imageCaption: 'MACROEVENTOS, FIN DE AÑO, INTEGRACIÓN Y CONVENCIONES',
-      selectorTitle: '2. Grandes Eventos y Corporativo',
-      selectorDesc: 'Fin de año, integración, convenciones, carpas, tarima y pista de baile.',
-      circleBg: '#4A5D36',
-      route: '/corporativo',
-      serviceType: 'corporativo' as const,
-      Icon: Building2,
-    },
-    {
-      id: 'srv-bodas',
-      overline: 'BODAS Y EVENTOS SOCIALES EN QUITO–PÍNTAG',
-      title: bodaPkg?.title || 'Bodas y Celebraciones Sociales',
-      description:
-        'Ceremonias al aire libre con vistas a los volcanes, recepción en carpa de gala o salón, jardines exclusivos, catering propio, decoración personalizada y hospedaje para invitados en nuestras 14 habitaciones.',
-      inclusions: [
-        'Ceremonias en jardines naturales y recepción cubierta en carpa de gala o salón',
-        'Catering propio de alto nivel, decoración floral, tarima y pista de baile',
-        'Hospedaje para 28 a 80 invitados in situ con desayuno y suite nupcial',
-      ],
-      priceText: `${bodaPkg?.priceLabel || 'Desde'} $${bodaPkg?.priceValue ?? 70} / invitado`,
-      capacityText: bodaPkg?.capacity || '80 a 300 invitados',
-      image: bodaPkg?.image || '/images/hacienda/montaje-banquete.jpg',
-      imageCaption: 'CEREMONIAS, RECEPCIÓN, JARDINES, CATERING Y HOSPEDAJE',
-      selectorTitle: '3. Bodas y Celebraciones',
-      selectorDesc: 'Ceremonias, recepción, jardines, catering, decoración y hospedaje.',
-      circleBg: '#C8531B',
-      route: '/bodas',
-      serviceType: 'bodas' as const,
-      Icon: Sparkles,
-    },
-    {
-      id: 'srv-comp-restaurante',
-      overline: 'COMPLEMENTO QUE FORTALECE TU ESTADÍA O EVENTO',
-      title: 'Complemento: Restaurante, Alimentación y Catering Propio',
-      description:
-        'Nuestro restaurante y cocina de planta fortalecen tanto el hospedaje de larga estadía (3 comidas diarias balanceadas para empresas y ONGs) como los grandes eventos corporativos y bodas (parrilladas, banquetes y coffee breaks).',
-      inclusions: [
-        'Planes de alimentación diaria (desayuno, almuerzo y cena) para largas estadías',
-        'Banquetes de gala, parrilladas campestres y coffee breaks para grandes eventos',
-        'Control total de calidad, puntualidad y presupuesto con un solo proveedor',
-      ],
-      priceText: 'Complemento Gastronómico In Situ',
-      capacityText: 'Para Larga Estadía, Macroeventos y Bodas',
-      image: '/images/hacienda/gastronomia-parrillada.jpg',
-      imageCaption: 'RESTAURANTE Y CATERING COMO COMPLEMENTO INTEGRAL',
-      selectorTitle: 'Complemento: Restaurante y Catering',
-      selectorDesc: 'Alimentación para largas estadías, parrilladas y banquetes de eventos.',
-      circleBg: '#7A4928',
-      route: '/hospedaje',
-      serviceType: 'grupos' as const,
-      Icon: Utensils,
-    },
-    {
-      id: 'srv-comp-piscina',
-      overline: 'COMPLEMENTO RECREATIVO Y DE BIENESTAR',
-      title: 'Complemento: Piscina Temperada 14×6m y Zona Húmeda',
-      description:
-        'La piscina cubierta de 14×6 metros, los dos hidromasajes, el sauna y el baño turco se integran como el complemento ideal para el descanso del personal en larga estadía, jornadas corporativas y huéspedes de bodas.',
-      inclusions: [
-        'Piscina temperada de 14×6 metros bajo cubierta climatizada',
-        'Dos hidromasajes, sauna finlandés y baño turco para recuperación y bienestar',
-        'Valor agregado exclusivo para grupos alojados y eventos empresariales',
-      ],
-      priceText: 'Complemento Incluido en Estadías y Eventos',
-      capacityText: 'Piscina 14×6m + 2 Hidromasajes + Sauna & Turco',
-      image: escapePkg?.image || '/images/hacienda/piscina-aerea.jpg',
-      imageCaption: 'PISCINA Y ZONA HÚMEDA COMO COMPLEMENTO DE VALOR',
-      selectorTitle: 'Complemento: Piscina y Zona Húmeda',
-      selectorDesc: 'Piscina 14×6m, 2 hidromasajes, sauna y turco para tus grupos y eventos.',
-      circleBg: '#9E7329',
-      route: '/corporativo',
-      serviceType: 'corporativo' as const,
-      Icon: Waves,
-    },
-    {
-      id: 'srv-comp-recreacion',
-      overline: 'COMPLEMENTO DEPORTIVO Y DE INTEGRACIÓN',
-      title: 'Complemento: Actividades Deportivas, Canchas y Recreación',
-      description:
-        'Fortalece la convivencia de tu empresa, delegación o evento de fin de año con 5.000 m² de jardines, canchas deportivas reglamentarias y salón de juegos sin salir de la propiedad.',
-      inclusions: [
-        'Canchas de fútbol, vóley y básquet para torneos corporativos y recreación',
-        'Salón social con billar, ping-pong, karaoke y áreas de fogata/convivencia',
-        '5.000 m² de jardines privados para gincanas, team building y descanso',
-      ],
-      priceText: 'Complemento Deportivo & Recreativo',
-      capacityText: '5.000 m² de Jardines y Canchas Deportivas',
-      image: corpRetiroPkg?.image || '/images/hacienda/reunion-corporativa.jpg',
-      imageCaption: 'CANCHAS Y RECREACIÓN QUE FORTALECEN TU EXPERIENCIA',
-      selectorTitle: 'Complemento: Actividades Recreativas',
-      selectorDesc: 'Canchas de fútbol, vóley, básquet, billar, karaoke y áreas verdes.',
-      circleBg: '#2E5239',
-      route: '/corporativo',
-      serviceType: 'corporativo' as const,
-      Icon: ShieldCheck,
-    },
-    {
-      id: 'srv-ubicacion-logistica',
-      overline: 'UBICACIÓN ESTRATÉGICA EN QUITO–PÍNTAG',
-      title: 'Instalaciones, Internet Fibra Óptica y Parqueaderos Privados',
-      description:
-        'Ubicada en Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100), a 40 min de Quito y 30 min del Aeropuerto Mariscal Sucre. Cuenta con internet por fibra óptica, amplios parqueaderos internos y flota de buses.',
-      inclusions: [
-        'A 40 min de Quito y 30 min del Aeropuerto Internacional Mariscal Sucre',
-        'Parqueadero privado de gran capacidad para vehículos, camionetas y buses',
-        'Internet de fibra óptica estable en habitaciones, salones y áreas sociales',
-      ],
-      priceText: 'Atención Directa · WhatsApp 0969817891',
-      capacityText: 'Quito–Píntag · Predio Cerrado y Seguro',
-      image: bodaHospPkg?.image || '/images/hacienda/vista-aerea.jpg',
-      imageCaption: 'CONECTIVIDAD Y PARQUEADEROS A 30 MIN DEL AEROPUERTO',
-      selectorTitle: 'Ubicación Quito–Píntag & Parqueaderos',
-      selectorDesc: 'A 40 min de Quito y 30 min del Aeropuerto, fibra óptica y parqueaderos.',
-      circleBg: '#A64B2A',
-      route: '/hospedaje',
-      serviceType: 'grupos' as const,
-      Icon: BedDouble,
-    },
-  ];
+  const currentStop = heroStopCards[activeCardIndex] || heroStopCards[0];
 
   const activePortfolioService =
     portfolioServices[selectedPortfolioIndex] || portfolioServices[0];
@@ -711,7 +438,7 @@ export const HomePageDesktop: React.FC = () => {
 
           {/* 2. BACKGROUND REAL PHOTO / OPTIONAL HD VIDEO WITH CINEMATIC CROSSFADE & ZOOM */}
           <div className="absolute inset-0 z-0">
-            {HERO_STOP_CARDS.map((stop, idx) => {
+            {heroStopCards.map((stop, idx) => {
               const isActive = idx === activeCardIndex;
               return (
                 <img
@@ -866,10 +593,14 @@ export const HomePageDesktop: React.FC = () => {
                     </div>
                     <div className="text-xs sm:text-sm text-[#FAF7F2]/90 leading-snug">
                       <strong className="text-white block font-semibold">
-                        Prioridad en Larga Estadía Empresarial, Grandes Eventos y Bodas
+                        {isEn
+                          ? 'Priority in Corporate Long Stays, Major Events & Weddings'
+                          : 'Prioridad en Larga Estadía Empresarial, Grandes Eventos y Bodas'}
                       </strong>
                       <span className="text-[#E2C585]/90 text-xs">
-                        Ubicación Quito–Píntag · Barrio San Juan de la Tola · WhatsApp 0969817891
+                        {isEn
+                          ? 'Quito–Píntag · San Juan de la Tola · WhatsApp +593 96 981 7891'
+                          : 'Ubicación Quito–Píntag · Barrio San Juan de la Tola · WhatsApp 0969817891'}
                       </span>
                     </div>
                   </div>
@@ -899,7 +630,7 @@ export const HomePageDesktop: React.FC = () => {
                       />
                     </svg>
                     <span className="font-handwritten text-2xl sm:text-3xl text-[#E5C98B] -rotate-3 tracking-wide">
-                      Próximo encuentro
+                      {isEn ? 'Upcoming Gathering' : 'Próximo encuentro'}
                     </span>
                   </div>
                 </ScrollReveal>
@@ -951,8 +682,8 @@ export const HomePageDesktop: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleNextStop}
-                          title="Cambiar ambiente destacado"
-                          aria-label="Siguiente ambiente de Hacienda Le Plus"
+                          title={isEn ? 'Switch featured venue' : 'Cambiar ambiente destacado'}
+                          aria-label={isEn ? 'Next venue at Hacienda Le Plus' : 'Siguiente ambiente de Hacienda Le Plus'}
                           className="absolute -top-5 right-4 w-10 h-10 rounded-full bg-[#C8A45D] hover:bg-[#071912] text-[#071912] hover:text-[#E5C98B] shadow-md border-2 border-white flex items-center justify-center transition-colors cursor-pointer z-10"
                         >
                           <ArrowRight className="w-4 h-4" />
@@ -981,14 +712,14 @@ export const HomePageDesktop: React.FC = () => {
                               to={currentStop.route}
                               className="text-[#A6823C] hover:text-[#071912] font-bold underline whitespace-nowrap"
                             >
-                              Ver más
+                              {isEn ? 'Learn more' : 'Ver más'}
                             </Link>
                           </div>
                         </div>
 
                         {/* Quick Switcher Pills */}
                         <div className="mt-2.5 flex items-center gap-1">
-                          {HERO_STOP_CARDS.map((item, idx) => (
+                          {heroStopCards.map((item, idx) => (
                             <button
                               key={item.id}
                               type="button"
@@ -1000,12 +731,12 @@ export const HomePageDesktop: React.FC = () => {
                               }`}
                             >
                               {item.id === 'larga-estadia'
-                                ? 'Estadía'
+                                ? (isEn ? 'Lodging' : 'Estadía')
                                 : item.id === 'grandes-eventos'
-                                ? 'Eventos'
+                                ? (isEn ? 'Events' : 'Eventos')
                                 : item.id === 'bodas'
-                                ? 'Bodas'
-                                : 'Hacienda'}
+                                ? (isEn ? 'Weddings' : 'Bodas')
+                                : (isEn ? 'Resort' : 'Hacienda')}
                             </button>
                           ))}
                         </div>
@@ -1073,10 +804,10 @@ export const HomePageDesktop: React.FC = () => {
               <ScrollReveal direction="left" delay={40} distance={85}>
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C88242] block mb-1">
-                    ACCESO DIRECTO · 3 SERVICIOS PRINCIPALES Y COMPLEMENTOS
+                    {isEn ? 'DIRECT ACCESS · 3 MAIN PILLARS & AMENITIES' : 'ACCESO DIRECTO · 3 SERVICIOS PRINCIPALES Y COMPLEMENTOS'}
                   </span>
                   <h3 className="font-sans-ui text-3xl sm:text-4xl font-extrabold text-[#071912] tracking-tight">
-                    Nuestros Servicios Principales y Complementos
+                    {isEn ? 'Our Main Services and Amenities' : 'Nuestros Servicios Principales y Complementos'}
                   </h3>
                 </div>
               </ScrollReveal>
@@ -1084,99 +815,75 @@ export const HomePageDesktop: React.FC = () => {
 
             {/* Carousel / Cards List with Exact Stepped Folder-Tab Mask + Staggered Directional Reveal */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 pb-2">
-              {[
-                {
-                  title: 'Hospedaje Empresas',
-                  desc: 'Prioridad Larga Estadía: 14 hab., alimentación, internet y parqueadero.',
-                  img: '/images/hacienda/grupos-hxp.jpg',
-                  link: '/hospedaje',
-                  dir: 'tilt-left' as RevealDirection,
-                },
-                {
-                  title: 'Grandes Eventos',
-                  desc: 'Fin de año, integración, convenciones, carpas, jardines y tarima.',
-                  img: '/images/hacienda/jardines-teambuilding.jpg',
-                  link: '/corporativo',
-                  dir: 'up' as RevealDirection,
-                },
-                {
-                  title: 'Bodas y Celebraciones',
-                  desc: 'Ceremonias, recepción, jardines, catering, decoración y hospedaje.',
-                  img: '/images/hacienda/montaje-banquete.jpg',
-                  link: '/bodas',
-                  dir: 'zoom-in' as RevealDirection,
-                },
-                {
-                  title: 'Comp.: Piscina & Canchas',
-                  desc: 'Piscina 14×6m, hidromasajes y deportes que fortalecen tu evento.',
-                  img: '/images/hacienda/piscina-aerea.jpg',
-                  link: '/corporativo',
-                  dir: 'up' as RevealDirection,
-                },
-                {
-                  title: 'Comp.: Restaurante',
-                  desc: 'Alimentación 3 tiempos, parrilladas y catering propio en hacienda.',
-                  img: '/images/hacienda/gastronomia-2.jpg',
-                  link: '/hospedaje',
-                  dir: 'tilt-right' as RevealDirection,
-                },
-              ].map((card, i) => (
-                <ScrollReveal
-                  key={i}
-                  direction={card.dir}
-                  delay={60 + i * 95}
-                  distance={75}
-                  scale={0.82}
-                  className="h-full"
-                  innerClassName="h-full"
-                >
-                  <Link
-                    to={card.link}
-                    className="group relative flex flex-col h-full rounded-[24px] overflow-hidden bg-[#F5EFE6] shadow-[0_10px_28px_rgba(7,25,18,0.07)] hover:shadow-[0_16px_36px_rgba(7,25,18,0.13)] hover:-translate-y-1.5 transition-all duration-300"
+              {section2Cards.map((card, i) => {
+                const dir: RevealDirection =
+                  i === 0
+                    ? 'tilt-left'
+                    : i === 1
+                    ? 'up'
+                    : i === 2
+                    ? 'zoom-in'
+                    : i === 3
+                    ? 'up'
+                    : 'tilt-right';
+                return (
+                  <ScrollReveal
+                    key={i}
+                    direction={dir}
+                    delay={60 + i * 95}
+                    distance={75}
+                    scale={0.82}
+                    className="h-full"
+                    innerClassName="h-full"
                   >
-                    {/* Top Photo Area (extending behind the stepped SVG mask) */}
-                    <div className="relative h-[230px] w-full overflow-hidden">
-                      <img
-                        src={card.img}
-                        alt={card.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        loading="lazy"
-                      />
-
-                      {/* Pixel-verified Stepped / Folder-Tab SVG Mask overlapping bottom of photo */}
-                      <svg
-                        viewBox="0 0 188 28"
-                        preserveAspectRatio="none"
-                        className="absolute -bottom-[1px] left-0 right-0 w-full h-[30px] z-10 pointer-events-none block"
-                      >
-                        <path
-                          d="M 0,18 C 2,5 11,1 24,1 L 48,1 C 58,1 64,11 76,11 L 164,11 C 177,11 186,16 188,26 L 188,28 L 0,28 Z"
-                          fill="#F5EFE6"
+                    <Link
+                      to={card.link}
+                      className="group relative flex flex-col h-full rounded-[24px] overflow-hidden bg-[#F5EFE6] shadow-[0_10px_28px_rgba(7,25,18,0.07)] hover:shadow-[0_16px_36px_rgba(7,25,18,0.13)] hover:-translate-y-1.5 transition-all duration-300"
+                    >
+                      {/* Top Photo Area (extending behind the stepped SVG mask) */}
+                      <div className="relative h-[230px] w-full overflow-hidden">
+                        <img
+                          src={card.img}
+                          alt={card.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
                         />
-                      </svg>
-                    </div>
 
-                    {/* Bottom Descriptive Block seamlessly joined at y=28 with transparent inner pull-up */}
-                    <div className="relative z-20 bg-[#F5EFE6] px-4 pb-4 pt-0 rounded-b-[24px] flex-1 flex flex-col justify-end">
-                      <div className="-mt-[12px] flex items-end justify-between gap-2 w-full">
-                        <div className="min-w-0 pr-1">
-                          <h4 className="font-sans-ui text-[16px] font-extrabold text-[#0B1320] leading-tight tracking-tight group-hover:text-[#D97236] transition-colors">
-                            {card.title}
-                          </h4>
-                          <p className="text-[12px] text-[#0B1320]/60 line-clamp-2 mt-1.5 leading-[1.35] font-medium">
-                            {card.desc}
-                          </p>
-                        </div>
+                        {/* Pixel-verified Stepped / Folder-Tab SVG Mask overlapping bottom of photo */}
+                        <svg
+                          viewBox="0 0 188 28"
+                          preserveAspectRatio="none"
+                          className="absolute -bottom-[1px] left-0 right-0 w-full h-[30px] z-10 pointer-events-none block"
+                        >
+                          <path
+                            d="M 0,18 C 2,5 11,1 24,1 L 48,1 C 58,1 64,11 76,11 L 164,11 C 177,11 186,16 188,26 L 188,28 L 0,28 Z"
+                            fill="#F5EFE6"
+                          />
+                        </svg>
+                      </div>
 
-                        {/* Soft Neumorphic Circular Arrow Button */}
-                        <div className="w-9 h-9 rounded-full bg-[#FAF7F2] shadow-[0_4px_10px_rgba(0,0,0,0.08)] border border-white flex items-center justify-center shrink-0 mb-0.5 group-hover:bg-[#D97236] group-hover:border-[#D97236] transition-all duration-300">
-                          <ArrowRight className="w-4 h-4 text-[#E06D2B] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                      {/* Bottom Descriptive Block seamlessly joined at y=28 with transparent inner pull-up */}
+                      <div className="relative z-20 bg-[#F5EFE6] px-4 pb-4 pt-0 rounded-b-[24px] flex-1 flex flex-col justify-end">
+                        <div className="-mt-[12px] flex items-end justify-between gap-2 w-full">
+                          <div className="min-w-0 pr-1">
+                            <h4 className="font-sans-ui text-[16px] font-extrabold text-[#0B1320] leading-tight tracking-tight group-hover:text-[#D97236] transition-colors">
+                              {card.title}
+                            </h4>
+                            <p className="text-[12px] text-[#0B1320]/60 line-clamp-2 mt-1.5 leading-[1.35] font-medium">
+                              {card.desc}
+                            </p>
+                          </div>
+
+                          {/* Soft Neumorphic Circular Arrow Button */}
+                          <div className="w-9 h-9 rounded-full bg-[#FAF7F2] shadow-[0_4px_10px_rgba(0,0,0,0.08)] border border-white flex items-center justify-center shrink-0 mb-0.5 group-hover:bg-[#D97236] group-hover:border-[#D97236] transition-all duration-300">
+                            <ArrowRight className="w-4 h-4 text-[#E06D2B] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
-                </ScrollReveal>
-              ))}
+                    </Link>
+                  </ScrollReveal>
+                );
+              })}
             </div>
           </div>
 
@@ -1219,21 +926,41 @@ export const HomePageDesktop: React.FC = () => {
             <div className="lg:col-span-6 space-y-6">
               <ScrollReveal direction="right" delay={80} distance={90}>
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C88242] block mb-1.5">
-                  PRESENTACIÓN DE HACIENDA LE PLUS · UBICACIÓN QUITO–PÍNTAG
+                  {isEn
+                    ? 'ABOUT HACIENDA LE PLUS · QUITO–PÍNTAG VENUE'
+                    : 'PRESENTACIÓN DE HACIENDA LE PLUS · UBICACIÓN QUITO–PÍNTAG'}
                 </span>
                 <h2
                   id="heading-rutas"
                   className="font-serif-luxury text-3xl sm:text-5xl font-semibold text-[#071912] leading-tight"
                 >
-                  Instalaciones exclusivas en{' '}
-                  <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em> para estadías y eventos.
+                  {isEn ? (
+                    <>
+                      Exclusive resort facilities in{' '}
+                      <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em> for stays and major events.
+                    </>
+                  ) : (
+                    <>
+                      Instalaciones exclusivas en{' '}
+                      <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em> para estadías y eventos.
+                    </>
+                  )}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="right" delay={180} distance={85}>
                 <p className="text-sm sm:text-base text-[#0A1F17]/75 leading-relaxed">
-                  Ubicada en <strong>Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100)</strong>, a solo <strong>40 minutos de Quito</strong> y{' '}
-                  <strong>30 minutos del Aeropuerto Internacional Mariscal Sucre</strong>. Nuestras instalaciones integran hospedaje de larga estadía para empresas y grupos (14 habitaciones para 28 a 80 personas), carpas y jardines para grandes eventos y bodas, junto con piscina temperada, restaurante y actividades recreativas como complementos que fortalecen tu experiencia.
+                  {isEn ? (
+                    <>
+                      Located in <strong>Quito–Píntag (San Juan de la Tola, Calle Deus No. 100)</strong>, just <strong>40 minutes from Quito</strong> and{' '}
+                      <strong>30 minutes from Mariscal Sucre International Airport</strong>. Our facilities integrate long-stay lodging for corporate teams and groups (14 rooms for 28 to 80 guests), gala tents and lawns for macro-events and weddings, alongside a heated pool, restaurant, and sports facilities as value-added amenities.
+                    </>
+                  ) : (
+                    <>
+                      Ubicada en <strong>Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100)</strong>, a solo <strong>40 minutos de Quito</strong> y{' '}
+                      <strong>30 minutos del Aeropuerto Internacional Mariscal Sucre</strong>. Nuestras instalaciones integran hospedaje de larga estadía para empresas y grupos (14 habitaciones para 28 a 80 personas), carpas y jardines para grandes eventos y bodas, junto con piscina temperada, restaurante y actividades recreativas como complementos que fortalecen tu experiencia.
+                    </>
+                  )}
                 </p>
               </ScrollReveal>
 
@@ -1247,7 +974,9 @@ export const HomePageDesktop: React.FC = () => {
                     <div className="w-11 h-11 rounded-full bg-[#071912] text-[#E5C98B] flex items-center justify-center mb-2.5">
                       <BedDouble className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-[#071912]">14 Habitaciones</span>
+                    <span className="text-xs font-bold text-[#071912]">
+                      {isEn ? '14 Rooms' : '14 Habitaciones'}
+                    </span>
                   </Link>
                 </ScrollReveal>
 
@@ -1259,7 +988,9 @@ export const HomePageDesktop: React.FC = () => {
                     <div className="w-11 h-11 rounded-full bg-[#071912] text-[#E5C98B] flex items-center justify-center mb-2.5">
                       <Wifi className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-[#071912]">Fibra & Salones</span>
+                    <span className="text-xs font-bold text-[#071912]">
+                      {isEn ? 'Fiber & Halls' : 'Fibra & Salones'}
+                    </span>
                   </Link>
                 </ScrollReveal>
 
@@ -1271,7 +1002,9 @@ export const HomePageDesktop: React.FC = () => {
                     <div className="w-11 h-11 rounded-full bg-[#071912] text-[#E5C98B] flex items-center justify-center mb-2.5">
                       <Utensils className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-[#071912]">Restaurante & Catering</span>
+                    <span className="text-xs font-bold text-[#071912]">
+                      {isEn ? 'Dining & Catering' : 'Restaurante & Catering'}
+                    </span>
                   </Link>
                 </ScrollReveal>
 
@@ -1283,7 +1016,9 @@ export const HomePageDesktop: React.FC = () => {
                     <div className="w-11 h-11 rounded-full bg-[#071912] text-[#E5C98B] flex items-center justify-center mb-2.5">
                       <Waves className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-bold text-[#071912]">Piscina & Canchas</span>
+                    <span className="text-xs font-bold text-[#071912]">
+                      {isEn ? 'Pool & Courts' : 'Piscina & Canchas'}
+                    </span>
                   </Link>
                 </ScrollReveal>
               </div>
@@ -1381,7 +1116,7 @@ export const HomePageDesktop: React.FC = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-3 rounded-[4px] bg-[#C04D18] hover:bg-[#A33E10] text-white text-xs sm:text-[13px] font-bold shadow-sm transition-all cursor-pointer"
                   >
-                    <span>Cotizar Servicio</span>
+                    <span>{isEn ? 'Quote Service' : 'Cotizar Servicio'}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </ScrollReveal>
@@ -1394,7 +1129,7 @@ export const HomePageDesktop: React.FC = () => {
                     <span className="w-7 h-7 rounded-full border-[1.8px] border-[#141413] group-hover:border-[#C04D18] flex items-center justify-center transition-colors">
                       <Play className="w-3 h-3 fill-current ml-0.5" />
                     </span>
-                    <span>Ver Página</span>
+                    <span>{isEn ? 'View Page' : 'Ver Página'}</span>
                   </Link>
                 </ScrollReveal>
               </div>
@@ -1595,7 +1330,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="inline-flex items-center gap-2">
                   <Leaf className="w-4 h-4 text-[#7BA63C] fill-[#7BA63C]/30 -rotate-12" />
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#A3C468]">
-                    RESEÑAS DE CLIENTES
+                    {isEn ? 'CLIENT REVIEWS' : 'RESEÑAS DE CLIENTES'}
                   </span>
                 </div>
               </ScrollReveal>
@@ -1605,15 +1340,27 @@ export const HomePageDesktop: React.FC = () => {
                   id="heading-evidencia"
                   className="font-serif-luxury text-3xl sm:text-4xl xl:text-[40px] font-semibold text-white leading-[1.1]"
                 >
-                  Voces Reales.
-                  <br />
-                  Impacto Positivo.
+                  {isEn ? (
+                    <>
+                      Real Voices.
+                      <br />
+                      Positive Impact.
+                    </>
+                  ) : (
+                    <>
+                      Voces Reales.
+                      <br />
+                      Impacto Positivo.
+                    </>
+                  )}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="left" delay={200} distance={80}>
                 <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed">
-                  Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.
+                  {isEn
+                    ? 'We support every wedding, corporate retreat, and international delegation in Píntag to ensure a memorable, warm, and well-coordinated experience.'
+                    : 'Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.'}
                 </p>
               </ScrollReveal>
 
@@ -1624,7 +1371,7 @@ export const HomePageDesktop: React.FC = () => {
                     onClick={() => setIsReviewModalOpen(true)}
                     className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#4B6E24] via-[#5E842E] to-[#749B3B] hover:from-[#577E2B] hover:to-[#82AD43] text-white text-xs sm:text-[13px] font-semibold shadow-[0_6px_20px_rgba(0,0,0,0.28)] border border-[#8AB34B]/40 transition-all duration-200 cursor-pointer group"
                   >
-                    <span>Dejar mi Opinión</span>
+                    <span>{isEn ? 'Leave a Review' : 'Dejar mi Opinión'}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -1802,34 +1549,42 @@ export const HomePageDesktop: React.FC = () => {
               <div className="flex items-center gap-2 mb-1">
                 <Leaf className="w-4 h-4 text-[#5E842E]" />
                 <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#5E842E]">
-                  NUEVA RESEÑA EN HACIENDA LE PLUS
+                  {isEn ? 'NEW REVIEW AT HACIENDA LE PLUS' : 'NUEVA RESEÑA EN HACIENDA LE PLUS'}
                 </span>
               </div>
 
               <h3 id="modal-review-title" className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#113221]">
-                Comparte tu experiencia
+                {isEn ? 'Share your experience' : 'Comparte tu experiencia'}
               </h3>
               <p className="text-xs text-[#113221]/70 mt-1">
-                Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.
+                {isEn
+                  ? 'Your review will be published immediately in our real experience carousel.'
+                  : 'Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.'}
               </p>
 
               {reviewSubmittedSuccess ? (
                 <div className="my-6 p-5 rounded-2xl bg-[#113221] text-white text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-[#A3C468] mx-auto" />
-                  <p className="font-bold text-sm">¡Gracias por compartir tu opinión!</p>
-                  <p className="text-xs text-white/80">Tu reseña ya está visible al inicio del carrusel.</p>
+                  <p className="font-bold text-sm">
+                    {isEn ? 'Thank you for sharing your experience!' : '¡Gracias por compartir tu opinión!'}
+                  </p>
+                  <p className="text-xs text-white/80">
+                    {isEn
+                      ? 'Your review is now visible at the beginning of the carousel.'
+                      : 'Tu reseña ya está visible al inicio del carrusel.'}
+                  </p>
                 </div>
               ) : (
                 <form onSubmit={handleAddClientReview} className="mt-4 space-y-4">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      Tu Nombre, Familia o Institución *
+                      {isEn ? 'Your Name, Family or Organization *' : 'Tu Nombre, Familia o Institución *'}
                     </label>
                     <input
                       type="text"
                       required
                       maxLength={40}
-                      placeholder="Ej. Familia Gómez / Empresa Andina"
+                      placeholder={isEn ? 'e.g. Gomez Family / Andean Company' : 'Ej. Familia Gómez / Empresa Andina'}
                       value={newReviewAuthor}
                       onChange={(e) => setNewReviewAuthor(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-sm text-[#113221] focus:outline-none focus:border-[#5E842E]"
@@ -1839,24 +1594,34 @@ export const HomePageDesktop: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        Experiencia Vivida
+                        {isEn ? 'Experience Type' : 'Experiencia Vivida'}
                       </label>
                       <select
                         value={newReviewRole}
                         onChange={(e) => setNewReviewRole(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-xs font-semibold text-[#113221] focus:outline-none focus:border-[#5E842E]"
                       >
-                        <option value="Bodas & Recepciones">Bodas & Recepciones</option>
-                        <option value="Corporativo & GADs">Corporativo & GADs</option>
-                        <option value="Delegación ONG / HXP">Delegación ONG / HXP</option>
-                        <option value="Suites & Zona Húmeda">Suites & Zona Húmeda</option>
-                        <option value="Gastronomía & Eventos">Gastronomía & Eventos</option>
+                        <option value={isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}>
+                          {isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}
+                        </option>
+                        <option value={isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}>
+                          {isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}
+                        </option>
+                        <option value={isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}>
+                          {isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}
+                        </option>
+                        <option value={isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}>
+                          {isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}
+                        </option>
+                        <option value={isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}>
+                          {isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}
+                        </option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        Calificación
+                        {isEn ? 'Rating' : 'Calificación'}
                       </label>
                       <div className="flex items-center gap-1.5 h-[38px] px-3 rounded-xl bg-white border border-[#113221]/20">
                         {[1, 2, 3, 4, 5].map((starVal) => (
@@ -1865,7 +1630,7 @@ export const HomePageDesktop: React.FC = () => {
                             type="button"
                             onClick={() => setNewReviewRating(starVal)}
                             className="cursor-pointer focus:outline-none"
-                            aria-label={`${starVal} estrellas`}
+                            aria-label={isEn ? `${starVal} stars` : `${starVal} estrellas`}
                           >
                             <Star
                               className={`w-4 h-4 transition-colors ${
@@ -1882,13 +1647,17 @@ export const HomePageDesktop: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      Tu Comentario o Reseña *
+                      {isEn ? 'Your Comment or Review *' : 'Tu Comentario o Reseña *'}
                     </label>
                     <textarea
                       required
                       rows={3}
                       maxLength={170}
-                      placeholder="Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus..."
+                      placeholder={
+                        isEn
+                          ? 'Tell us what you liked most about Hacienda Le Plus...'
+                          : 'Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus...'
+                      }
                       value={newReviewComment}
                       onChange={(e) => setNewReviewComment(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-sm text-[#113221] focus:outline-none focus:border-[#5E842E] resize-none"
@@ -1901,14 +1670,14 @@ export const HomePageDesktop: React.FC = () => {
                       onClick={() => setIsReviewModalOpen(false)}
                       className="px-4 py-2.5 rounded-full text-xs font-bold text-[#113221]/70 hover:bg-[#113221]/10 transition-colors cursor-pointer"
                     >
-                      Cancelar
+                      {isEn ? 'Cancel' : 'Cancelar'}
                     </button>
                     <button
                       type="submit"
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#4B6E24] to-[#6E9436] hover:from-[#577E2B] hover:to-[#7CA63E] text-white text-xs font-bold shadow-md transition-all cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>Publicar Opinión</span>
+                      <span>{isEn ? 'Publish Review' : 'Publicar Opinión'}</span>
                     </button>
                   </div>
                 </form>

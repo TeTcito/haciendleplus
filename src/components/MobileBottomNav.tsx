@@ -2,6 +2,7 @@ import React, { useRef, useLayoutEffect, useEffect, useCallback, useMemo } from 
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, Heart, BedDouble, Building2, PhoneCall } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useLanguage } from '../context/LanguageContext';
 
 interface NavItem {
   path: string;
@@ -33,6 +34,7 @@ const getBgPath = (cx: number, w: number) => {
 export const MobileBottomNav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { isEn } = useLanguage();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const borderPathRef = useRef<SVGPathElement>(null);
@@ -44,13 +46,13 @@ export const MobileBottomNav: React.FC = () => {
 
   const navItems: NavItem[] = useMemo(
     () => [
-      { path: '/', label: 'Inicio', icon: Home, activeColor: '#E2C585' },
-      { path: '/bodas', label: 'Bodas', icon: Heart, activeColor: '#E5C98B' },
-      { path: '/hospedaje', label: 'Hospedaje', icon: BedDouble, activeColor: '#DFB96E' },
-      { path: '/corporativo', label: 'Eventos', icon: Building2, activeColor: '#C8A45D' },
-      { path: '/contacto', label: 'Contacto', icon: PhoneCall, activeColor: '#E2C585' },
+      { path: '/', label: isEn ? 'Home' : 'Inicio', icon: Home, activeColor: '#E2C585' },
+      { path: '/bodas', label: isEn ? 'Weddings' : 'Bodas', icon: Heart, activeColor: '#E5C98B' },
+      { path: '/hospedaje', label: isEn ? 'Lodging' : 'Hospedaje', icon: BedDouble, activeColor: '#DFB96E' },
+      { path: '/corporativo', label: isEn ? 'Events' : 'Eventos', icon: Building2, activeColor: '#C8A45D' },
+      { path: '/contacto', label: isEn ? 'Contact' : 'Contacto', icon: PhoneCall, activeColor: '#E2C585' },
     ],
-    []
+    [isEn]
   );
 
   const getActiveIndex = useCallback((): number => {

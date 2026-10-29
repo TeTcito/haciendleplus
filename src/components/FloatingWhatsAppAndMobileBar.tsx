@@ -2,12 +2,14 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useCMS } from '../context/CMSContext';
+import { useLanguage } from '../context/LanguageContext';
 import { buildContextualWhatsAppUrl, WhatsAppContextType } from '../utils/whatsapp';
 import { MobileBottomNav } from './MobileBottomNav';
 import { LanguageSelector } from './LanguageSelector';
 
 export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   const { siteConfig } = useCMS();
+  const { isEn } = useLanguage();
   const location = useLocation();
 
   if (location.pathname === '/admin') {
@@ -15,20 +17,20 @@ export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   }
 
   let context: WhatsAppContextType = 'general';
-  let contextLabel = 'Solicitar cotización por WhatsApp al 0969817891';
+  let contextLabel = isEn ? 'Request quote via WhatsApp at +593 96 981 7891' : 'Solicitar cotización por WhatsApp al 0969817891';
 
   if (location.pathname.includes('bodas')) {
     context = 'bodas';
-    contextLabel = 'WhatsApp Bodas y Celebraciones · 0969817891';
+    contextLabel = isEn ? 'WhatsApp Weddings & Celebrations · 0969817891' : 'WhatsApp Bodas y Celebraciones · 0969817891';
   } else if (location.pathname.includes('corporativo')) {
     context = 'corporativo';
-    contextLabel = 'WhatsApp Grandes Eventos y Corporativo · 0969817891';
+    contextLabel = isEn ? 'WhatsApp Corporate & Major Events · 0969817891' : 'WhatsApp Grandes Eventos y Corporativo · 0969817891';
   } else if (location.pathname.includes('hospedaje')) {
     context = 'grupos';
-    contextLabel = 'WhatsApp Hospedaje Empresas y Grupos · 0969817891';
+    contextLabel = isEn ? 'WhatsApp Group & Corporate Lodging · 0969817891' : 'WhatsApp Hospedaje Empresas y Grupos · 0969817891';
   } else if (location.pathname.includes('contacto')) {
     context = 'visita';
-    contextLabel = 'Agendar Visita por WhatsApp · 0969817891';
+    contextLabel = isEn ? 'Schedule Resort Visit via WhatsApp · 0969817891' : 'Agendar Visita por WhatsApp · 0969817891';
   }
 
   const whatsappUrl = buildContextualWhatsAppUrl({

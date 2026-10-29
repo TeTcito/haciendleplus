@@ -21,9 +21,11 @@ import {
 } from 'lucide-react';
 import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { ScrollReveal } from '../../components/ScrollReveal';
+import { getWeddingServices, getWeddingPresets } from '../../data/resortSpaces';
 
 /* ============================================================================
    5 SERVICIOS NUPCIALES (BLOQUE 2 - "WHAT WE DO" RÉPLICA DEL DISEÑO)
@@ -356,7 +358,11 @@ const SectionDividerTitle: React.FC<SectionDividerTitleProps> = ({
 
 export const WeddingsPageMobile: React.FC = () => {
   const { siteConfig, packages, photos, openQuoteModal } = useCMS();
+  const { language, isEn } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
+
+  const weddingServices = getWeddingServices(isEn);
+  const weddingCarouselServices = getWeddingPresets(isEn);
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (carouselRef.current) {
@@ -370,9 +376,13 @@ export const WeddingsPageMobile: React.FC = () => {
 
   useDocumentMeta({
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
+    title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
       'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados (14 habitaciones). Cotiza al WhatsApp 0969817891.',
+    description_en:
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies, reception, gardens, catering, decor, and on-site lodging for guests in 14 rooms.',
     canonicalPath: '/bodas',
+    lang: language,
   });
 
   const weddingPackages = packages.filter((p) => p.category === 'bodas');
@@ -418,10 +428,10 @@ export const WeddingsPageMobile: React.FC = () => {
               <ScrollReveal direction="left" delay={60} distance={20}>
                 <h1 className="text-[#181512]">
                   <span className="font-serif-luxury block text-[36px] sm:text-[42px] font-bold leading-[0.98] tracking-tight">
-                    Bodas y Celebraciones
+                    {isEn ? 'Weddings & Celebrations' : 'Bodas y Celebraciones'}
                   </span>
                   <span className="font-wedding-script inline-flex items-center gap-2 text-[30px] sm:text-[36px] font-medium text-[#8C6D3F] mt-0.5 leading-tight">
-                    <span>En una Historia Eterna</span>
+                    <span>{isEn ? 'In an Everlasting Story' : 'En una Historia Eterna'}</span>
                     <Heart className="w-4 h-4 text-[#8C6D3F] fill-[#8C6D3F]/25 -rotate-12 shrink-0" />
                   </span>
                 </h1>
@@ -435,13 +445,13 @@ export const WeddingsPageMobile: React.FC = () => {
                     onClick={() =>
                       openQuoteModal({
                         serviceType: 'bodas',
-                        itemName: 'Planificación y Cotización de Boda / Evento Social',
+                        itemName: isEn ? 'Wedding & Social Event Planning & Quote' : 'Planificación y Cotización de Boda / Evento Social',
                       })
                     }
                     className="inline-flex w-fit items-center justify-center gap-1.5 px-3 h-[20px] rounded-full bg-[#13281F] hover:bg-[#0A1F17] text-[#E2C585] text-xs font-bold leading-none shadow-sm shadow-black/20 transition-all cursor-pointer active:scale-95"
                   >
                     <Search className="w-3 h-3 text-[#E2C585] shrink-0" />
-                    <span className="leading-none">Cotizar</span>
+                    <span className="leading-none">{isEn ? 'Quote' : 'Cotizar'}</span>
                     <ArrowRight className="w-3 h-3 shrink-0" />
                   </button>
                 </div>
@@ -454,15 +464,15 @@ export const WeddingsPageMobile: React.FC = () => {
                     <Users className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
                       <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">300+</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">Capacidad</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{isEn ? 'Capacity' : 'Capacidad'}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/85 backdrop-blur-xs border border-[#8C6D3F]/30 shadow-2xs">
                     <BedDouble className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
-                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">14 Suites</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">Alojamiento</span>
+                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{isEn ? '14 Rooms' : '14 Suites'}</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{isEn ? 'Lodging' : 'Alojamiento'}</span>
                     </div>
                   </div>
 
@@ -470,7 +480,7 @@ export const WeddingsPageMobile: React.FC = () => {
                     <ShieldCheck className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
                       <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">100%</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">Respaldo</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{isEn ? 'Support' : 'Respaldo'}</span>
                     </div>
                   </div>
                 </div>
@@ -497,7 +507,7 @@ export const WeddingsPageMobile: React.FC = () => {
           <ScrollReveal direction="zoom-in" delay={40} scale={0.96}>
             <SectionDividerTitle
               id="heading-wedding-services"
-              title="Servicios Nupciales"
+              title={isEn ? 'Wedding Services' : 'Servicios Nupciales'}
             />
           </ScrollReveal>
 
@@ -507,7 +517,7 @@ export const WeddingsPageMobile: React.FC = () => {
               className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-none px-4 -mx-4 pb-2 pt-1"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {WEDDING_SERVICES_CARDS.map((card, idx) => (
+              {weddingServices.map((card, idx) => (
                 <div
                   key={card.id || idx}
                   className="w-[38vw] min-w-[136px] max-w-[160px] shrink-0 snap-start"
@@ -554,7 +564,7 @@ export const WeddingsPageMobile: React.FC = () => {
             {/* 1. TÍTULO CENTRADO CON DISEÑO DE DIVISIÓN SIN ETIQUETA */}
             <ScrollReveal direction="zoom-in" delay={40} scale={0.96}>
               <SectionDividerTitle
-                title="Más que un Escenario, Cómplices de tu Boda"
+                title={isEn ? 'More than a Venue, Wedding Partners' : 'Más que un Escenario, Cómplices de tu Boda'}
               />
             </ScrollReveal>
 
@@ -578,8 +588,17 @@ export const WeddingsPageMobile: React.FC = () => {
 
                 <div className="absolute top-3.5 left-3.5 sm:top-5 sm:left-6 z-10 pointer-events-none select-none -rotate-[8deg]">
                   <p className="font-wedding-script text-2xl sm:text-3xl font-semibold text-[#1E1916] leading-[1.02] drop-shadow-[0_1px_6px_rgba(255,255,255,0.9)]">
-                    Porque cada
-                    <span className="block ml-3">detalle importa...</span>
+                    {isEn ? (
+                      <>
+                        Because every
+                        <span className="block ml-3">detail matters...</span>
+                      </>
+                    ) : (
+                      <>
+                        Porque cada
+                        <span className="block ml-3">detalle importa...</span>
+                      </>
+                    )}
                   </p>
                   <Heart className="w-4 h-4 text-[#8C6D3F] fill-[#8C6D3F]/40 ml-16 mt-0.5 rotate-6" />
                 </div>
@@ -594,9 +613,11 @@ export const WeddingsPageMobile: React.FC = () => {
                     <Heart className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
                   <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    Atención
-                    <br />
-                    Personal
+                    {isEn ? (
+                      <>Personal<br />Care</>
+                    ) : (
+                      <>Atención<br />Personal</>
+                    )}
                   </span>
                 </div>
 
@@ -605,9 +626,11 @@ export const WeddingsPageMobile: React.FC = () => {
                     <Sparkles className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
                   <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    Jardines
-                    <br />
-                    Únicos
+                    {isEn ? (
+                      <>Unique<br />Gardens</>
+                    ) : (
+                      <>Jardines<br />Únicos</>
+                    )}
                   </span>
                 </div>
 
@@ -616,9 +639,11 @@ export const WeddingsPageMobile: React.FC = () => {
                     <Utensils className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
                   <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    Cocina
-                    <br />
-                    Propia
+                    {isEn ? (
+                      <>In-House<br />Cuisine</>
+                    ) : (
+                      <>Cocina<br />Propia</>
+                    )}
                   </span>
                 </div>
 
@@ -627,9 +652,11 @@ export const WeddingsPageMobile: React.FC = () => {
                     <ShieldCheck className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
                   <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    Cero
-                    <br />
-                    Estrés
+                    {isEn ? (
+                      <>Zero<br />Stress</>
+                    ) : (
+                      <>Cero<br />Estrés</>
+                    )}
                   </span>
                 </div>
               </div>
@@ -645,7 +672,7 @@ export const WeddingsPageMobile: React.FC = () => {
                   className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer"
                 >
                   <WhatsAppIcon className="w-4 h-4" />
-                  <span>Agendar Visita</span>
+                  <span>{isEn ? 'Schedule Tour' : 'Agendar Visita'}</span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#C8A45D]" />
                 </a>
               </div>
@@ -662,7 +689,7 @@ export const WeddingsPageMobile: React.FC = () => {
           {/* 1. TÍTULO CENTRADO CON DISEÑO DE DIVISIÓN */}
           <ScrollReveal direction="zoom-in" delay={40} scale={0.96}>
             <SectionDividerTitle
-              title="Más Que Un Espacio, Tu Boda Soñada"
+              title={isEn ? 'More Than a Venue, Your Dream Wedding' : 'Más Que Un Espacio, Tu Boda Soñada'}
             />
           </ScrollReveal>
 
@@ -687,8 +714,17 @@ export const WeddingsPageMobile: React.FC = () => {
 
               <div className="absolute top-3.5 left-3.5 sm:top-5 sm:left-6 z-10 pointer-events-none select-none -rotate-[7deg]">
                 <p className="font-wedding-script text-2xl sm:text-3xl font-semibold text-[#1E1916] leading-[1.02] drop-shadow-[0_1px_6px_rgba(255,255,255,0.9)]">
-                  Tu día soñado
-                  <span className="block ml-3">en cada espacio...</span>
+                  {isEn ? (
+                    <>
+                      Your dream day
+                      <span className="block ml-3">in every corner...</span>
+                    </>
+                  ) : (
+                    <>
+                      Tu día soñado
+                      <span className="block ml-3">en cada espacio...</span>
+                    </>
+                  )}
                 </p>
                 <Sparkles className="w-4 h-4 text-[#8C6D3F] ml-16 mt-0.5 rotate-6" />
               </div>
@@ -703,9 +739,11 @@ export const WeddingsPageMobile: React.FC = () => {
                   <Sparkles className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
                 <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  Montajes &amp;
-                  <br />
-                  Carpa Gala
+                  {isEn ? (
+                    <>Setups &amp;<br />Gala Tent</>
+                  ) : (
+                    <>Montajes &amp;<br />Carpa Gala</>
+                  )}
                 </span>
               </div>
 
@@ -714,9 +752,11 @@ export const WeddingsPageMobile: React.FC = () => {
                   <Wine className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
                 <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  Descorche
-                  <br />
-                  Libre
+                  {isEn ? (
+                    <>Free<br />Corkage</>
+                  ) : (
+                    <>Descorche<br />Libre</>
+                  )}
                 </span>
               </div>
 
@@ -725,9 +765,11 @@ export const WeddingsPageMobile: React.FC = () => {
                   <Heart className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
                 <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  Asesoría
-                  <br />
-                  Experta
+                  {isEn ? (
+                    <>Expert<br />Advisory</>
+                  ) : (
+                    <>Asesoría<br />Experta</>
+                  )}
                 </span>
               </div>
 
@@ -736,9 +778,11 @@ export const WeddingsPageMobile: React.FC = () => {
                   <CheckCircle2 className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
                 <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  Bodas
-                  <br />
-                  Felices
+                  {isEn ? (
+                    <>Happy<br />Weddings</>
+                  ) : (
+                    <>Bodas<br />Felices</>
+                  )}
                 </span>
               </div>
             </div>
@@ -754,7 +798,7 @@ export const WeddingsPageMobile: React.FC = () => {
                 className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs font-bold shadow-md active:scale-95 transition-all cursor-pointer"
               >
                 <WhatsAppIcon className="w-4 h-4" />
-                <span>Planificar mi Boda</span>
+                <span>{isEn ? 'Plan My Wedding' : 'Planificar mi Boda'}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#C8A45D]" />
               </a>
             </div>
@@ -770,7 +814,7 @@ export const WeddingsPageMobile: React.FC = () => {
           {/* ENCABEZADO: TÍTULO A LA IZQUIERDA Y BOTONES DE DESPLAZAMIENTO AL MARGEN DERECHO */}
           <div className="flex items-center justify-between px-4 sm:px-6">
             <h2 className="font-serif-luxury text-[18px] sm:text-[21px] font-bold text-[#181512] leading-tight text-left">
-              Servicios &amp; Paquetes Nupciales
+              {isEn ? 'Wedding Services & Packages' : 'Servicios & Paquetes Nupciales'}
             </h2>
 
             {/* Controles de Navegación del Carrusel al Margen Derecho */}
@@ -778,7 +822,7 @@ export const WeddingsPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollCarousel('left')}
-                aria-label="Desplazar hacia la izquierda"
+                aria-label={isEn ? 'Scroll left' : 'Desplazar hacia la izquierda'}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4 text-[#3D352E]" />
@@ -786,7 +830,7 @@ export const WeddingsPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollCarousel('right')}
-                aria-label="Desplazar hacia la derecha"
+                aria-label={isEn ? 'Scroll right' : 'Desplazar hacia la derecha'}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4 text-[#3D352E]" />
@@ -800,7 +844,7 @@ export const WeddingsPageMobile: React.FC = () => {
             className="flex gap-2.5 overflow-x-auto snap-x snap-mandatory scrollbar-none px-4 sm:px-6 scroll-pl-4 sm:scroll-pl-6 pb-2 pt-1"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {WEDDING_CAROUSEL_SERVICES.map((card) => {
+            {weddingCarouselServices.map((card) => {
               return (
                 <div
                   key={card.id}
@@ -868,7 +912,7 @@ export const WeddingsPageMobile: React.FC = () => {
                           lineHeight: '1',
                         }}
                       >
-                        <span className="leading-none block" style={{ transform: 'translateY(-0.5px)' }}>Ver</span>
+                        <span className="leading-none block" style={{ transform: 'translateY(-0.5px)' }}>{isEn ? 'View' : 'Ver'}</span>
                       </button>
                     </div>
                   </div>
@@ -906,10 +950,12 @@ export const WeddingsPageMobile: React.FC = () => {
           <div className="relative z-10 w-full h-full px-4 pt-3 pb-2.5 sm:px-6 sm:pt-4 sm:pb-3 flex flex-col justify-between max-w-[76%] sm:max-w-[68%]">
             <div className="space-y-1">
               <h2 className="font-serif-luxury text-[19px] sm:text-[23px] font-bold text-[#172414] leading-[1.08] text-left">
-                Agenda tu Visita Nupcial &amp; Cotiza tu Boda
+                {isEn ? 'Schedule Your Tour & Quote' : 'Agenda tu Visita Nupcial & Cotiza tu Boda'}
               </h2>
               <p className="text-[13px] sm:text-[14px] text-[#2F3E2C] leading-snug line-clamp-2 text-left">
-                Recorramos juntos los jardines, salones y suites en Píntag con gastronomía de autor y un equipo comprometido con tu boda.
+                {isEn
+                  ? 'Let us explore the gardens, halls, and suites together in Píntag with signature dining and a team devoted to your wedding.'
+                  : 'Recorramos juntos los jardines, salones y suites en Píntag con gastronomía de autor y un equipo comprometido con tu boda.'}
               </p>
             </div>
 
@@ -921,7 +967,7 @@ export const WeddingsPageMobile: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-[#2D4029] hover:bg-[#1E2E1B] text-[#FAF7F2] text-[12px] sm:text-[13px] font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
               >
-                <span>Solicitar Propuesta</span>
+                <span>{isEn ? 'Request Proposal' : 'Solicitar Propuesta'}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#D8E6CF]" />
               </a>
             </div>
@@ -935,7 +981,7 @@ export const WeddingsPageMobile: React.FC = () => {
                   </svg>
                 </div>
                 <span className="text-[10.5px] sm:text-[11.5px] font-bold text-[#2C3D28] leading-tight">
-                  Vistas a Volcanes
+                  {isEn ? 'Volcano Views' : 'Vistas a Volcanes'}
                 </span>
               </div>
 
@@ -946,7 +992,7 @@ export const WeddingsPageMobile: React.FC = () => {
                   </svg>
                 </div>
                 <span className="text-[10.5px] sm:text-[11.5px] font-bold text-[#2C3D28] leading-tight">
-                  Carpa de Gala
+                  {isEn ? 'Gala Marquee' : 'Carpa de Gala'}
                 </span>
               </div>
 
@@ -958,7 +1004,7 @@ export const WeddingsPageMobile: React.FC = () => {
                   </svg>
                 </div>
                 <span className="text-[10.5px] sm:text-[11.5px] font-bold text-[#2C3D28] leading-tight">
-                  Descorche Libre
+                  {isEn ? 'Free Corkage' : 'Descorche Libre'}
                 </span>
               </div>
             </div>

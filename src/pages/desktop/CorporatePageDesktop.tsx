@@ -27,10 +27,10 @@ import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
-import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS } from '../../data/resortSpaces';
+import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorporatePackages } from '../../data/resortSpaces';
 
 export const CorporatePageDesktop: React.FC = () => {
-  const { siteConfig, packages, openQuoteModal } = useCMS();
+  const { siteConfig, openQuoteModal } = useCMS();
   const { language, isEn, t } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
 
@@ -50,61 +50,7 @@ export const CorporatePageDesktop: React.FC = () => {
     lang: language,
   });
 
-  const corpPackages = packages.filter((p) => p.category === 'corporativo');
-
-  const extendedCorpPackages = [
-    ...corpPackages,
-    ...(corpPackages.length < 3
-      ? [
-          {
-            id: 'pkg-corp-findeanio',
-            category: 'corporativo' as const,
-            title: 'Fiestas de Fin de Año & Celebraciones de Gran Formato',
-            subtitle: 'Carpas, jardines, catering, tarima y pista de baile.',
-            priceLabel: 'Desde',
-            priceValue: 45,
-            unit: 'por participante',
-            capacity: '80 a 350+ participantes',
-            setupInfo: 'Carpas + Jardines + Tarima + Pista de Baile + Catering',
-            description:
-              'Macroeventos empresariales y fiestas de fin de año con montaje de carpas, tarima profesional, pista de baile, banquete o parrillada y hospedaje complementario.',
-            inclusions: [
-              'Carpas estructurales, jardines iluminados, tarima y pista de baile',
-              'Catering corporativo propio: menú de gala, buffet o parrillada campestre',
-              'Complemento de piscina temperada, actividades deportivas y parqueaderos para buses',
-              'Opción de hospedaje complementario en nuestras 14 habitaciones (28 a 80 pax)',
-            ],
-            highlightBadge: 'Fin de Año & Macroeventos',
-            image: '/images/hacienda/boda-carpa-gala.jpg',
-            whatsappIntent: 'Evento Corporativo de Fin de Año / Gran Formato',
-            featuredInHome: false,
-          },
-          {
-            id: 'pkg-corp-teambuilding',
-            category: 'corporativo' as const,
-            title: 'Integración Empresarial, Deportes & Piscina',
-            subtitle: 'Actividades deportivas, piscina 14×6m, jardines y catering.',
-            priceLabel: 'Desde',
-            priceValue: 40,
-            unit: 'por participante',
-            capacity: 'Hasta 350 participantes',
-            setupInfo: 'Jardines + Canchas Deportivas + Piscina + Catering',
-            description:
-              'Jornadas de integración corporativa y team building fortalecidas con nuestras canchas deportivas, piscina temperada, restaurante propio y hospedaje complementario.',
-            inclusions: [
-              'Uso exclusivo de jardines (5.000 m²) y canchas deportivas (fútbol, vóley, básquet)',
-              'Catering y restaurante: desayuno, parrillada de integración y coffee breaks',
-              'Acceso a piscina temperada (14×6m), 2 hidromasajes, sauna y turco como complemento',
-              'Parqueaderos privados para autobuses y hospedaje complementario opcional',
-            ],
-            highlightBadge: 'Integración & Deportes',
-            image: '/images/hacienda/jardines-teambuilding.jpg',
-            whatsappIntent: 'Jornada de Integración y Deportes',
-            featuredInHome: false,
-          },
-        ]
-      : []),
-  ];
+  const extendedCorpPackages = getCorporatePackages(isEn);
 
   const currentPkg = extendedCorpPackages[currentPkgIndex] || extendedCorpPackages[0];
 
@@ -156,17 +102,34 @@ export const CorporatePageDesktop: React.FC = () => {
           <div className="max-w-lg lg:max-w-[34rem] xl:max-w-[38rem] space-y-6">
             <ScrollReveal direction="blur-up" duration={850}>
               <span className="inline-block text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.22em] text-[#E2C585] bg-[#06150F]/70 px-3.5 py-1 rounded-full border border-[#C8A45D]/35 mb-2">
-                MACROEVENTOS Y ENCUENTROS EMPRESARIALES · QUITO – PÍNTAG
+                {isEn ? 'MAJOR EVENTS & CORPORATE RETREATS · QUITO – PÍNTAG' : 'MACROEVENTOS Y ENCUENTROS EMPRESARIALES · QUITO – PÍNTAG'}
               </span>
               <h1 className="font-serif-luxury text-4xl sm:text-5xl lg:text-[3.55rem] font-semibold text-white leading-[1.08] tracking-tight">
-                Grandes Eventos y<br />
-                <span className="italic font-normal text-[#E2C585]">Experiencias Corporativas</span> en Le Plus.
+                {isEn ? (
+                  <>
+                    Major Corporate Events &<br />
+                    <span className="italic font-normal text-[#E2C585]">Executive Experiences</span> at Le Plus.
+                  </>
+                ) : (
+                  <>
+                    Grandes Eventos y<br />
+                    <span className="italic font-normal text-[#E2C585]">Experiencias Corporativas</span> en Le Plus.
+                  </>
+                )}
               </h1>
             </ScrollReveal>
 
             <ScrollReveal direction="left" delay={120} duration={750}>
               <p className="text-base sm:text-lg text-[#FAF7F2]/85 leading-relaxed max-w-xl font-normal">
-                Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Contamos con <strong>carpas, jardines, catering propio, tarima y pista de baile</strong>, fortalecidos con actividades deportivas, piscina temperada y hospedaje complementario.
+                {isEn ? (
+                  <>
+                    Year-end galas, team integration, conventions, and large-format celebrations in Quito–Píntag. Featuring <strong>structural tents, landscaped gardens, in-house catering, stage, and dance floor</strong>, complemented by sports facilities, heated pool, and on-site lodging.
+                  </>
+                ) : (
+                  <>
+                    Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Contamos con <strong>carpas, jardines, catering propio, tarima y pista de baile</strong>, fortalecidos con actividades deportivas, piscina temperada y hospedaje complementario.
+                  </>
+                )}
               </p>
             </ScrollReveal>
 
@@ -180,7 +143,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-[#C8A45D] to-[#DFB96E] text-[#06150F] hover:brightness-110 shadow-xl transition-all cursor-pointer active:scale-95"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>Solicitar propuesta empresarial</span>
+                  <span>{isEn ? 'Request corporate proposal' : 'Solicitar propuesta empresarial'}</span>
                 </a>
               </div>
             </ScrollReveal>
@@ -194,9 +157,19 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Coffee className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    <span>Carpas, jardines</span>
-                    <br />
-                    <span className="text-[#E2C585]">&amp; catering propio</span>
+                    {isEn ? (
+                      <>
+                        <span>Tents, gardens</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; in-house catering</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Carpas, jardines</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; catering propio</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -206,9 +179,19 @@ export const CorporatePageDesktop: React.FC = () => {
                     <ShieldCheck className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    <span>Tarima, pista</span>
-                    <br />
-                    <span className="text-[#E2C585]">&amp; sonido pro</span>
+                    {isEn ? (
+                      <>
+                        <span>Stage, floor</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; pro sound</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Tarima, pista</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; sonido pro</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -218,9 +201,19 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Wifi className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    <span>Deportes, piscina</span>
-                    <br />
-                    <span className="text-[#E2C585]">&amp; 14 habitaciones</span>
+                    {isEn ? (
+                      <>
+                        <span>Sports, pool</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; 14 suites</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Deportes, piscina</span>
+                        <br />
+                        <span className="text-[#E2C585]">&amp; 14 habitaciones</span>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -253,10 +246,12 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  Carpas, Tarima &amp; Pista
+                  {isEn ? 'Tents, Stage & Dance Floor' : 'Carpas, Tarima & Pista'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  Carpas estructurales, tarima profesional, pista de baile y salón de convenciones.
+                  {isEn
+                    ? 'Modular structural tents, professional elevated stage, lacquered dance floor, and convention hall.'
+                    : 'Carpas estructurales, tarima profesional, pista de baile y salón de convenciones.'}
                 </p>
               </div>
             </div>
@@ -270,10 +265,12 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  Catering &amp; Restaurante
+                  {isEn ? 'Catering & Dining Room' : 'Catering & Restaurante'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  Banquetes de fin de año, parrilladas de integración, coffee breaks y restaurante propio.
+                  {isEn
+                    ? 'Year-end galas, integration BBQ banquets, continuous coffee breaks, and dedicated on-site restaurant.'
+                    : 'Banquetes de fin de año, parrilladas de integración, coffee breaks y restaurante propio.'}
                 </p>
               </div>
             </div>
@@ -287,10 +284,12 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  Deportes &amp; Piscina 14×6m
+                  {isEn ? 'Sports & 14×6m Heated Pool' : 'Deportes & Piscina 14×6m'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  Jardines de 5.000 m², actividades deportivas y piscina temperada como complemento.
+                  {isEn
+                    ? '5,000 m² gardens, regulation sports courts, and heated covered pool with spa whirlpools.'
+                    : 'Jardines de 5.000 m², actividades deportivas y piscina temperada como complemento.'}
                 </p>
               </div>
             </div>
@@ -304,10 +303,12 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  Hospedaje Complementario
+                  {isEn ? 'On-Site Lodging' : 'Hospedaje Complementario'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  14 habitaciones in situ (28 a 80 huéspedes) que fortalecen tu evento o convención.
+                  {isEn
+                    ? '14 rooms and suites on-site (28 to 80 guests) complementing multi-day conferences and retreats.'
+                    : '14 habitaciones in situ (28 a 80 huéspedes) que fortalecen tu evento o convención.'}
                 </p>
               </div>
             </div>
@@ -326,14 +327,24 @@ export const CorporatePageDesktop: React.FC = () => {
               {/* Lado Izquierdo: Título y Acción */}
               <ScrollReveal direction="left" duration={850} className="lg:col-span-4 space-y-4 text-center lg:text-left">
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8A45D] block">
-                  Macroeventos y Encuentros Empresariales
+                  {isEn ? 'Major Events & Corporate Gatherings' : 'Macroeventos y Encuentros Empresariales'}
                 </span>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight">
-                  Grandes Eventos<br />Corporativos
+                  {isEn ? (
+                    <>
+                      Major Corporate<br />Events
+                    </>
+                  ) : (
+                    <>
+                      Grandes Eventos<br />Corporativos
+                    </>
+                  )}
                 </h2>
 
                 <p className="text-xs sm:text-sm text-[#FAF7F2]/80 mt-2 leading-relaxed max-w-xs mx-auto lg:mx-0 font-normal">
-                  Eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, deportes, piscina y hospedaje complementario.
+                  {isEn
+                    ? 'Year-end galas, team integration, conventions, and large-format celebrations with tents, gardens, catering, stage, dance floor, sports, pool, and lodging.'
+                    : 'Eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, deportes, piscina y hospedaje complementario.'}
                 </p>
 
                 <div className="pt-2">
@@ -342,7 +353,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     onClick={scrollToAforos}
                     className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-[#FAF7F2] hover:bg-white text-[#06150F] font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer active:scale-95"
                   >
-                    <span>Ver espacios y aforos</span>
+                    <span>{isEn ? 'View spaces & capacities' : 'Ver espacios y aforos'}</span>
                     <ChevronDown className="w-4 h-4 text-[#A6823C]" />
                   </button>
                 </div>
@@ -357,7 +368,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: 'Eventos de Fin de Año & Celebraciones de Gran Formato',
+                          itemName: isEn ? 'Year-End Galas & Major Events' : 'Eventos de Fin de Año & Celebraciones de Gran Formato',
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -371,13 +382,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          Fin de Año &amp; Gran Formato
+                          {isEn ? 'Year-End & Major Galas' : 'Fin de Año & Gran Formato'}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          Carpas, jardines, tarima, pista de baile y catering
+                          {isEn ? 'Tents, gardens, stage, dance floor & catering' : 'Carpas, jardines, tarima, pista de baile y catering'}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          Hasta 350+ pax
+                          {isEn ? 'Up to 350+ guests' : 'Hasta 350+ pax'}
                         </div>
                       </div>
                     </div>
@@ -389,7 +400,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: 'Integración Empresarial, Actividades Deportivas y Piscina',
+                          itemName: isEn ? 'Corporate Team Building, Sports & Pool' : 'Integración Empresarial, Actividades Deportivas y Piscina',
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -403,13 +414,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          Integración &amp; Deportes
+                          {isEn ? 'Team Building & Sports' : 'Integración & Deportes'}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          Canchas deportivas, piscina 14×6m &amp; parrillada
+                          {isEn ? 'Sports courts, 14×6m pool & country BBQ' : 'Canchas deportivas, piscina 14×6m & parrillada'}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          Desde $40 / pax
+                          {isEn ? 'From $40 / guest' : 'Desde $40 / pax'}
                         </div>
                       </div>
                     </div>
@@ -421,7 +432,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: 'Convenciones con Hospedaje Complementario (14 Habitaciones)',
+                          itemName: isEn ? 'Conventions with On-Site Lodging (14 Rooms)' : 'Convenciones con Hospedaje Complementario (14 Habitaciones)',
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -435,13 +446,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          Convenciones + Hospedaje
+                          {isEn ? 'Conventions + Lodging' : 'Convenciones + Hospedaje'}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          Salón AV pro, catering y 14 hab. complementarias
+                          {isEn ? 'Pro AV hall, catering & 14 on-site rooms' : 'Salón AV pro, catering y 14 hab. complementarias'}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          28 a 80 huéspedes
+                          {isEn ? '28 to 80 guests' : '28 a 80 huéspedes'}
                         </div>
                       </div>
                     </div>
@@ -497,7 +508,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={prevPkg}
-                  aria-label="Formato anterior"
+                  aria-label={isEn ? 'Previous format' : 'Formato anterior'}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <ChevronLeft className="w-5 h-5 stroke-[1.75]" />
@@ -505,7 +516,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={nextPkg}
-                  aria-label="Siguiente formato"
+                  aria-label={isEn ? 'Next format' : 'Siguiente formato'}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <ChevronRight className="w-5 h-5 stroke-[1.75]" />
@@ -517,7 +528,7 @@ export const CorporatePageDesktop: React.FC = () => {
               <ScrollReveal direction="left" duration={850} className="lg:col-span-5 space-y-4 sm:space-y-5 text-left pr-0 lg:pr-4">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-[#C8A45D]">
                   <span>✦</span>
-                  <span>FORMATO EXCLUSIVO</span>
+                  <span>{isEn ? 'EXCLUSIVE FORMAT' : 'FORMATO EXCLUSIVO'}</span>
                   <span className="text-white/40 ml-2 font-mono text-[11px] tracking-normal">
                     0{currentPkgIndex + 1} / 0{extendedCorpPackages.length}
                   </span>
@@ -537,7 +548,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     {currentPkg.capacity}
                   </span>
                   <span className="text-white/30">•</span>
-                  <span>Desde ${currentPkg.priceValue} / {currentPkg.unit}</span>
+                  <span>{isEn ? `From $${currentPkg.priceValue} / ${currentPkg.unit}` : `Desde $${currentPkg.priceValue} / ${currentPkg.unit}`}</span>
                 </div>
 
                 <div className="pt-3">
@@ -552,7 +563,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     className="group inline-flex items-center gap-2.5 text-sm sm:text-base font-semibold text-white cursor-pointer relative"
                   >
                     <span className="border-b-2 border-[#C8A45D] pb-1 group-hover:border-[#E2C585] group-hover:text-[#E2C585] transition-colors">
-                      Cotizar este formato
+                      {isEn ? 'Quote this format' : 'Cotizar este formato'}
                     </span>
                     <ArrowRight className="w-4 h-4 text-[#C8A45D] group-hover:text-[#E2C585] group-hover:translate-x-1.5 transition-transform" />
                   </button>
@@ -619,15 +630,17 @@ export const CorporatePageDesktop: React.FC = () => {
             <ScrollReveal direction="left" duration={850} className="lg:col-span-3 space-y-4 text-left">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
                 <span>✦</span>
-                <span>INFRAESTRUCTURA & AFOROS</span>
+                <span>{isEn ? 'INFRASTRUCTURE & CAPACITIES' : 'INFRAESTRUCTURA & AFOROS'}</span>
               </div>
 
               <h3 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold text-[#071912] leading-[1.12]">
-                Carpas, jardines, tarima y espacios de gran formato
+                {isEn ? 'Tents, gardens, stage & large-format spaces' : 'Carpas, jardines, tarima y espacios de gran formato'}
               </h3>
 
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                Eventos de fin de año, integración, convenciones y celebraciones de gran formato (hasta 400 pax) con catering propio, pista de baile, actividades deportivas, piscina y hospedaje complementario.
+                {isEn
+                  ? 'Year-end galas, team integration, conventions, and large-format celebrations (up to 400 pax) with in-house catering, dance floor, sports, pool, and lodging.'
+                  : 'Eventos de fin de año, integración, convenciones y celebraciones de gran formato (hasta 400 pax) con catering propio, pista de baile, actividades deportivas, piscina y hospedaje complementario.'}
               </p>
 
               <div className="pt-2">
@@ -637,7 +650,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   className="group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#071912] cursor-pointer"
                 >
                   <span className="border-b-2 border-[#A6823C] pb-0.5 group-hover:border-[#071912] transition-colors">
-                    Ver matriz de espacios e instalaciones
+                    {isEn ? 'View spaces and facilities matrix' : 'Ver matriz de espacios e instalaciones'}
                   </span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#A6823C] group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -719,9 +732,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <Presentation className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Tarima, Pista de Baile & Carpas</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'Stage, Dance Floor & Tents' : 'Tarima, Pista de Baile & Carpas'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos de fin de año y convenciones.
+                  {isEn
+                    ? 'Modular structural tents on lawns, stage, dance floor, and pro technical production for year-end galas and conventions.'
+                    : 'Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos de fin de año y convenciones.'}
                 </p>
               </div>
             </div>
@@ -731,9 +748,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <Utensils className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Catering Propio & Restaurante</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'In-House Catering & Dining Room' : 'Catering Propio & Restaurante'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos puntualmente desde nuestra cocina.
+                  {isEn
+                    ? 'Executive lunches, gala banquets, integration country BBQ, and continuous coffee breaks served punctually from our kitchen.'
+                    : 'Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos punctualmente desde nuestra cocina.'}
                 </p>
               </div>
             </div>
@@ -743,9 +764,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <Wifi className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Actividades Deportivas & Piscina</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'Sports Activities & Heated Pool' : 'Actividades Deportivas & Piscina'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  Complementos que fortalecen el evento: canchas deportivas, circuitos de team building en 5 hectáreas, piscina cubierta e hidromasaje.
+                  {isEn
+                    ? 'High-impact value additions: sports courts, 5-hectare team building circuits, heated covered pool, and spa.'
+                    : 'Complementos que fortalecen el evento: canchas deportivas, circuitos de team building en 5 hectáreas, piscina cubierta e hidromasaje.'}
                 </p>
               </div>
             </div>
@@ -755,9 +780,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <BedDouble className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Hospedaje Complementario In Situ</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'On-Site Complimentary Lodging' : 'Hospedaje Complementario In Situ'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones en convenciones de varios días.
+                  {isEn
+                    ? '14 private rooms and suites (28–80 guests) to host executives, key speakers, or full teams during multi-day conventions.'
+                    : '14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones en convenciones de varios días.'}
                 </p>
               </div>
             </div>
@@ -767,9 +796,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <Car className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Parqueaderos & Acceso Buses</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'Bus Access & Private Parking' : 'Parqueaderos & Acceso Buses'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos, furgonetas y vehículos de invitados.
+                  {isEn
+                    ? 'Spacious gated parking in Quito–Píntag with easy maneuverability for corporate coach buses, vans, and guest vehicles.'
+                    : 'Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos, furgonetas y vehículos de invitados.'}
                 </p>
               </div>
             </div>
@@ -779,9 +812,13 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="p-5 rounded-2xl bg-[#071912] text-[#FAF7F2] border border-[#C8A45D]/30 flex items-start gap-3.5 h-full">
               <ShieldCheck className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
-                <h4 className="font-semibold text-sm text-white">Facturación & Internet Fibra Óptica</h4>
+                <h4 className="font-semibold text-sm text-white">
+                  {isEn ? 'Tax Invoicing & Symmetrical Fiber' : 'Facturación & Internet Fibra Óptica'}
+                </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  RUC activo, facturación electrónica, hitos claros para departamentos de compras y conectividad Wi-Fi por fibra óptica verificada.
+                  {isEn
+                    ? 'Active tax status (RUC), electronic corporate billing, transparent milestones, and verified fiber-optic connectivity.'
+                    : 'RUC activo, facturación electrónica, hitos claros para departamentos de compras y conectividad Wi-Fi por fibra óptica verificada.'}
                 </p>
               </div>
             </div>
@@ -820,13 +857,15 @@ export const CorporatePageDesktop: React.FC = () => {
             {/* Lado Izquierdo: Titular y Explicación */}
             <ScrollReveal direction="left" duration={800} className="space-y-1.5 text-left max-w-lg">
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#A6823C] block">
-                Macroeventos & Experiencias Corporativas
+                {isEn ? 'Major Events & Corporate Experiences' : 'Macroeventos & Experiencias Corporativas'}
               </span>
               <h3 className="font-serif-luxury text-2xl sm:text-3xl lg:text-[2.25rem] font-semibold text-[#071912] leading-[1.12]">
-                Cotización Formal para tu Empresa
+                {isEn ? 'Formal Proposal for Your Company' : 'Cotización Formal para tu Empresa'}
               </h3>
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.
+                {isEn
+                  ? 'Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.'
+                  : 'Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.'}
               </p>
             </ScrollReveal>
 
@@ -837,7 +876,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   <input
                     type="email"
                     required
-                    placeholder="Ingresa tu correo corporativo..."
+                    placeholder={isEn ? 'Enter your corporate email...' : 'Ingresa tu correo corporativo...'}
                     value={quickEmail}
                     onChange={(e) => setQuickEmail(e.target.value)}
                     className="w-full bg-transparent border-none text-xs sm:text-sm text-[#071912] placeholder-[#0A1F17]/45 focus:outline-none"
@@ -846,21 +885,23 @@ export const CorporatePageDesktop: React.FC = () => {
                     type="submit"
                     className="rounded-full px-5 sm:px-6 py-2.5 sm:py-2.5 bg-[#11261D] hover:bg-[#071912] text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all duration-200 shrink-0 shadow-sm active:scale-95"
                   >
-                    <span>Cotizar</span>
+                    <span>{isEn ? 'Quote' : 'Cotizar'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 pl-3 pr-2 mt-2">
                   <a
                     href={buildContextualWhatsAppUrl('corporativo', {
-                      customText: 'Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención).',
+                      customText: isEn
+                        ? 'Hello Hacienda Le Plus, I would like to request a corporate proposal for a major event, retreat or convention.'
+                        : 'Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención).',
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#123326] hover:text-[#25D366] transition-colors"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>Cotizar por WhatsApp: 0969817891</span>
+                    <span>{isEn ? 'Quote via WhatsApp: +593 96 981 7891' : 'Cotizar por WhatsApp: 0969817891'}</span>
                   </a>
                   {siteConfig?.corporateEmails?.corporativo && (
                     <span className="text-[11px] text-[#0A1F17]/55 font-normal">
@@ -892,20 +933,22 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="flex items-start justify-between gap-4 border-b border-[#0A1F17]/10 pb-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
-                  Planificación Técnica y Logística
+                  {isEn ? 'Technical & Logistics Planning' : 'Planificación Técnica y Logística'}
                 </span>
                 <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold text-[#071912] mt-1">
-                  Matriz Técnica de Aforos por Espacio y Montaje
+                  {isEn ? 'Technical Capacity Matrix by Space & Layout' : 'Matriz Técnica de Aforos por Espacio y Montaje'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/70 mt-1">
-                  Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.
+                  {isEn
+                    ? 'Comfortable capacities calculated to ensure ventilation, smooth circulation flow, and optimal visibility.'
+                    : 'Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.'}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAforosModal(false)}
                 className="w-9 h-9 rounded-full bg-[#FAF7F2] hover:bg-[#071912] hover:text-white flex items-center justify-center text-[#071912] transition-colors cursor-pointer shrink-0"
-                aria-label="Cerrar modal"
+                aria-label={isEn ? 'Close modal' : 'Cerrar modal'}
               >
                 <X className="w-5 h-5" />
               </button>

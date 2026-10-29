@@ -24,52 +24,7 @@ import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
-
-/* ============================================================================
-   5 SERVICIOS NUPCIALES (BLOQUE 2 - "WHAT WE DO" RÉPLICA DEL DISEÑO)
-   ============================================================================ */
-const WEDDING_SERVICES_CARDS = [
-  {
-    id: 'srv-planning',
-    title: 'Ceremonias & Recepción',
-    description:
-      'Ceremonias al aire libre o en salón colonial, protocolo integral y recepción de gala en Quito–Píntag.',
-    priceTag: 'Desde $42 / invitado',
-    iconType: 'rings' as const,
-  },
-  {
-    id: 'srv-theme',
-    title: 'Jardines & Decoración',
-    description:
-      'Jardines exclusivos, decoración floral personalizada, carpa estructural de gala y mesas imperiales.',
-    priceTag: '80 a 300 invitados',
-    iconType: 'flower' as const,
-  },
-  {
-    id: 'srv-catering',
-    title: 'Catering & Restaurante',
-    description:
-      'Catering nupcial propio (cóctel, menú de 3 tiempos, mesa de dulces), descorche libre y restaurante como complemento.',
-    priceTag: 'Desde $70 / invitado',
-    iconType: 'camera' as const,
-  },
-  {
-    id: 'srv-destination',
-    title: 'Hospedaje para Invitados',
-    description:
-      'Aloja de 28 a 80 invitados en 14 habitaciones, fortalecido con piscina 14×6m, hidromasajes y áreas recreativas.',
-    priceTag: 'Desde $95 / invitado',
-    iconType: 'couple' as const,
-  },
-  {
-    id: 'srv-coordination',
-    title: 'Eventos Sociales & Gala',
-    description:
-      'Aniversarios, bautizos, graduaciones y celebraciones familiares con Suite Nupcial y parqueadero privado.',
-    priceTag: 'Quito – Píntag',
-    iconType: 'calendar' as const,
-  },
-];
+import { getWeddingServices, getWeddingPresets } from '../../data/resortSpaces';
 
 /* ============================================================================
    ICONOS LINE-ART PERSONALIZADOS EN ORO VIEJO (#8C6D3F) FIELES A LA REFERENCIA
@@ -200,126 +155,15 @@ const ServiceCardIcon: React.FC<{ type: 'rings' | 'flower' | 'camera' | 'couple'
   }
 };
 
-/* ============================================================================
-   CARRUSEL DE SERVICIOS NUPCIALES (RÉPLICA "FEATURED PROPERTIES" CON PALETA LE PLUS)
-   ============================================================================ */
-interface CarouselServiceItem {
-  id: string;
-  title: string;
-  subtitle: string;
-  badge: string;
-  badgeClass: string;
-  image: string;
-  specs: { label: string; icon: 'users' | 'bed' | 'tent' | 'utensils' | 'glass' | 'sparkles' }[];
-  price: string;
-  unit: string;
-  serviceType: string;
-}
-
-const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
-  {
-    id: 'boda-campestre-imperial',
-    title: 'Ceremonia, Recepción & Jardines',
-    subtitle: 'Quito–Píntag · Jardines & Carpa de Gala',
-    badge: 'Más Solicitado',
-    badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
-    specs: [
-      { label: '80 a 300 Pax', icon: 'users' },
-      { label: 'Decoración & Carpa', icon: 'tent' },
-      { label: 'Catering 3 Tiempos', icon: 'utensils' },
-    ],
-    price: '$42',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-  {
-    id: 'boda-destino-14-suites',
-    title: 'Boda + Hospedaje para Invitados',
-    subtitle: 'Quito–Píntag · 14 Habitaciones (28 a 80 Pax)',
-    badge: 'Hospedaje Invitados',
-    badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/bodas-exteriores.jpg',
-    specs: [
-      { label: '28 a 80 Pax', icon: 'users' },
-      { label: '14 Habitaciones', icon: 'bed' },
-      { label: 'Comp. Piscina 14×6m', icon: 'sparkles' },
-    ],
-    price: '$95',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-  {
-    id: 'banquete-autor-coctel',
-    title: 'Catering Nupcial & Decoración',
-    subtitle: 'Quito–Píntag · Gastronomía & Montaje',
-    badge: 'Catering & Decoración',
-    badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/boda-mesa-imperial.jpg',
-    specs: [
-      { label: 'Descorche Libre', icon: 'glass' },
-      { label: 'Catering Propio', icon: 'utensils' },
-      { label: 'Decoración Floral', icon: 'sparkles' },
-    ],
-    price: '$70',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-  {
-    id: 'ceremonia-jardin-palmeras',
-    title: 'Ceremonia en Jardines de la Hacienda',
-    subtitle: 'Quito–Píntag · Altares & Decoración Natural',
-    badge: 'Ceremonias',
-    badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/boda-ceremonia-arco.jpg',
-    specs: [
-      { label: '50 a 300 Pax', icon: 'users' },
-      { label: 'Arco & Decoración', icon: 'sparkles' },
-      { label: 'Sillas Tiffany', icon: 'sparkles' },
-    ],
-    price: '$35',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-  {
-    id: 'experiencia-zona-humeda',
-    title: 'Complemento: Piscina, Restaurante & Recreación',
-    subtitle: 'Quito–Píntag · Fortalece la Estadía de Invitados',
-    badge: 'Complemento Nupcial',
-    badgeClass: 'bg-[#7A6A58]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/area-humeda.jpg',
-    specs: [
-      { label: 'Piscina 14×6m', icon: 'sparkles' },
-      { label: 'Restaurante', icon: 'utensils' },
-      { label: 'Áreas Recreativas', icon: 'sparkles' },
-    ],
-    price: '$55',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-  {
-    id: 'recepcion-salon-colonial',
-    title: 'Recepción & Eventos Sociales en Salón',
-    subtitle: 'Quito–Píntag · Bodas Civiles & Celebraciones',
-    badge: 'Recepción & Sociales',
-    badgeClass: 'bg-[#221D1A]/90 text-[#E2C585]',
-    image: '/images/hacienda/suite-1.jpg',
-    specs: [
-      { label: '30 a 90 Pax', icon: 'users' },
-      { label: 'Decoración & Menú', icon: 'utensils' },
-      { label: 'Hospedaje Opcional', icon: 'bed' },
-    ],
-    price: '$48',
-    unit: '/ invitado',
-    serviceType: 'bodas',
-  },
-];
-
 export const WeddingsPageDesktop: React.FC = () => {
   const { siteConfig, packages, photos, openQuoteModal } = useCMS();
+  const { language, isEn, t } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [isDirectFormOpen, setIsDirectFormOpen] = useState(false);
+
+  const weddingServices = getWeddingServices(isEn);
+  const weddingCarouselServices = getWeddingPresets(isEn);
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -334,8 +178,6 @@ export const WeddingsPageDesktop: React.FC = () => {
       });
     }
   };
-
-  const { language, isEn, t } = useLanguage();
 
   useDocumentMeta({
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
@@ -495,17 +337,17 @@ export const WeddingsPageDesktop: React.FC = () => {
             <div className="lg:col-span-7 space-y-5 sm:pl-6 lg:pl-8">
               <ScrollReveal direction="down" delay={40}>
                 <span className="block text-[11px] sm:text-xs font-semibold uppercase tracking-[0.24em] text-[#2C2621]">
-                  BODAS Y EVENTOS SOCIALES EN QUITO – PÍNTAG
+                  {isEn ? 'WEDDINGS & SOCIAL CELEBRATIONS IN QUITO – PÍNTAG' : 'BODAS Y EVENTOS SOCIALES EN QUITO – PÍNTAG'}
                 </span>
               </ScrollReveal>
 
               <ScrollReveal direction="left" delay={110}>
                 <h1 className="text-[#181512]">
                   <span className="font-serif-luxury block text-5xl sm:text-6xl lg:text-[66px] font-normal leading-[0.96] tracking-tight">
-                    Bodas y Celebraciones
+                    {isEn ? 'Weddings & Celebrations' : 'Bodas y Celebraciones'}
                   </span>
                   <span className="font-wedding-script inline-flex items-center gap-3 text-4xl sm:text-5xl lg:text-[54px] font-medium text-[#221D1A] ml-2 sm:ml-6 mt-1 leading-[1.08]">
-                    <span>En una Historia Eterna</span>
+                    <span>{isEn ? 'In an Everlasting Story' : 'En una Historia Eterna'}</span>
                     {/* Corazón dibujado a mano idéntico a la referencia */}
                     <svg
                       viewBox="0 0 32 32"
@@ -528,10 +370,20 @@ export const WeddingsPageDesktop: React.FC = () => {
               <ScrollReveal direction="left" delay={180}>
                 <div className="space-y-2 max-w-[490px]">
                   <p className="text-sm sm:text-[15.5px] font-semibold text-[#1E1A17]">
-                    Ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados en Quito–Píntag.
+                    {isEn
+                      ? 'Ceremonies, reception, gardens, catering, decor, and guest lodging in Quito–Píntag.'
+                      : 'Ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados en Quito–Píntag.'}
                   </p>
                   <p className="text-xs sm:text-[13.5px] text-[#4A433B] leading-[1.65]">
-                    Celebramos bodas y eventos sociales exclusivos con jardines ceremoniales, carpa estructural de gala, catering propio, decoración personalizada y <strong>14 habitaciones (28 a 80 huéspedes)</strong>, fortalecidos por nuestra piscina temperada, restaurante y áreas recreativas como complementos.
+                    {isEn ? (
+                      <>
+                        We celebrate exclusive weddings and social gatherings with ceremonial gardens, gala marquee tent, in-house catering, bespoke decor, and <strong>14 rooms (28 to 80 guests)</strong>, strengthened by our heated pool, restaurant, and recreation grounds.
+                      </>
+                    ) : (
+                      <>
+                        Celebramos bodas y eventos sociales exclusivos con jardines ceremoniales, carpa estructural de gala, catering propio, decoración personalizada y <strong>14 habitaciones (28 a 80 huéspedes)</strong>, fortalecidos por nuestra piscina temperada, restaurante y áreas recreativas como complementos.
+                      </>
+                    )}
                   </p>
                 </div>
               </ScrollReveal>
@@ -545,7 +397,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                     rel="noopener noreferrer"
                     className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-[8px] bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs sm:text-[13.5px] font-semibold shadow-[0_8px_22px_rgba(10,31,23,0.22)] transition-all cursor-pointer"
                   >
-                    <span>Cotizar Boda o Celebración</span>
+                    <span>{isEn ? 'Quote Wedding or Celebration' : 'Cotizar Boda o Celebración'}</span>
                     <ArrowRight className="w-4 h-4 text-[#E2C585] group-hover:translate-x-1 transition-transform" />
                   </a>
 
@@ -553,7 +405,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                     href="#nuestros-servicios-bodas"
                     className="group inline-flex items-center gap-2.5 px-4 py-3 rounded-[8px] bg-[#F8F3EB]/90 hover:bg-white text-[#1E1A17] border border-[#C4B49B] text-xs sm:text-[13px] font-semibold shadow-2xs transition-all"
                   >
-                    <span>Ver Servicios</span>
+                    <span>{isEn ? 'View Services' : 'Ver Servicios'}</span>
                     <span className="w-6 h-6 rounded-full border border-[#8C6D3F] bg-[#EFE7DA] group-hover:bg-[#13281F] group-hover:border-[#13281F] text-[#13281F] group-hover:text-[#E2C585] flex items-center justify-center transition-colors">
                       <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
                     </span>
@@ -590,7 +442,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                         300+
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        Capacidad en Gala
+                        {isEn ? 'Gala Capacity' : 'Capacidad en Gala'}
                       </span>
                     </div>
                   </div>
@@ -622,10 +474,10 @@ export const WeddingsPageDesktop: React.FC = () => {
                     </svg>
                     <div>
                       <span className="block font-sans-ui text-xl sm:text-2xl font-bold text-[#181512] leading-none">
-                        14 Suites
+                        {isEn ? '14 Rooms' : '14 Suites'}
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        Alojamiento (28–80 Pax)
+                        {isEn ? 'Lodging (28–80 Pax)' : 'Alojamiento (28–80 Pax)'}
                       </span>
                     </div>
                   </div>
@@ -656,7 +508,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                         100%
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        Felicidad & Respaldo
+                        {isEn ? 'Joy & Full Support' : 'Felicidad & Respaldo'}
                       </span>
                     </div>
                   </div>
@@ -666,9 +518,19 @@ export const WeddingsPageDesktop: React.FC = () => {
                 <div className="lg:hidden pt-4 flex justify-start">
                   <div className="bg-[#0A1F17]/65 backdrop-blur-xs p-4 rounded-xl border border-[#E2C585]/20 max-w-[260px]">
                     <p className="font-serif-luxury text-xl font-normal text-[#FAF5EC] leading-snug">
-                      Tu Historia de Amor
-                      <br />
-                      Merece Un Escenario Extraordinario
+                      {isEn ? (
+                        <>
+                          Your Love Story
+                          <br />
+                          Deserves An Extraordinary Setting
+                        </>
+                      ) : (
+                        <>
+                          Tu Historia de Amor
+                          <br />
+                          Merece Un Escenario Extraordinario
+                        </>
+                      )}
                     </p>
                     <div className="mt-2 flex items-center gap-3 text-[#E2C585]">
                       <span className="w-10 h-[1px] bg-[#E2C585]/75 block" />
@@ -688,15 +550,31 @@ export const WeddingsPageDesktop: React.FC = () => {
           <ScrollReveal direction="right" delay={220}>
             <div className="max-w-[240px] pointer-events-auto">
               <p className="font-serif-luxury text-2xl lg:text-[31px] xl:text-[33px] font-normal text-[#FAF5EC] leading-[1.16] tracking-wide drop-shadow-[0_2px_14px_rgba(0,0,0,0.85)]">
-                Tu
-                <br />
-                Historia de Amor
-                <br />
-                Merece
-                <br />
-                Un Escenario
-                <br />
-                Extraordinario
+                {isEn ? (
+                  <>
+                    Your
+                    <br />
+                    Love Story
+                    <br />
+                    Deserves
+                    <br />
+                    An Extraordinary
+                    <br />
+                    Setting
+                  </>
+                ) : (
+                  <>
+                    Tu
+                    <br />
+                    Historia de Amor
+                    <br />
+                    Merece
+                    <br />
+                    Un Escenario
+                    <br />
+                    Extraordinario
+                  </>
+                )}
               </p>
 
               {/* Línea horizontal + Corazón en la parte inferior derecha */}
@@ -737,7 +615,7 @@ export const WeddingsPageDesktop: React.FC = () => {
             <div className="text-center max-w-2xl mx-auto space-y-2">
               <div className="inline-flex items-center justify-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7A6A58]">
                 <span className="w-8 h-[1px] bg-[#C5B59D] block" />
-                <span>QUÉ HACEMOS EN LE PLUS</span>
+                <span>{isEn ? 'WHAT WE DO AT LE PLUS' : 'QUÉ HACEMOS EN LE PLUS'}</span>
                 <span className="w-8 h-[1px] bg-[#C5B59D] block" />
               </div>
 
@@ -745,19 +623,20 @@ export const WeddingsPageDesktop: React.FC = () => {
                 id="heading-wedding-services"
                 className="font-serif-luxury text-3xl sm:text-5xl font-normal text-[#181512] tracking-tight"
               >
-                Nuestros Servicios de Planificación y Bodas
+                {isEn ? 'Our Wedding Planning & Event Services' : 'Nuestros Servicios de Planificación y Bodas'}
               </h2>
 
               <p className="text-xs sm:text-[13.5px] text-[#544B42] leading-relaxed pt-0.5">
-                Desde la primera idea hasta el &ldquo;Sí, acepto&rdquo; — cuidamos cada detalle con
-                dedicación, gastronomía propia y calidez en Píntag.
+                {isEn
+                  ? 'From the first concept to "I do" — we care for every detail with dedication, signature gastronomy, and warmth in Píntag.'
+                  : 'Desde la primera idea hasta el “Sí, acepto” — cuidamos cada detalle con dedicación, gastronomía propia y calidez en Píntag.'}
               </p>
             </div>
           </ScrollReveal>
 
           {/* Fila de 5 Tarjetas Iguales al Diseño de Referencia */}
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
-            {WEDDING_SERVICES_CARDS.map((card, idx) => {
+            {weddingServices.map((card, idx) => {
               const directions: ('up-left' | 'up' | 'zoom-in' | 'up' | 'up-right')[] = [
                 'up-left',
                 'up',
@@ -793,7 +672,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                     </div>
 
                     <span className="mt-4 pt-2.5 border-t border-[#EBE3D6]/80 w-full text-[11px] font-semibold text-[#8C6D3F] group-hover:text-[#13281F] transition-colors">
-                      {card.priceTag} · Cotizar →
+                      {card.priceTag} · {isEn ? 'Quote →' : 'Cotizar →'}
                     </span>
                   </button>
                 </ScrollReveal>
@@ -826,8 +705,17 @@ export const WeddingsPageDesktop: React.FC = () => {
               {/* Texto Caligráfico Inclinado "Porque cada detalle importa... ♡" tal cual la referencia */}
               <div className="absolute top-6 left-6 sm:top-9 sm:left-10 z-10 pointer-events-none select-none -rotate-[8deg]">
                 <p className="font-wedding-script text-3xl sm:text-4xl lg:text-[42px] font-semibold text-[#1E1916] leading-[1.02] drop-shadow-[0_1px_6px_rgba(255,255,255,0.9)]">
-                  Porque cada
-                  <span className="block ml-4">detalle importa...</span>
+                  {isEn ? (
+                    <>
+                      Because every
+                      <span className="block ml-4">detail matters...</span>
+                    </>
+                  ) : (
+                    <>
+                      Porque cada
+                      <span className="block ml-4">detalle importa...</span>
+                    </>
+                  )}
                 </p>
                 <svg
                   viewBox="0 0 28 28"
@@ -902,24 +790,33 @@ export const WeddingsPageDesktop: React.FC = () => {
               <div className="max-w-xl space-y-4 relative z-10">
                 <ScrollReveal direction="up" delay={40}>
                   <span className="block text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#7A6A58]">
-                    SOBRE HACIENDA LE PLUS
+                    {isEn ? 'ABOUT HACIENDA LE PLUS' : 'SOBRE HACIENDA LE PLUS'}
                   </span>
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={100}>
                   <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#181512] leading-[1.12] pr-12">
-                    Más que un Escenario,
-                    <br />
-                    Somos Cómplices de tu Boda
+                    {isEn ? (
+                      <>
+                        More than a Venue,
+                        <br />
+                        We Partner in Your Wedding
+                      </>
+                    ) : (
+                      <>
+                        Más que un Escenario,
+                        <br />
+                        Somos Cómplices de tu Boda
+                      </>
+                    )}
                   </h2>
                 </ScrollReveal>
 
                 <ScrollReveal direction="up" delay={160}>
                   <p className="text-xs sm:text-[13.5px] text-[#4E463E] leading-[1.7]">
-                    Creemos que cada historia de amor es única, y así debe ser cada boda. En
-                    Hacienda Le Plus combinamos creatividad, naturaleza andina, gastronomía propia y
-                    una ejecución impecable con nuestro equipo profesional de planta para crear
-                    celebraciones elegantes, íntimas e inolvidables en Píntag.
+                    {isEn
+                      ? 'We believe every love story is unique, and so should every wedding be. At Hacienda Le Plus we combine creativity, Andean nature, signature gastronomy, and flawless execution with our dedicated in-house team to craft elegant, intimate, and unforgettable celebrations in Píntag.'
+                      : 'Creemos que cada historia de amor es única, y así debe ser cada boda. En Hacienda Le Plus combinamos creatividad, naturaleza andina, gastronomía propia y una ejecución impecable con nuestro equipo profesional de planta para crear celebraciones elegantes, íntimas e inolvidables en Píntag.'}
                   </p>
                 </ScrollReveal>
 
@@ -943,9 +840,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         />
                       </svg>
                       <span className="text-[11px] sm:text-xs font-medium text-[#3D352E] leading-tight">
-                        Atención
-                        <br />
-                        Personalizada
+                        {isEn ? (
+                          <>Personalized<br />Attention</>
+                        ) : (
+                          <>Atención<br />Personalizada</>
+                        )}
                       </span>
                     </div>
 
@@ -966,9 +865,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         />
                       </svg>
                       <span className="text-[11px] sm:text-xs font-medium text-[#3D352E] leading-tight">
-                        Montajes &amp;
-                        <br />
-                        Jardines Únicos
+                        {isEn ? (
+                          <>Bespoke Setups<br />&amp; Gardens</>
+                        ) : (
+                          <>Montajes &amp;<br />Jardines Únicos</>
+                        )}
                       </span>
                     </div>
 
@@ -994,9 +895,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         />
                       </svg>
                       <span className="text-[11px] sm:text-xs font-medium text-[#3D352E] leading-tight">
-                        Gastronomía &amp;
-                        <br />
-                        Equipo Propio
+                        {isEn ? (
+                          <>In-House Cuisine<br />&amp; Staff</>
+                        ) : (
+                          <>Gastronomía &amp;<br />Equipo Propio</>
+                        )}
                       </span>
                     </div>
 
@@ -1022,9 +925,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         />
                       </svg>
                       <span className="text-[11px] sm:text-xs font-medium text-[#3D352E] leading-tight">
-                        Experiencia
-                        <br />
-                        Libre de Estrés
+                        {isEn ? (
+                          <>Stress-Free<br />Experience</>
+                        ) : (
+                          <>Experiencia<br />Libre de Estrés</>
+                        )}
                       </span>
                     </div>
                   </div>
@@ -1039,7 +944,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       rel="noopener noreferrer"
                       className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-[8px] bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs sm:text-[13.5px] font-semibold shadow-[0_8px_20px_rgba(10,31,23,0.18)] transition-all cursor-pointer"
                     >
-                      <span>Agendar Visita Nupcial</span>
+                      <span>{isEn ? 'Schedule Wedding Tour' : 'Agendar Visita Nupcial'}</span>
                       <ArrowRight className="w-4 h-4 text-[#E2C585] group-hover:translate-x-1 transition-transform" />
                     </a>
                   </div>
@@ -1061,23 +966,33 @@ export const WeddingsPageDesktop: React.FC = () => {
             <div className="max-w-xl space-y-3.5">
               <ScrollReveal direction="up" delay={50}>
                 <span className="block text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-[#7A6A58]">
-                  POR QUÉ ELEGIR HACIENDA LE PLUS
+                  {isEn ? 'WHY CHOOSE HACIENDA LE PLUS' : 'POR QUÉ ELEGIR HACIENDA LE PLUS'}
                 </span>
               </ScrollReveal>
 
               <ScrollReveal direction="up" delay={120}>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#181512] leading-[1.12]">
-                  Más Que Un Espacio,
-                  <br />
-                  Tu Boda Soñada
+                  {isEn ? (
+                    <>
+                      More Than a Venue,
+                      <br />
+                      Your Dream Wedding
+                    </>
+                  ) : (
+                    <>
+                      Más Que Un Espacio,
+                      <br />
+                      Tu Boda Soñada
+                    </>
+                  )}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="up" delay={180}>
                 <p className="text-xs sm:text-[13.5px] text-[#4E463E] leading-[1.7]">
-                  Ofrecemos mucho más que hermosos jardines en Píntag. Creamos experiencias nupciales
-                  completas que marcan el inicio de tu nueva vida juntos, con gastronomía de autor,
-                  hospedaje exclusivo y un equipo profesional a tu lado en todo momento.
+                  {isEn
+                    ? 'We offer much more than scenic gardens in Píntag. We craft complete wedding journeys marking the beginning of your new life together, featuring signature dining, luxury lodging, and an experienced team beside you at every step.'
+                    : 'Ofrecemos mucho más que hermosos jardines en Píntag. Creamos experiencias nupciales completas que marcan el inicio de tu nueva vida juntos, con gastronomía de autor, hospedaje exclusivo y un equipo profesional a tu lado en todo momento.'}
                 </p>
               </ScrollReveal>
 
@@ -1089,7 +1004,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                     <span className="text-xs sm:text-[12.5px] font-medium text-[#2C2621] leading-snug">
-                      Montajes, jardines y carpa de gala (80 a 300 pax)
+                      {isEn ? 'Setups, gardens & gala marquee tent (80 to 300 pax)' : 'Montajes, jardines y carpa de gala (80 a 300 pax)'}
                     </span>
                   </div>
 
@@ -1098,7 +1013,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                     <span className="text-xs sm:text-[12.5px] font-medium text-[#2C2621] leading-snug">
-                      Términos flexibles y descorche libre sin sorpresas
+                      {isEn ? 'Flexible terms and free corkage with zero surprises' : 'Términos flexibles y descorche libre sin sorpresas'}
                     </span>
                   </div>
 
@@ -1107,7 +1022,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                     <span className="text-xs sm:text-[12.5px] font-medium text-[#2C2621] leading-snug">
-                      Acompañamiento y asesoría experta personalizada
+                      {isEn ? 'Bespoke accompaniment & expert personalized advice' : 'Acompañamiento y asesoría experta personalizada'}
                     </span>
                   </div>
 
@@ -1116,7 +1031,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                     <span className="text-xs sm:text-[12.5px] font-medium text-[#2C2621] leading-snug">
-                      Cientos de bodas y familias felices nos respaldan
+                      {isEn ? 'Hundreds of weddings and happy couples endorse us' : 'Cientos de bodas y familias felices nos respaldan'}
                     </span>
                   </div>
                 </div>
@@ -1130,12 +1045,12 @@ export const WeddingsPageDesktop: React.FC = () => {
                     onClick={() =>
                       openQuoteModal({
                         serviceType: 'bodas',
-                        itemName: 'Planificación Integral de Boda en Hacienda Le Plus',
+                        itemName: isEn ? 'Comprehensive Wedding Planning at Hacienda Le Plus' : 'Planificación Integral de Boda en Hacienda Le Plus',
                       })
                     }
                     className="group inline-flex items-center gap-3 px-7 py-3.5 rounded-[8px] bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs sm:text-[13.5px] font-semibold shadow-[0_8px_20px_rgba(10,31,23,0.18)] transition-all cursor-pointer"
                   >
-                    <span>Planificar mi Boda</span>
+                    <span>{isEn ? 'Plan My Wedding' : 'Planificar mi Boda'}</span>
                     <ArrowRight className="w-4 h-4 text-[#E2C585] group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -1166,14 +1081,16 @@ export const WeddingsPageDesktop: React.FC = () => {
               <div>
                 <div className="inline-flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#7A6A58] mb-1.5">
                   <span className="w-6 h-[1px] bg-[#C5B59D]" />
-                  <span>PROPUESTAS NUPCIALES DESTACADAS</span>
+                  <span>{isEn ? 'FEATURED WEDDING PROPOSALS' : 'PROPUESTAS NUPCIALES DESTACADAS'}</span>
                   <span className="w-6 h-[1px] bg-[#C5B59D]" />
                 </div>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#181512] leading-tight">
-                  Servicios &amp; Paquetes Nupciales
+                  {isEn ? 'Wedding Services & Packages' : 'Servicios & Paquetes Nupciales'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#544B42] mt-1">
-                  Propuestas integrales en Píntag, Quito diseñadas para que vivas tu gran día con total tranquilidad.
+                  {isEn
+                    ? 'All-inclusive packages in Píntag, Quito designed for you to enjoy your big day with complete serenity.'
+                    : 'Propuestas integrales en Píntag, Quito diseñadas para que vivas tu gran día con total tranquilidad.'}
                 </p>
               </div>
 
@@ -1182,7 +1099,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => scrollCarousel('left')}
-                  aria-label="Desplazar hacia la izquierda"
+                  aria-label={isEn ? 'Scroll left' : 'Desplazar hacia la izquierda'}
                   className="w-10 h-10 rounded-full border border-[#D5C7B2] bg-[#FAF7F2] hover:bg-white text-[#181512] flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-5 h-5 text-[#3D352E]" />
@@ -1190,7 +1107,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => scrollCarousel('right')}
-                  aria-label="Desplazar hacia la derecha"
+                  aria-label={isEn ? 'Scroll right' : 'Desplazar hacia la derecha'}
                   className="w-10 h-10 rounded-full border border-[#D5C7B2] bg-[#FAF7F2] hover:bg-white text-[#181512] flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                 >
                   <ChevronRight className="w-5 h-5 text-[#3D352E]" />
@@ -1201,12 +1118,12 @@ export const WeddingsPageDesktop: React.FC = () => {
                   onClick={() =>
                     openQuoteModal({
                       serviceType: 'bodas',
-                      itemName: 'Catálogo Completo de Bodas Hacienda Le Plus',
+                      itemName: isEn ? 'Complete Hacienda Le Plus Wedding Catalog' : 'Catálogo Completo de Bodas Hacienda Le Plus',
                     })
                   }
                   className="hidden md:inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#181512] hover:text-[#8C6D3F] ml-2 transition-colors cursor-pointer"
                 >
-                  <span>Ver Todas las Opciones</span>
+                  <span>{isEn ? 'View All Options' : 'Ver Todas las Opciones'}</span>
                   <ArrowRight className="w-4 h-4 text-[#8C6D3F]" />
                 </button>
               </div>
@@ -1220,7 +1137,7 @@ export const WeddingsPageDesktop: React.FC = () => {
               className="flex gap-6 overflow-x-auto scrollbar-none snap-x snap-mandatory pb-6 pt-2 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              {WEDDING_CAROUSEL_SERVICES.map((card) => {
+              {weddingCarouselServices.map((card) => {
                 const isFav = !!favorites[card.id];
                 return (
                   <div
@@ -1250,7 +1167,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                           e.stopPropagation();
                           toggleFavorite(card.id);
                         }}
-                        aria-label="Guardar en favoritos"
+                        aria-label={isEn ? 'Save to favorites' : 'Guardar en favoritos'}
                         className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-[#FAF7F2]/90 backdrop-blur-xs border border-[#8C6D3F]/30 flex items-center justify-center shadow-xs transition-transform hover:scale-110 active:scale-95 cursor-pointer text-[#8C6D3F]"
                       >
                         <Heart
@@ -1323,7 +1240,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                         }
                         className="px-4 py-2.5 rounded-[8px] bg-[#13281F] hover:bg-[#0A1F17] text-[#FAF7F2] text-xs sm:text-[13px] font-semibold transition-all cursor-pointer shadow-xs hover:shadow-md"
                       >
-                        Ver Detalles
+                        {isEn ? 'View Details' : 'Ver Detalles'}
                       </button>
                     </div>
                   </div>
@@ -1345,21 +1262,21 @@ export const WeddingsPageDesktop: React.FC = () => {
             <div className="max-w-xl space-y-4">
               <ScrollReveal direction="up" delay={40}>
                 <span className="block text-[11px] sm:text-xs font-bold uppercase tracking-[0.22em] text-[#34472F]">
-                  BANDEJA DIRECTA · ATENCIÓN INMEDIATA
+                  {isEn ? 'DIRECT INBOX · IMMEDIATE RESPONSE' : 'BANDEJA DIRECTA · ATENCIÓN INMEDIATA'}
                 </span>
               </ScrollReveal>
 
               <ScrollReveal direction="up" delay={100}>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[42px] font-normal text-[#172414] leading-[1.12]">
-                  Agenda tu Visita Nupcial &amp; Cotiza tu Boda
+                  {isEn ? 'Schedule Your Wedding Tour & Quote' : 'Agenda tu Visita Nupcial & Cotiza tu Boda'}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="up" delay={160}>
                 <p className="text-xs sm:text-[13.5px] text-[#334230] leading-[1.65]">
-                  Recorramos juntos los jardines, salones y suites en Píntag. Cuidamos cada detalle
-                  con gastronomía de autor, descorche libre y un equipo profesional comprometido
-                  con la magia de tu celebración.
+                  {isEn
+                    ? 'Let us explore the gardens, halls, and suites together in Píntag. We tend to every nuance with signature gastronomy, free corkage, and a dedicated team committed to your celebration.'
+                    : 'Recorramos juntos los jardines, salones y suites en Píntag. Cuidamos cada detalle con gastronomía de autor, descorche libre y un equipo profesional comprometido con la magia de tu celebración.'}
                 </p>
               </ScrollReveal>
 
@@ -1372,7 +1289,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-[10px] bg-[#2D4029] hover:bg-[#1E2E1B] text-[#FAF7F2] text-xs sm:text-[13.5px] font-semibold shadow-md transition-all cursor-pointer shrink-0"
                   >
-                    <span>Solicitar Propuesta</span>
+                    <span>{isEn ? 'Request Proposal' : 'Solicitar Propuesta'}</span>
                     <ArrowRight className="w-4 h-4 text-[#D8E6CF]" />
                   </a>
 
@@ -1385,7 +1302,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         <path d="M12 14.5L14 17L16.5 12" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
                       </svg>
                       <span className="text-[10.5px] font-medium text-[#2C3D28] leading-tight">
-                        Vistas a los<br />Volcanes
+                        {isEn ? (
+                          <>Volcano<br />Views</>
+                        ) : (
+                          <>Vistas a los<br />Volcanes</>
+                        )}
                       </span>
                     </div>
 
@@ -1396,7 +1317,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         <path d="M14 10V20" stroke="currentColor" strokeWidth="1.4" />
                       </svg>
                       <span className="text-[10.5px] font-medium text-[#2C3D28] leading-tight">
-                        Carpa Gala &amp;<br />Plan de Lluvia
+                        {isEn ? (
+                          <>Gala Marquee &amp;<br />Rain Plan</>
+                        ) : (
+                          <>Carpa Gala &amp;<br />Plan de Lluvia</>
+                        )}
                       </span>
                     </div>
 
@@ -1407,7 +1332,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                         <path d="M14 14V22M9 22H19" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                       </svg>
                       <span className="text-[10.5px] font-medium text-[#2C3D28] leading-tight">
-                        Descorche Libre<br />Sin Sorpresas
+                        {isEn ? (
+                          <>Free Corkage<br />No Surprises</>
+                        ) : (
+                          <>Descorche Libre<br />Sin Sorpresas</>
+                        )}
                       </span>
                     </div>
                   </div>
@@ -1433,14 +1362,15 @@ export const WeddingsPageDesktop: React.FC = () => {
             <div className="max-w-3xl mx-auto space-y-6">
               <div className="text-center space-y-2">
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8A45D]">
-                  Bandeja Directa: {siteConfig.corporateEmails.bodas}
+                  {isEn ? 'Direct Inbox:' : 'Bandeja Directa:'} {siteConfig.corporateEmails.bodas}
                 </span>
                 <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold text-white">
-                  Agenda tu visita nupcial o solicita tu propuesta
+                  {isEn ? 'Schedule your wedding visit or request a custom proposal' : 'Agenda tu visita nupcial o solicita tu propuesta'}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#FAF7F2]/75 max-w-xl mx-auto">
-                  Indícanos tu fecha tentativa y número aproximado de invitados. Te confirmaremos
-                  disponibilidad de fecha y horarios para recorrer la hacienda en Píntag.
+                  {isEn
+                    ? 'Let us know your tentative date and estimated guest count. We will confirm date availability and visiting hours to tour the estate in Píntag.'
+                    : 'Indícanos tu fecha tentativa y número aproximado de invitados. Te confirmaremos disponibilidad de fecha y horarios para recorrer la hacienda en Píntag.'}
                 </p>
               </div>
 
