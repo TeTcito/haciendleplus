@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --leplus-obsidian: #06150F;
+    --leplus-dark: #0A1F17;
+    --leplus-forest: #123326;
+    --leplus-emerald: #1B4735;
+    --leplus-gold: #C8A45D;
+    --leplus-gold-light: #E2C585;
+    --leplus-gold-dark: #A6823C;
+    --leplus-ivory: #FAF7F2;
+    --leplus-sand: #F1ECE1;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #FAF7F2;
+    color: #0A1F17;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .font-serif-luxury {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+}
+
+/* Custom utility classes for luxury hospitality aesthetic */
+.font-serif-luxury {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-sans-ui {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.font-handwritten {
+  font-family: 'Caveat', cursive;
+}
+
+.font-wedding-script {
+  font-family: 'Dancing Script', 'Caveat', cursive;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #E5C98B 0%, #C8A45D 50%, #DFB96E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border-glow {
+  border-color: rgba(200, 164, 93, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(6, 21, 15, 0.35), inset 0 1px 0 0 rgba(226, 197, 133, 0.2);
+}
+
+.luxury-card-shadow {
+  box-shadow: 0 16px 40px -12px rgba(10, 31, 23, 0.08), 0 4px 12px -2px rgba(10, 31, 23, 0.04);
+}
+
+.luxury-dark-glass {
+  background: rgba(8, 26, 19, 0.84);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Touch-first ergonomics on mobile */
+@media (max-width: 768px) {
+  button, a, select, input {
+    min-height: 44px;
+  }
+}
+
+/* Subtle luxury scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.32);
+}
+
+/* ============================================================================
+   HOME PAGE SCROLL REVEAL & ENTRANCE/EXIT TRANSITION SYSTEM
+   ============================================================================ */
+@keyframes floatBotanical {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(-4px, 5px, 0) rotate(-2deg);
+  }
+}
+
+@keyframes pulseSoftGlow {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+}
+
+.animate-float-botanical {
+  animation: floatBotanical 6s ease-in-out infinite;
+}
+
+.will-change-reveal {
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+}
+
+/* Safe area padding for mobile notches and home indicators */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+
