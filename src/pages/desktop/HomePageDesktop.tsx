@@ -23,6 +23,7 @@ import {
   Send,
 } from 'lucide-react';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { useDocumentMeta } from '../../utils/seo';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { saveReviewToSupabase, fetchReviewsFromSupabase } from '../../lib/supabase';
@@ -325,12 +326,17 @@ const HERO_STOP_CARDS = [
 
 export const HomePageDesktop: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
+  const { language, isEn, t } = useLanguage();
 
   useDocumentMeta({
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
+    title_en: 'Hacienda Le Plus | Corporate Long-Stays, Major Events & Weddings in Quito–Píntag',
     description:
       'Presentación de Hacienda Le Plus en Quito–Píntag: prioridad comercial en hospedaje de larga estadía para empresas y grupos, grandes eventos corporativos y bodas. Cotizaciones al WhatsApp 0969817891.',
+    description_en:
+      'Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for corporate groups, major events and weddings. Inquiries via WhatsApp +593 96 981 7891.',
     canonicalPath: '/',
+    lang: language,
   });
 
   // Estado y transiciones de entrada/salida de la tarjeta Hero
@@ -745,28 +751,51 @@ export const HomePageDesktop: React.FC = () => {
               <div className="lg:col-span-7 space-y-6">
                 <ScrollReveal direction="down" delay={40} distance={50}>
                   <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.26em] text-[#E2C585]">
-                    {siteConfig.heroOverline}
+                    {isEn ? t.hero.overline : siteConfig.heroOverline}
                   </p>
                 </ScrollReveal>
 
                 <ScrollReveal direction="left" delay={120} distance={85}>
                   <h1 className="font-sans-ui text-4xl sm:text-6xl lg:text-[58px] font-extrabold text-white leading-[1.06] tracking-tight max-w-2xl">
-                    Hospedaje de Larga
-                    <br />
-                    Estadía y{' '}
-                    <span className="text-[#E5C98B]">Grandes Eventos</span>
-                    <br />
-                    en Quito – Píntag.
+                    {isEn ? (
+                      <>
+                        Corporate Long-Stay
+                        <br />
+                        &amp; <span className="text-[#E5C98B]">Major Events Venue</span>
+                        <br />
+                        in Quito – Píntag.
+                      </>
+                    ) : (
+                      <>
+                        Hospedaje de Larga
+                        <br />
+                        Estadía y <span className="text-[#E5C98B]">Grandes Eventos</span>
+                        <br />
+                        en Quito – Píntag.
+                      </>
+                    )}
                   </h1>
                 </ScrollReveal>
 
                 <ScrollReveal direction="left" delay={210} distance={80}>
                   <p className="text-sm sm:text-base lg:text-[17px] text-[#FAF7F2]/90 max-w-xl leading-relaxed font-normal">
-                    Presentación de <strong className="text-white font-semibold">Hacienda Le Plus</strong> en Quito–Píntag: alojamiento corporativo y grupal con{' '}
-                    <strong className="text-[#E2C585] font-semibold">
-                      14 habitaciones (28 a 80 huéspedes)
-                    </strong>
-                    , macroeventos empresariales y bodas exclusivas, fortalecidos por nuestra piscina temperada, restaurante propio y áreas deportivas.
+                    {isEn ? (
+                      <>
+                        Welcome to <strong className="text-white font-semibold">Hacienda Le Plus</strong> in Quito–Píntag: commercial priority in long-stay lodging with{' '}
+                        <strong className="text-[#E2C585] font-semibold">
+                          14 private rooms (28 to 80 guests)
+                        </strong>
+                        , macro-events and weddings, featuring heated swimming pool, on-site dining and sports facilities.
+                      </>
+                    ) : (
+                      <>
+                        Presentación de <strong className="text-white font-semibold">Hacienda Le Plus</strong> en Quito–Píntag: alojamiento corporativo y grupal con{' '}
+                        <strong className="text-[#E2C585] font-semibold">
+                          14 habitaciones (28 a 80 huéspedes)
+                        </strong>
+                        , macroeventos empresariales y bodas exclusivas, fortalecidos por nuestra piscina temperada, restaurante propio y áreas deportivas.
+                      </>
+                    )}
                   </p>
                 </ScrollReveal>
 
@@ -780,7 +809,7 @@ export const HomePageDesktop: React.FC = () => {
                       className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#E5C98B] hover:bg-[#C8A45D] text-[#06150F] font-bold text-xs sm:text-sm shadow-xl shadow-black/30 transition-all cursor-pointer"
                     >
                       <Search className="w-4 h-4 text-[#06150F]/80" />
-                      <span>Solicitar Cotización</span>
+                      <span>{isEn ? 'Request Quote' : 'Solicitar Cotización'}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
 
@@ -788,7 +817,7 @@ export const HomePageDesktop: React.FC = () => {
                       href="#rutas-comerciales"
                       className="inline-flex items-center gap-2 px-4 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF7F2] border border-white/20 backdrop-blur-md text-xs font-semibold transition-all"
                     >
-                      <span>Ver 3 Servicios</span>
+                      <span>{isEn ? 'Explore 3 Pillars' : 'Ver 3 Servicios'}</span>
                     </a>
 
                     <button
@@ -797,7 +826,15 @@ export const HomePageDesktop: React.FC = () => {
                       className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full bg-black/35 hover:bg-black/55 text-[#E2C585] border border-[#C8A45D]/35 text-xs font-semibold transition-all cursor-pointer"
                     >
                       <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>{videoEnabled ? 'Ver Foto Real' : 'Video HD'}</span>
+                      <span>
+                        {videoEnabled
+                          ? isEn
+                            ? 'View Real Photo'
+                            : 'Ver Foto Real'
+                          : isEn
+                          ? 'HD Video Tour'
+                          : 'Video HD'}
+                      </span>
                     </button>
                   </div>
                 </ScrollReveal>

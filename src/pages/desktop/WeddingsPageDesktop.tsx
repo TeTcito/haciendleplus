@@ -19,6 +19,7 @@ import {
   Wine,
 } from 'lucide-react';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
@@ -334,11 +335,17 @@ export const WeddingsPageDesktop: React.FC = () => {
     }
   };
 
+  const { language, isEn, t } = useLanguage();
+
   useDocumentMeta({
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
+    title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
       'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados (14 habitaciones). Cotiza al WhatsApp 0969817891.',
+    description_en:
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies, reception, gardens, catering, decor, and on-site lodging for guests in 14 rooms.',
     canonicalPath: '/bodas',
+    lang: language,
   });
 
   const weddingPackages = packages.filter((p) => p.category === 'bodas');

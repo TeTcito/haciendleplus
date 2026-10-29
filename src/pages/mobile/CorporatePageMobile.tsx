@@ -27,76 +27,7 @@ import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
-
-const CORPORATE_SPACES_TABLE = [
-  {
-    space: 'Carpas Estructurales & Jardines de Gran Formato',
-    auditorium: '350+ pax',
-    banquet: '300 pax',
-    school: '180 pax',
-    uShape: 'N/A',
-    notes: 'Carpas de gala, jardines de 5.000 m², tarima, pista de baile y catering propio',
-  },
-  {
-    space: 'Gran Salón de Convenciones, Tarima & Pista de Baile',
-    auditorium: '250 pax',
-    banquet: '200 pax',
-    school: '140 pax',
-    uShape: '60 pax',
-    notes: 'Climatizado, tarima, pista de baile, pantalla gigante, sonido pro y acceso a jardines',
-  },
-  {
-    space: 'Canchas Deportivas, Piscina 14×6m & Área Húmeda',
-    auditorium: '350 pax',
-    banquet: '280 pax',
-    school: 'N/A',
-    uShape: 'N/A',
-    notes: 'Complemento recreativo: fútbol, vóley, básquetbol, piscina temperada y 2 hidromasajes',
-  },
-  {
-    space: 'Hospedaje Complementario (14 Habitaciones)',
-    auditorium: '80 pax',
-    banquet: '80 pax',
-    school: 'N/A',
-    uShape: 'N/A',
-    notes: 'Alojamiento complementario in situ (28 a 80 huéspedes) para convenciones y eventos',
-  },
-];
-
-const CORPORATE_SPACES_CARDS = [
-  {
-    id: 'carpas-jardines',
-    title: 'Carpas & Jardines',
-    subtitle: 'Gran Formato 350+ pax · 5.000 m²',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
-    badge: 'Macroeventos & Fin de Año',
-    description: 'Carpas estructurales, amplios jardines, catering propio, tarima y pista de baile.',
-  },
-  {
-    id: 'gran-salon',
-    title: 'Tarima, Pista & Salón',
-    subtitle: 'Convenciones 250 · Banquete 200 pax',
-    image: '/images/hacienda/corporate-salon-hd.jpg',
-    badge: 'Tarima & Pista de Baile',
-    description: 'Salón para convenciones y fiestas de fin de año con tarima, pista de baile y AV pro.',
-  },
-  {
-    id: 'deportes-piscina',
-    title: 'Deportes & Piscina',
-    subtitle: 'Canchas + Piscina Temperada 14×6m',
-    image: '/images/hacienda/jardines-teambuilding.jpg',
-    badge: 'Complemento Integración',
-    description: 'Actividades deportivas (fútbol, vóley, básquetbol) y piscina como complemento.',
-  },
-  {
-    id: 'suites-hospedaje',
-    title: 'Hospedaje Complementario',
-    subtitle: '14 habitaciones · 28 a 80 huéspedes',
-    image: '/images/hacienda/boda-suite-lounge.jpg',
-    badge: 'Complemento Alojamiento',
-    description: 'Alojamiento complementario en la hacienda para directivos, staff e invitados.',
-  },
-];
+import { CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS } from '../../data/resortSpaces';
 
 export const CorporatePageMobile: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();

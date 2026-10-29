@@ -22,83 +22,16 @@ import {
 } from 'lucide-react';
 import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
-
-const CORPORATE_SPACES_TABLE = [
-  {
-    space: 'Carpas Estructurales & Jardines de Gran Formato',
-    auditorium: '350+ pax',
-    banquet: '300 pax',
-    school: '180 pax',
-    uShape: 'N/A',
-    notes: 'Carpas de gala, jardines de 5.000 m², tarima, pista de baile y catering propio',
-  },
-  {
-    space: 'Gran Salón de Convenciones, Tarima & Pista de Baile',
-    auditorium: '250 pax',
-    banquet: '200 pax',
-    school: '140 pax',
-    uShape: '60 pax',
-    notes: 'Climatizado, tarima, pista de baile, pantalla gigante, sonido pro y acceso a jardines',
-  },
-  {
-    space: 'Canchas Deportivas, Piscina 14×6m & Área Húmeda',
-    auditorium: '350 pax',
-    banquet: '280 pax',
-    school: 'N/A',
-    uShape: 'N/A',
-    notes: 'Complemento recreativo: fútbol, vóley, básquetbol, piscina temperada y 2 hidromasajes',
-  },
-  {
-    space: 'Hospedaje Complementario (14 Habitaciones)',
-    auditorium: '80 pax',
-    banquet: '80 pax',
-    school: 'N/A',
-    uShape: 'N/A',
-    notes: 'Alojamiento complementario in situ (28 a 80 huéspedes) para convenciones y eventos',
-  },
-];
-
-const CORPORATE_SPACES_CARDS = [
-  {
-    id: 'carpas-jardines',
-    title: 'Carpas & Jardines',
-    subtitle: 'Gran Formato 350+ pax · 5.000 m²',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
-    badge: 'Macroeventos & Fin de Año',
-    description: 'Carpas estructurales, amplios jardines, catering propio, tarima y pista de baile.',
-  },
-  {
-    id: 'gran-salon',
-    title: 'Tarima, Pista & Salón',
-    subtitle: 'Convenciones 250 · Banquete 200 pax',
-    image: '/images/hacienda/corporate-salon-hd.jpg',
-    badge: 'Tarima & Pista de Baile',
-    description: 'Salón para convenciones y fiestas de fin de año con tarima, pista de baile y AV pro.',
-  },
-  {
-    id: 'deportes-piscina',
-    title: 'Deportes & Piscina',
-    subtitle: 'Canchas + Piscina Temperada 14×6m',
-    image: '/images/hacienda/jardines-teambuilding.jpg',
-    badge: 'Complemento Integración',
-    description: 'Actividades deportivas (fútbol, vóley, básquetbol) y piscina como complemento.',
-  },
-  {
-    id: 'suites-hospedaje',
-    title: 'Hospedaje Complementario',
-    subtitle: '14 habitaciones · 28 a 80 huéspedes',
-    image: '/images/hacienda/boda-suite-lounge.jpg',
-    badge: 'Complemento Alojamiento',
-    description: 'Alojamiento complementario en la hacienda para directivos, staff e invitados.',
-  },
-];
+import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS } from '../../data/resortSpaces';
 
 export const CorporatePageDesktop: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
+  const { language, isEn, t } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
 
   const [currentPkgIndex, setCurrentPkgIndex] = useState(0);
@@ -108,9 +41,13 @@ export const CorporatePageDesktop: React.FC = () => {
 
   useDocumentMeta({
     title: 'Grandes Eventos y Experiencias Corporativas en Quito–Píntag | Hacienda Le Plus',
+    title_en: 'Major Corporate Events, Retreats & Conventions in Quito–Píntag | Hacienda Le Plus',
     description:
       'Macroeventos y encuentros empresariales en Quito–Píntag: eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, actividades deportivas, piscina y hospedaje complementario.',
+    description_en:
+      'Major corporate events, team retreats and conventions in Quito–Píntag: year-end galas with structural tents, gardens, catering, stage, pool, and on-site lodging.',
     canonicalPath: '/corporativo',
+    lang: language,
   });
 
   const corpPackages = packages.filter((p) => p.category === 'corporativo');
@@ -710,8 +647,12 @@ export const CorporatePageDesktop: React.FC = () => {
             {/* Columna Derecha: 4 Tarjetas Verticales de Espacios */}
             <div className="lg:col-span-9">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-5">
-                {CORPORATE_SPACES_CARDS.map((card, idx) => {
+                {RESORT_SPACES.map((card, idx) => {
                   const dirs: ('up-left' | 'up' | 'up' | 'up-right')[] = ['up-left', 'up', 'up', 'up-right'];
+                  const title = isEn ? card.title_en : card.title_es;
+                  const subtitle = isEn ? card.subtitle_en : card.subtitle_es;
+                  const badge = isEn ? card.badge_en : card.badge_es;
+
                   return (
                     <ScrollReveal key={card.id} direction={dirs[idx % 4]} delay={60 + idx * 70} duration={700} className="h-full">
                       <div
@@ -721,17 +662,30 @@ export const CorporatePageDesktop: React.FC = () => {
                         }}
                         className="group relative h-80 sm:h-96 lg:h-[400px] rounded-[2rem] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-end p-5 select-none h-full"
                       >
-                        <img
-                          src={card.image}
-                          alt={card.title}
-                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
-                        />
+                        {card.videoUrl ? (
+                          <video
+                            src={card.videoUrl}
+                            poster={card.image}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
+                          />
+                        ) : (
+                          <img
+                            src={card.image}
+                            alt={title}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent transition-opacity group-hover:opacity-90" />
 
                         {/* Badge superior */}
                         <div className="relative z-10 self-start mb-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-[#E2C585] backdrop-blur-sm border border-white/10">
-                            {card.badge}
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-[#E2C585] backdrop-blur-sm border border-white/10">
+                            {card.videoUrl && <span className="text-[9px]">▶</span>}
+                            <span>{badge}</span>
                           </span>
                         </div>
 
@@ -739,10 +693,10 @@ export const CorporatePageDesktop: React.FC = () => {
                         <div className="relative z-10 flex items-end justify-between gap-2">
                           <div className="space-y-0.5 text-left">
                             <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white leading-tight">
-                              {card.title}
+                              {title}
                             </h4>
                             <p className="text-[11px] sm:text-xs text-[#FAF7F2]/80 font-normal">
-                              {card.subtitle}
+                              {subtitle}
                             </p>
                           </div>
 
@@ -961,28 +915,32 @@ export const CorporatePageDesktop: React.FC = () => {
               <table className="w-full text-left border-collapse text-xs sm:text-sm">
                 <thead>
                   <tr className="border-b border-[#0A1F17]/15 text-[#071912] bg-[#FAF7F2]">
-                    <th className="py-3.5 px-4 font-bold">Espacio / Salón</th>
-                    <th className="py-3.5 px-4 font-bold">Auditorio</th>
-                    <th className="py-3.5 px-4 font-bold">Banquete</th>
-                    <th className="py-3.5 px-4 font-bold">Escuela</th>
-                    <th className="py-3.5 px-4 font-bold">Tipo U / Directorio</th>
-                    <th className="py-3.5 px-4 font-bold">Equipamiento y Ventajas</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.spaceCol}</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.auditoriumCol}</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.banquetCol}</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.schoolCol}</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.uShapeCol}</th>
+                    <th className="py-3.5 px-4 font-bold">{t.spaces.notesCol}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#0A1F17]/10">
-                  {CORPORATE_SPACES_TABLE.map((row, idx) => (
+                  {RESORT_SPACES.map((space, idx) => (
                     <tr
-                      key={idx}
+                      key={space.id}
                       className={`hover:bg-[#FAF7F2]/60 transition-colors ${
                         selectedSpaceIndex === idx ? 'bg-[#C8A45D]/10' : ''
                       }`}
                     >
-                      <td className="py-3.5 px-4 font-semibold text-[#071912]">{row.space}</td>
-                      <td className="py-3.5 px-4 text-[#A6823C] font-semibold">{row.auditorium}</td>
-                      <td className="py-3.5 px-4">{row.banquet}</td>
-                      <td className="py-3.5 px-4">{row.school}</td>
-                      <td className="py-3.5 px-4">{row.uShape}</td>
-                      <td className="py-3.5 px-4 text-[#0A1F17]/75">{row.notes}</td>
+                      <td className="py-3.5 px-4 font-semibold text-[#071912]">
+                        {isEn ? space.title_en : space.title_es}
+                      </td>
+                      <td className="py-3.5 px-4 text-[#A6823C] font-semibold">{space.capacities.auditorium}</td>
+                      <td className="py-3.5 px-4">{space.capacities.banquet}</td>
+                      <td className="py-3.5 px-4">{space.capacities.school}</td>
+                      <td className="py-3.5 px-4">{space.capacities.uShape}</td>
+                      <td className="py-3.5 px-4 text-[#0A1F17]/75">
+                        {isEn ? space.notes_en : space.notes_es}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -992,7 +950,9 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
               <span className="text-xs text-[#0A1F17]/60 flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-[#A6823C]" />
-                Aforos auditados según normativa de eventos y bioseguridad
+                {isEn
+                  ? 'Audited capacities complying with event standards and optimal flow'
+                  : 'Aforos auditados según normativa de eventos y bioseguridad'}
               </span>
               <button
                 type="button"
@@ -1001,14 +961,14 @@ export const CorporatePageDesktop: React.FC = () => {
                   openQuoteModal({
                     serviceType: 'corporativo',
                     itemName:
-                      selectedSpaceIndex !== null && CORPORATE_SPACES_TABLE[selectedSpaceIndex]
-                        ? CORPORATE_SPACES_TABLE[selectedSpaceIndex].space
+                      selectedSpaceIndex !== null && RESORT_SPACES[selectedSpaceIndex]
+                        ? (isEn ? RESORT_SPACES[selectedSpaceIndex].title_en : RESORT_SPACES[selectedSpaceIndex].title_es)
                         : 'Propuesta de Espacios y Aforos',
                   });
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-[#C8A45D] text-[#06150F] hover:bg-[#E2C585] transition-colors cursor-pointer"
               >
-                <span>Cotizar espacio seleccionado</span>
+                <span>{t.spaces.quoteSpace}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </div>

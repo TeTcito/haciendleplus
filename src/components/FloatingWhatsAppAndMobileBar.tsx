@@ -4,6 +4,7 @@ import { WhatsAppIcon } from './WhatsAppIcon';
 import { useCMS } from '../context/CMSContext';
 import { buildContextualWhatsAppUrl, WhatsAppContextType } from '../utils/whatsapp';
 import { MobileBottomNav } from './MobileBottomNav';
+import { LanguageSelector } from './LanguageSelector';
 
 export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   const { siteConfig } = useCMS();
@@ -37,6 +38,11 @@ export const FloatingWhatsAppAndMobileBar: React.FC = () => {
 
   return (
     <>
+      {/* Selector de idioma móvil flotante ergonómico a la izquierda */}
+      <div className="fixed bottom-[62px] left-3.5 z-40 md:hidden items-center flex">
+        <LanguageSelector variant="compact" />
+      </div>
+
       {/* Botón flotante contextual de WhatsApp (Desktop: bottom-6 right-6, Móvil: flotando ergonómicamente sobre la barra inferior) */}
       <div className="fixed bottom-[58px] right-3.5 md:bottom-6 md:right-6 z-40 items-center flex">
         <a

@@ -27,6 +27,7 @@ import {
   Search,
 } from 'lucide-react';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
@@ -35,13 +36,18 @@ import { CabinRoom } from '../../types/cms';
 
 export const LodgingPageDesktop: React.FC = () => {
   const { siteConfig, cabins, openQuoteModal } = useCMS();
+  const { language, isEn, t } = useLanguage();
 
   // SEO Meta
   useDocumentMeta({
     title: 'Hospedaje para Empresas y Grupos (Larga Estadía) en Quito–Píntag | Hacienda Le Plus',
+    title_en: 'Corporate & Group Long-Stay Lodging in Quito–Píntag | Hacienda Le Plus',
     description:
       'Hospedaje de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. 14 habitaciones (28 a 80 personas), alimentación, internet fibra óptica, parqueaderos y cotización según número de personas y duración.',
+    description_en:
+      'Long-stay lodging for corporate staff, delegations, NGOs, volunteers and international groups in Quito–Píntag. 14 rooms (28 to 80 guests), full board, fiber-optic Wi-Fi, and parking.',
     canonicalPath: '/hospedaje',
+    lang: language,
   });
 
   // Fechas dinámicas automáticas para el widget de agendamiento

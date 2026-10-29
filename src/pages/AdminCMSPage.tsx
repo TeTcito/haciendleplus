@@ -71,12 +71,13 @@ export const AdminCMSPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('Todos');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // New Photo state
+  // New Photo/Video state
   const [newPhotoTitle, setNewPhotoTitle] = useState('');
   const [newPhotoCategory, setNewPhotoCategory] = useState<EventPhoto['category']>('Bodas');
   const [newPhotoSpace, setNewPhotoSpace] = useState('Jardín Principal Le Plus');
   const [newPhotoUrl, setNewPhotoUrl] = useState('');
   const [newPhotoDesc, setNewPhotoDesc] = useState('');
+  const [newPhotoMediaType, setNewPhotoMediaType] = useState<'image' | 'video'>('image');
 
   // New Package state
   const [showNewPkgForm, setShowNewPkgForm] = useState(false);
@@ -160,15 +161,15 @@ export const AdminCMSPage: React.FC = () => {
       title: newPhotoTitle.trim(),
       category: newPhotoCategory,
       spaceName: newPhotoSpace.trim() || 'Hacienda Le Plus',
-      dateTag: 'Publicado desde CMS',
+      dateTag: newPhotoMediaType === 'video' ? 'Video HD' : 'Fotografía Real',
       imageUrl: newPhotoUrl.trim(),
-      description: newPhotoDesc.trim() || 'Fotografía oficial de evento en Hacienda Le Plus.',
+      description: newPhotoDesc.trim() || (newPhotoMediaType === 'video' ? 'Video oficial de evento en Hacienda Le Plus.' : 'Fotografía oficial de evento en Hacienda Le Plus.'),
       featured: true,
     });
     setNewPhotoTitle('');
     setNewPhotoUrl('');
     setNewPhotoDesc('');
-    showToast('Fotografía publicada en la galería y portada.');
+    showToast(newPhotoMediaType === 'video' ? 'Video añadido a la galería y portada.' : 'Fotografía publicada en la galería y portada.');
   };
 
   const handleCreatePackage = (e: React.FormEvent) => {
@@ -353,7 +354,7 @@ export const AdminCMSPage: React.FC = () => {
             },
             {
               id: 'photos',
-              label: `Galería de Eventos (${photos.length})`,
+              label: `Galería Multimedia & Videos (${photos.length})`,
               icon: ImageIcon,
             },
             {
@@ -987,13 +988,24 @@ export const AdminCMSPage: React.FC = () => {
             >
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#A6823C]">
                 <Sparkles className="w-4 h-4" />
-                <span>Publicar Nueva Fotografía Oficial en la Web</span>
+                <span>Publicar Multimedia Oficial en la Web (Fotos HD & Videos)</span>
               </div>
               <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#071912]">
-                Subir / Enlazar Foto de Evento Real
+                Subir / Enlazar Foto HD o Video MP4 Real
               </h2>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase mb-1">Tipo de Contenido *</label>
+                  <select
+                    value={newPhotoMediaType}
+                    onChange={(e) => setNewPhotoMediaType(e.target.value as 'image' | 'video')}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/20 text-sm font-semibold"
+                  >
+                    <option value="image">Fotografía en Alta Resolución (HD)</option>
+                    <option value="video">Video MP4 / Enlace Directo</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-xs font-bold uppercase mb-1">Título de la Escena *</label>
                   <input
@@ -1001,7 +1013,7 @@ export const AdminCMSPage: React.FC = () => {
                     required
                     value={newPhotoTitle}
                     onChange={(e) => setNewPhotoTitle(e.target.value)}
-                    placeholder="Ej. Boda Nocturna en Pérgola"
+                    placeholder={newPhotoMediaType === 'video' ? 'Ej. Video Aéreo de Jardines' : 'Ej. Boda Nocturna en Pérgola'}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/20 text-sm"
                   />
                 </div>
@@ -1024,7 +1036,7 @@ export const AdminCMSPage: React.FC = () => {
                     type="text"
                     value={newPhotoSpace}
                     onChange={(e) => setNewPhotoSpace(e.target.value)}
-                    placeholder="Ej. Salón Principal / Jardín"
+                    placeholder="Ej. Salón Principal / Carpas"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/20 text-sm"
                   />
                 </div>
@@ -1032,13 +1044,15 @@ export const AdminCMSPage: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase mb-1">URL de la Fotografía HD *</label>
+                  <label className="block text-xs font-bold uppercase mb-1">
+                    {newPhotoMediaType === 'video' ? 'URL del Video MP4 / Enlace HD *' : 'URL de la Fotografía HD *'}
+                  </label>
                   <input
                     type="url"
                     required
                     value={newPhotoUrl}
                     onChange={(e) => setNewPhotoUrl(e.target.value)}
-                    placeholder="https://..."
+                    placeholder="https://... (mp4, webp o jpg)"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/20 text-sm"
                   />
                 </div>
@@ -1048,7 +1062,7 @@ export const AdminCMSPage: React.FC = () => {
                     type="text"
                     value={newPhotoDesc}
                     onChange={(e) => setNewPhotoDesc(e.target.value)}
-                    placeholder="Montaje real para 150 invitados..."
+                    placeholder="Montaje real para 150 invitados, iluminación cálida..."
                     className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/20 text-sm"
                   />
                 </div>
@@ -1059,37 +1073,62 @@ export const AdminCMSPage: React.FC = () => {
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold bg-[#071912] text-[#E2C585] hover:bg-[#123326] cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
-                <span>Publicar Fotografía en Galería</span>
+                <span>{newPhotoMediaType === 'video' ? 'Publicar Video en la Web' : 'Publicar Fotografía en Galería'}</span>
               </button>
             </form>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {photos.map((photo) => (
-                <div
-                  key={photo.id}
-                  className="rounded-2xl bg-white border border-[#0A1F17]/10 overflow-hidden shadow-sm flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="relative h-48">
-                      <img
-                        src={photo.imageUrl}
-                        alt={photo.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] font-bold bg-[#071912]/90 text-[#E2C585]">
-                        {photo.category}
-                      </span>
+              {photos.map((photo) => {
+                const isVideo =
+                  photo.imageUrl.endsWith('.mp4') ||
+                  photo.imageUrl.endsWith('.webm') ||
+                  photo.imageUrl.includes('/videos/') ||
+                  photo.imageUrl.includes('mixkit');
+
+                return (
+                  <div
+                    key={photo.id}
+                    className="rounded-2xl bg-white border border-[#0A1F17]/10 overflow-hidden shadow-sm flex flex-col justify-between"
+                  >
+                    <div>
+                      <div className="relative h-48 bg-[#071912]">
+                        {isVideo ? (
+                          <video
+                            src={photo.imageUrl}
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={photo.imageUrl}
+                            alt={photo.title}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                        <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                          <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-[#071912]/90 text-[#E2C585]">
+                            {photo.category}
+                          </span>
+                          {isVideo && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/75 text-[#E2C585] border border-white/20">
+                              ▶ Video
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="p-4 space-y-1">
+                        <span className="text-[11px] text-[#A6823C] font-semibold">
+                          {photo.spaceName}
+                        </span>
+                        <h4 className="font-serif-luxury text-xl font-bold text-[#071912]">
+                          {photo.title}
+                        </h4>
+                        <p className="text-xs text-[#0A1F17]/70">{photo.description}</p>
+                      </div>
                     </div>
-                    <div className="p-4 space-y-1">
-                      <span className="text-[11px] text-[#A6823C] font-semibold">
-                        {photo.spaceName}
-                      </span>
-                      <h4 className="font-serif-luxury text-xl font-bold text-[#071912]">
-                        {photo.title}
-                      </h4>
-                      <p className="text-xs text-[#0A1F17]/70">{photo.description}</p>
-                    </div>
-                  </div>
 
                   <div className="p-4 bg-[#FAF7F2] border-t border-[#0A1F17]/10 flex items-center justify-between">
                     <button
@@ -1119,7 +1158,8 @@ export const AdminCMSPage: React.FC = () => {
                     </button>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}

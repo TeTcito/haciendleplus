@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Calendar, Sparkles } from 'lucide-react';
 import { useCMS } from '../context/CMSContext';
+import { useLanguage } from '../context/LanguageContext';
+import { LanguageSelector } from './LanguageSelector';
 import { buildContextualWhatsAppUrl, WhatsAppContextType } from '../utils/whatsapp';
 import { useIsMobile } from '../utils/useIsMobile';
 
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const { siteConfig } = useCMS();
+  const { t } = useLanguage();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,21 +45,21 @@ export const Navbar: React.FC = () => {
 
   // Navegación principal con las 4 páginas de enfoque comercial + Contáctanos
   const navLinks = [
-    { name: 'Inicio', desktopLabel: 'Inicio', path: '/' },
-    { name: 'Bodas y celebraciones', desktopLabel: 'Bodas y celebraciones', path: '/bodas' },
+    { name: t.nav.home, desktopLabel: t.nav.home, path: '/' },
+    { name: t.nav.weddings, desktopLabel: t.nav.weddingsDesktop, path: '/bodas' },
     {
-      name: 'Hospedaje para empresas y grupos',
-      desktopLabel: 'Hospedaje empresas y grupos',
+      name: t.nav.lodging,
+      desktopLabel: t.nav.lodgingDesktop,
       path: '/hospedaje',
     },
     {
-      name: 'Grandes eventos y experiencias corporativas',
-      desktopLabel: 'Grandes eventos y corporativo',
+      name: t.nav.corporate,
+      desktopLabel: t.nav.corporateDesktop,
       path: '/corporativo',
     },
     {
-      name: 'Contáctanos',
-      desktopLabel: 'Contáctanos',
+      name: t.nav.contact,
+      desktopLabel: t.nav.contactDesktop,
       path: '/contacto',
     },
   ];
@@ -138,8 +141,10 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Actions — Botón único Cotizar (redirige a WhatsApp) */}
-          <div className="hidden md:flex items-center gap-2 shrink-0 whitespace-nowrap">
+          {/* Right Actions — Selector de Idioma + Botón único Cotizar (redirige a WhatsApp) */}
+          <div className="hidden md:flex items-center gap-2.5 shrink-0 whitespace-nowrap">
+            <LanguageSelector variant="navbar" />
+
             <a
               href={whatsappHref}
               target="_blank"
@@ -148,12 +153,13 @@ export const Navbar: React.FC = () => {
               title="Solicitar cotización por WhatsApp al 0969817891"
             >
               <Calendar className="w-3.5 h-3.5" />
-              <span>Cotizar</span>
+              <span>{t.nav.quote}</span>
             </a>
           </div>
 
           {/* Mobile Hamburger Button (Touch-First 44px+) */}
           <div className="flex items-center gap-2 lg:hidden">
+            <LanguageSelector variant="compact" />
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -162,7 +168,7 @@ export const Navbar: React.FC = () => {
                   ? 'bg-black/5 text-[#0A1F17] border-black/15 hover:bg-black/10'
                   : 'bg-white/10 text-[#FAF7F2] border-[#C8A45D]/30 hover:bg-white/15'
               }`}
-              aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú de navegación'}
+              aria-label={mobileMenuOpen ? t.nav.closeMenu : t.nav.openMenu}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? (
@@ -198,6 +204,8 @@ export const Navbar: React.FC = () => {
             })}
           </div>
 
+          <LanguageSelector variant="mobile-drawer" />
+
           <div className="pt-3 border-t border-white/10">
             <a
               href={whatsappHref}
@@ -207,7 +215,7 @@ export const Navbar: React.FC = () => {
               className="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl text-sm font-bold bg-gradient-to-r from-[#C8A45D] to-[#DFB96E] text-[#06150F]"
             >
               <Calendar className="w-4 h-4" />
-              <span>Cotizar</span>
+              <span>{t.nav.quote}</span>
             </a>
           </div>
         </div>

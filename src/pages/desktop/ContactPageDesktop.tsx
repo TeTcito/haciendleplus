@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useCMS } from '../../context/CMSContext';
+import { useLanguage } from '../../context/LanguageContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
 import { saveContactMessageToSupabase } from '../../lib/supabase';
@@ -23,12 +24,17 @@ import { ScrollReveal } from '../../components/ScrollReveal';
 
 export const ContactPageDesktop: React.FC = () => {
   const { siteConfig, addLead } = useCMS();
+  const { language, isEn, t } = useLanguage();
 
   useDocumentMeta({
-    title: 'Contáctanos y Ubicación en Pintag | Hacienda Le Plus',
+    title: 'Contáctanos y Ubicación en Píntag | Hacienda Le Plus',
+    title_en: 'Contact Us & Location in Píntag | Hacienda Le Plus',
     description:
-      'Ponte en contacto con Hacienda Le Plus en Pintag, Quito. Agenda tu visita para bodas, eventos corporativos o reserva cabañas y suites.',
+      'Ponte en contacto con Hacienda Le Plus en Píntag, Quito. Agenda tu visita para bodas, eventos corporativos o reserva hospedaje de larga estadía.',
+    description_en:
+      'Contact Hacienda Le Plus in Píntag, Quito. Schedule your commercial visit for corporate events, weddings, or long-stay lodging.',
     canonicalPath: '/contacto',
+    lang: language,
   });
 
   // Estado del formulario de contacto

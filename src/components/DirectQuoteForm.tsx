@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Send, CheckCircle2, Mail, Calendar, Users, Sparkles } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useCMS } from '../context/CMSContext';
+import { useLanguage } from '../context/LanguageContext';
 import { LeadSubmission } from '../types/cms';
 import { buildContextualWhatsAppUrl, WhatsAppContextType } from '../utils/whatsapp';
 
@@ -22,6 +23,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
   onSuccessClose,
 }) => {
   const { siteConfig, addLead } = useCMS();
+  const { t } = useLanguage();
   const location = useLocation();
 
   const [clientName, setClientName] = useState('');
@@ -100,29 +102,31 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
       `Hola equipo de Hacienda Le Plus,\n\nHe registrado mi solicitud en la web:\n- Nombre: ${submittedLead.clientName}\n- Servicio / Referencia: ${submittedLead.organizationOrCouple}\n- Fecha tentativa: ${submittedLead.tentativeDate}\n- Invitados / Huéspedes: ${submittedLead.estimatedVolume}\n- Teléfono / WhatsApp: ${submittedLead.phone}\n- Correo: ${submittedLead.email}\n- Notas adicionales: ${submittedLead.notes || 'Ninguna'}\n\nQuedo atento(a) a su propuesta.`
     );
 
+    const successTitleText = t.forms.successTitle.replace('{name}', submittedLead.clientName);
+    const successDescText = t.forms.successDesc
+      .replace('{email}', submittedLead.targetCorporateEmail)
+      .replace('{date}', submittedLead.tentativeDate);
+
     return (
       <div
-        className={`rounded-2xl p-6 sm:p-8 border ${
+        className={`p-6 sm:p-8 rounded-3xl border text-center space-y-5 animate-fadeIn ${
           darkTheme
-            ? 'bg-[#0A1F17] border-[#C8A45D]/40 text-[#FAF7F2]'
-            : 'bg-white border-[#C8A45D]/40 text-[#0A1F17]'
-        } space-y-5 text-center`}
+            ? 'bg-[#06150F] border-[#C8A45D]/40 text-[#FAF7F2]'
+            : 'bg-white border-[#0A1F17]/15 text-[#0A1F17]'
+        }`}
       >
         <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-400 flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-8 h-8" />
         </div>
         <div className="space-y-2">
           <span className="text-xs uppercase tracking-[0.2em] text-[#C8A45D] font-semibold">
-            Solicitud Registrada en Sistema & Bandeja Oficial
+            {t.forms.successTag}
           </span>
           <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold">
-            Gracias, {submittedLead.clientName}. Recibimos tu solicitud.
+            {successTitleText}
           </h3>
           <p className={`text-sm max-w-lg mx-auto ${darkTheme ? 'text-[#FAF7F2]/80' : 'text-[#0A1F17]/75'}`}>
-            Tu requerimiento ha sido asignado a la bandeja corporativa{' '}
-            <strong className="text-[#C8A45D]">{submittedLead.targetCorporateEmail}</strong> y al Panel
-            Administrativo (CMS). Revisaremos tu fecha ({submittedLead.tentativeDate}) para enviarte el siguiente
-            paso.
+            {successDescText}
           </p>
         </div>
 
@@ -134,7 +138,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-semibold text-sm shadow-lg transition-all"
           >
             <WhatsAppIcon variant="monochrome" className="w-4 h-4 text-white fill-current" />
-            <span>Agilizar por WhatsApp con mis datos</span>
+            <span>{t.forms.whatsappFastTrack}</span>
           </a>
 
           <a
@@ -142,7 +146,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-full border border-[#C8A45D]/50 text-[#C8A45D] hover:bg-[#C8A45D]/10 font-semibold text-xs transition-all"
           >
             <Mail className="w-4 h-4" />
-            <span>Enviar copia desde mi cliente de correo</span>
+            <span>{t.forms.emailClientCopy}</span>
           </a>
         </div>
 
@@ -157,7 +161,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
             }}
             className="text-xs underline opacity-70 hover:opacity-100 cursor-pointer"
           >
-            Enviar otra consulta
+            {t.forms.anotherInquiry}
           </button>
         </div>
       </div>
@@ -184,7 +188,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
       >
         <span className="flex items-center gap-1.5 font-medium">
           <Sparkles className="w-3.5 h-3.5 text-[#C8A45D] shrink-0" />
-          <span>Destino directo según servicio:</span>
+          <span>{t.forms.routingNotice}</span>
         </span>
         <span className="font-mono font-semibold text-[#C8A45D]">{targetEmail}</span>
       </div>
@@ -192,7 +196,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="quote-service" className={labelClasses}>
-            ¿Qué deseas cotizar o reservar? *
+            {t.forms.serviceLabel}
           </label>
           <select
             id="quote-service"
@@ -202,35 +206,35 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
             required
           >
             <option value="grupos" className="bg-[#071912] text-white">
-              Hospedaje para Empresas y Grupos (Larga Estadía: Prioridad Comercial)
+              {t.forms.serviceOptions.grupos}
             </option>
             <option value="corporativo" className="bg-[#071912] text-white">
-              Grandes Eventos y Experiencias Corporativas (Fin de Año, Integración, Convenciones)
+              {t.forms.serviceOptions.corporativo}
             </option>
             <option value="bodas" className="bg-[#071912] text-white">
-              Bodas y Celebraciones Sociales
+              {t.forms.serviceOptions.bodas}
             </option>
             <option value="hospedaje" className="bg-[#071912] text-white">
-              Hospedaje Complementario para Invitados / Personal
+              {t.forms.serviceOptions.hospedaje}
             </option>
             <option value="escapadas" className="bg-[#071912] text-white">
-              Servicios Complementarios (Piscina, Restaurante y Recreación)
+              {t.forms.serviceOptions.escapadas}
             </option>
             <option value="visita" className="bg-[#071912] text-white">
-              Agendar Visita Comercial en Quito–Píntag
+              {t.forms.serviceOptions.visita}
             </option>
           </select>
         </div>
 
         <div>
           <label htmlFor="quote-name" className={labelClasses}>
-            Nombre y Apellido *
+            {t.forms.nameLabel}
           </label>
           <input
             id="quote-name"
             type="text"
             required
-            placeholder="Ej. Carolina Mendoza"
+            placeholder={t.forms.namePlaceholder}
             value={clientName}
             onChange={(e) => setClientName(e.target.value)}
             className={inputClasses}
@@ -241,13 +245,13 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="quote-phone" className={labelClasses}>
-            WhatsApp / Teléfono Móvil *
+            {t.forms.phoneLabel}
           </label>
           <input
             id="quote-phone"
             type="tel"
             required
-            placeholder="Ej. 099 123 4567"
+            placeholder={t.forms.phonePlaceholder}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className={inputClasses}
@@ -256,13 +260,13 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
 
         <div>
           <label htmlFor="quote-email" className={labelClasses}>
-            Correo Electrónico *
+            {t.forms.emailLabel}
           </label>
           <input
             id="quote-email"
             type="email"
             required
-            placeholder="nombre@empresa.com"
+            placeholder={t.forms.emailPlaceholder}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className={inputClasses}
@@ -274,7 +278,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
         <div>
           <label htmlFor="quote-date" className={labelClasses}>
             <span className="inline-flex items-center gap-1">
-              <Calendar className="w-3.5 h-3.5" /> Fecha Tentativa
+              <Calendar className="w-3.5 h-3.5" /> {t.forms.dateLabel}
             </span>
           </label>
           <input
@@ -289,13 +293,13 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
         <div>
           <label htmlFor="quote-volume" className={labelClasses}>
             <span className="inline-flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" /> N.º Invitados / Huéspedes
+              <Users className="w-3.5 h-3.5" /> {t.forms.volumeLabel}
             </span>
           </label>
           <input
             id="quote-volume"
             type="text"
-            placeholder="Ej. 120 invitados / 2 noches"
+            placeholder={t.forms.volumePlaceholder}
             value={estimatedVolume}
             onChange={(e) => setEstimatedVolume(e.target.value)}
             className={inputClasses}
@@ -304,12 +308,12 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
 
         <div>
           <label htmlFor="quote-org" className={labelClasses}>
-            Empresa / Familia / Paquete
+            {t.forms.organizationLabel}
           </label>
           <input
             id="quote-org"
             type="text"
-            placeholder="Opcional: nombre de empresa o paquete"
+            placeholder={t.forms.organizationPlaceholder}
             value={organizationOrCouple}
             onChange={(e) => setOrganizationOrCouple(e.target.value)}
             className={inputClasses}
@@ -320,12 +324,12 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
       {!compact && (
         <div>
           <label htmlFor="quote-notes" className={labelClasses}>
-            Detalles adicionales (hospedaje requerido, alimentación, horario de visita)
+            {t.forms.notesLabel}
           </label>
           <textarea
             id="quote-notes"
             rows={3}
-            placeholder="Cuéntanos brevemente qué tienes en mente para preparar tu propuesta..."
+            placeholder={t.forms.notesPlaceholder}
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             className={inputClasses}
@@ -339,7 +343,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
           className="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full text-sm font-bold bg-gradient-to-r from-[#C8A45D] to-[#DFB96E] text-[#06150F] hover:brightness-110 shadow-lg shadow-[#C8A45D]/20 transition-all cursor-pointer"
         >
           <Send className="w-4 h-4" />
-          <span>Solicitar Propuesta Oficial</span>
+          <span>{t.forms.submitBtn}</span>
         </button>
 
         <a
@@ -360,7 +364,7 @@ export const DirectQuoteForm: React.FC<DirectQuoteFormProps> = ({
           }`}
         >
           <WhatsAppIcon variant="monochrome" className="w-4 h-4 text-white fill-current" />
-          <span>Cotizar por WhatsApp · 0969817891</span>
+          <span>{t.common.quoteWhatsapp} · 0969817891</span>
         </a>
       </div>
     </form>

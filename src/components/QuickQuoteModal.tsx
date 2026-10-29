@@ -1,10 +1,12 @@
 import React from 'react';
 import { X, Sparkles } from 'lucide-react';
 import { useCMS } from '../context/CMSContext';
+import { useLanguage } from '../context/LanguageContext';
 import { DirectQuoteForm } from './DirectQuoteForm';
 
 export const QuickQuoteModal: React.FC = () => {
   const { isQuoteModalOpen, quoteModalPreset, closeQuoteModal, siteConfig } = useCMS();
+  const { t, isEn } = useLanguage();
 
   if (!isQuoteModalOpen) return null;
 
@@ -20,7 +22,7 @@ export const QuickQuoteModal: React.FC = () => {
           type="button"
           onClick={closeQuoteModal}
           className="absolute top-5 right-5 p-2 rounded-full bg-white/10 text-[#FAF7F2]/80 hover:text-white hover:bg-white/20 transition-colors cursor-pointer"
-          aria-label="Cerrar ventana de cotización"
+          aria-label={t.modals.closeAria}
         >
           <X className="w-5 h-5" />
         </button>
@@ -28,13 +30,15 @@ export const QuickQuoteModal: React.FC = () => {
         <div className="mb-6 pr-8">
           <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] text-[#C8A45D] font-semibold mb-1.5">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Atención Comercial Directa · Pintag, Quito</span>
+            <span>{t.modals.quickQuoteBadge}</span>
           </div>
           <h2 id="modal-quote-title" className="font-serif-luxury text-3xl sm:text-4xl font-semibold text-white">
-            Cuéntanos tu fecha. Hagamos realidad tu encuentro.
+            {t.modals.quickQuoteTitle}
           </h2>
           <p className="text-xs sm:text-sm text-[#FAF7F2]/75 mt-1">
-            {siteConfig.responseCommitment}
+            {isEn
+              ? 'Direct quotes tailored to headcount and duration via WhatsApp at +593 96 981 7891 and personalized assistance.'
+              : siteConfig.responseCommitment}
           </p>
         </div>
 
