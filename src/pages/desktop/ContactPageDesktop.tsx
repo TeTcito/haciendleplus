@@ -18,6 +18,7 @@ import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { useCMS } from '../../context/CMSContext';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { useDocumentMeta } from '../../utils/seo';
+import { saveContactMessageToSupabase } from '../../lib/supabase';
 import { ScrollReveal } from '../../components/ScrollReveal';
 
 export const ContactPageDesktop: React.FC = () => {
@@ -66,7 +67,7 @@ export const ContactPageDesktop: React.FC = () => {
         serviceType = 'hospedaje';
       }
 
-      // Registro oficial del lead en el CMS
+      // Registro oficial del lead en el CMS y Supabase
       addLead({
         clientName: formData.name,
         organizationOrCouple: formData.company || 'Contacto Directo',
@@ -78,6 +79,14 @@ export const ContactPageDesktop: React.FC = () => {
         notes: `[Asunto: ${formData.subject || 'Contacto Web'}] ${formData.message}`,
         targetCorporateEmail: siteConfig.corporateEmails.general,
         sourcePage: '/contacto',
+      });
+
+      saveContactMessageToSupabase({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
       });
 
       setSubmitted(true);

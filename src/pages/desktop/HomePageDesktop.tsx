@@ -25,6 +25,7 @@ import {
 import { useCMS } from '../../context/CMSContext';
 import { useDocumentMeta } from '../../utils/seo';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
+import { saveReviewToSupabase, fetchReviewsFromSupabase } from '../../lib/supabase';
 
 /* ============================================================================
    REAL-TIME VIEWPORT SCROLL REVEAL (ENTRANCE & EXIT ON SCROLL DOWN / UP)
@@ -364,6 +365,34 @@ export const HomePageDesktop: React.FC = () => {
   const [newReviewComment, setNewReviewComment] = useState('');
   const [reviewSubmittedSuccess, setReviewSubmittedSuccess] = useState(false);
 
+  // Sincronizar reseñas aprobadas desde Supabase
+  useEffect(() => {
+    fetchReviewsFromSupabase().then((remote) => {
+      if (remote && remote.length > 0) {
+        const avatarMap: Record<string, string> = {
+          'Bodas & Recepciones': '/images/avatars/sofia-sebastian.jpg',
+          'Corporativo & GADs': '/images/avatars/gad-pichincha.jpg',
+          'Delegación ONG / HXP': '/images/avatars/mision-hxp.jpg',
+          'Suites & Zona Húmeda': '/images/avatars/familia-andrade.jpg',
+          'Gastronomía & Eventos': '/images/avatars/valeria-mateo.jpg',
+        };
+        const mapped: ClientReviewItem[] = remote.map((r: any) => ({
+          id: r.id,
+          author: r.author,
+          role: r.role,
+          rating: r.rating || 5,
+          comment: r.comment,
+          avatarUrl: avatarMap[r.role] || '/images/avatars/dr-carlos.jpg',
+        }));
+        setReviews((prev) => {
+          const remoteIds = new Set(mapped.map((m) => m.id));
+          const uniqueLocal = prev.filter((p) => !remoteIds.has(p.id));
+          return [...mapped, ...uniqueLocal];
+        });
+      }
+    });
+  }, []);
+
   // Transición suave de entrada/salida al cambiar el ambiente en Hero
   const handleSelectHeroStop = (nextIdx: number) => {
     if (nextIdx === activeCardIndex || heroCardTransition !== 'visible') return;
@@ -449,6 +478,14 @@ export const HomePageDesktop: React.FC = () => {
     } catch {
       // ignore storage errors
     }
+
+    // Guardar en Supabase
+    saveReviewToSupabase({
+      author: created.author,
+      role: created.role,
+      rating: created.rating,
+      comment: created.comment,
+    });
 
     setReviewSubmittedSuccess(true);
     setTimeout(() => {

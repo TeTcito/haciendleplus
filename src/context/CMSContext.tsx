@@ -9,6 +9,14 @@ import {
   LeadSubmission,
   LeadStatus,
 } from '../types/cms';
+import {
+  saveLeadToSupabase,
+  fetchLeadsFromSupabase,
+  updateLeadStatusInSupabase,
+  deleteLeadFromSupabase,
+  saveSiteConfigToSupabase,
+  fetchSiteConfigFromSupabase,
+} from '../lib/supabase';
 
 const STORAGE_KEY = 'hacienda_leplus_cms_v3';
 
@@ -528,11 +536,38 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, [state]);
 
+  // Sincronización inicial desde Supabase
+  useEffect(() => {
+    fetchLeadsFromSupabase().then((remoteLeads) => {
+      if (remoteLeads && remoteLeads.length > 0) {
+        setState((prev) => {
+          // Unir leads remotos con locales evitando duplicados
+          const existingIds = new Set(remoteLeads.map((l) => l.id));
+          const uniqueLocal = prev.leads.filter((l) => !existingIds.has(l.id));
+          return { ...prev, leads: [...remoteLeads, ...uniqueLocal] };
+        });
+      }
+    });
+
+    fetchSiteConfigFromSupabase().then((remoteConfig) => {
+      if (remoteConfig) {
+        setState((prev) => ({
+          ...prev,
+          siteConfig: { ...prev.siteConfig, ...remoteConfig },
+        }));
+      }
+    });
+  }, []);
+
   const updateSiteConfig = (newConfig: Partial<SiteConfig>) => {
-    setState((prev) => ({
-      ...prev,
-      siteConfig: { ...prev.siteConfig, ...newConfig },
-    }));
+    setState((prev) => {
+      const merged = { ...prev.siteConfig, ...newConfig };
+      saveSiteConfigToSupabase(merged);
+      return {
+        ...prev,
+        siteConfig: merged,
+      };
+    });
   };
 
   const updatePackage = (updated: ServicePackage) => {
@@ -631,6 +666,9 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       leads: [newLead, ...prev.leads],
     }));
 
+    // Persistir asíncronamente en Supabase
+    saveLeadToSupabase(newLead);
+
     return newLead;
   };
 
@@ -639,6 +677,7 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...prev,
       leads: prev.leads.map((l) => (l.id === id ? { ...l, status } : l)),
     }));
+    updateLeadStatusInSupabase(id, status);
   };
 
   const deleteLead = (id: string) => {
@@ -646,6 +685,7 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...prev,
       leads: prev.leads.filter((l) => l.id !== id),
     }));
+    deleteLeadFromSupabase(id);
   };
 
   const resetToDefaults = () => {
