@@ -316,7 +316,7 @@ export const HomePageMobile: React.FC = () => {
     return [];
   });
   const defaultReviews = getClientReviews(isEn);
-  const reviews = userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
+  const reviews = isEn ? defaultReviews : userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
 
   const [reviewStartIndex, setReviewStartIndex] = useState(0);
   const [reviewTransition, setReviewTransition] = useState<'visible' | 'exiting-left' | 'exiting-right'>('visible');

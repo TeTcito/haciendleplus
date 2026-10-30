@@ -216,7 +216,16 @@ export const LodgingPageDesktop: React.FC = () => {
 
   // Lista de habitaciones y cabañas con soporte bilingüe (Prioridad Larga Estadía Empresas y Grupos)
   const defaultCabins = getCabinsData(isEn);
-  const displayCabins: CabinRoom[] = cabins && cabins.length >= 4 ? cabins.slice(0, 4) : defaultCabins;
+  const displayCabins: CabinRoom[] = isEn
+    ? defaultCabins.map((enCabin) => {
+        const cmsCabin = cabins?.find((c) => c.id === enCabin.id);
+        return cmsCabin
+          ? { ...enCabin, pricePerNight: cmsCabin.pricePerNight, image: cmsCabin.image }
+          : enCabin;
+      })
+    : cabins && cabins.length >= 4
+    ? cabins.slice(0, 4)
+    : defaultCabins;
 
   return (
     <main className="w-full bg-[#FAF7F2] text-[#0A1F17] overflow-x-hidden selection:bg-[#C8A45D]/30 selection:text-[#06150F]">
@@ -646,7 +655,7 @@ export const LodgingPageDesktop: React.FC = () => {
                             </li>
                             <li className="flex items-center gap-2">
                               <Waves className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                              <span>{isEn ? 'Comp.: Pool, restaurant & sports fields' : 'Comp.: Piscina, restaurante y canchas'}</span>
+                              <span>{isEn ? 'Included: Pool, restaurant & sports fields' : 'Comp.: Piscina, restaurante y canchas'}</span>
                             </li>
                           </ul>
                         </div>
@@ -883,7 +892,7 @@ export const LodgingPageDesktop: React.FC = () => {
                       </div>
                       <div className="p-4 space-y-2">
                         <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {isEn ? 'Comp.: Pool & Spa' : 'Comp.: Piscina & Bienestar'}
+                          {isEn ? 'Amenity: Pool & Spa' : 'Comp.: Piscina & Bienestar'}
                         </h4>
                         <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
                           {isEn
@@ -926,7 +935,7 @@ export const LodgingPageDesktop: React.FC = () => {
                       </div>
                       <div className="p-4 space-y-2">
                         <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {isEn ? 'Comp.: Sports & Nature' : 'Comp.: Recreación & Deportes'}
+                          {isEn ? 'Amenity: Sports & Nature' : 'Comp.: Recreación & Deportes'}
                         </h4>
                         <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
                           {isEn

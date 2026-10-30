@@ -277,7 +277,17 @@ export const LodgingPageMobile: React.FC = () => {
   };
 
   // Lista de habitaciones y cabañas con nombres en español o inglés (Prioridad Larga Estadía Empresas y Grupos)
-  const displayCabins: CabinRoom[] = cabins && cabins.length >= 4 ? cabins.slice(0, 4) : getCabinsData(isEn);
+  const defaultCabins = getCabinsData(isEn);
+  const displayCabins: CabinRoom[] = isEn
+    ? defaultCabins.map((enCabin) => {
+        const cmsCabin = cabins?.find((c) => c.id === enCabin.id);
+        return cmsCabin
+          ? { ...enCabin, pricePerNight: cmsCabin.pricePerNight, image: cmsCabin.image }
+          : enCabin;
+      })
+    : cabins && cabins.length >= 4
+    ? cabins.slice(0, 4)
+    : defaultCabins;
   const lodgingServices = getLodgingServicesCards(isEn);
 
   return (

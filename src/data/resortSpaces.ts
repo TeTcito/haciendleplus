@@ -341,7 +341,7 @@ export const getSection2Cards = (isEn: boolean) => [
     badge: isEn ? 'Exclusive Weddings' : 'Bodas Exclusivas',
   },
   {
-    title: isEn ? 'Comp.: Pool & Sports' : 'Comp.: Piscina & Canchas',
+    title: isEn ? 'Amenity: Pool & Sports' : 'Comp.: Piscina & Canchas',
     desc: isEn
       ? '14×6m pool, whirlpools & sports facilities elevating your retreat.'
       : 'Piscina 14×6m, hidromasajes y deportes que fortalecen tu evento.',
@@ -350,7 +350,7 @@ export const getSection2Cards = (isEn: boolean) => [
     badge: isEn ? 'Complementary' : 'Complementario',
   },
   {
-    title: isEn ? 'Comp.: Restaurant' : 'Comp.: Restaurante',
+    title: isEn ? 'Amenity: Restaurant' : 'Comp.: Restaurante',
     desc: isEn
       ? '3-course meals, BBQ & dedicated in-house catering at resort.'
       : 'Alimentación 3 tiempos, parrilladas y catering propio en hacienda.',
