@@ -210,11 +210,11 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 
 export const HomePageDesktop: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
-  const { language, isEn, t } = useLanguage();
+  const { language, isEn, t, tr } = useLanguage();
 
-  const heroStopCards = getHeroStopCards(isEn);
-  const portfolioServices = getPortfolioServices(isEn);
-  const section2Cards = getSection2Cards(isEn);
+  const heroStopCards = getHeroStopCards(language);
+  const portfolioServices = getPortfolioServices(language);
+  const section2Cards = getSection2Cards(language);
 
   useDocumentMeta({
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
@@ -250,8 +250,8 @@ export const HomePageDesktop: React.FC = () => {
     }
     return [];
   });
-  const defaultReviews = getClientReviews(isEn);
-  const reviews = isEn ? defaultReviews : userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
+  const defaultReviews = getClientReviews(language);
+  const reviews = language !== 'es' ? defaultReviews : userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
 
   const [reviewStartIndex, setReviewStartIndex] = useState(0);
   const [reviewTransition, setReviewTransition] = useState<'visible' | 'exiting-left' | 'exiting-right'>('visible');
@@ -478,50 +478,25 @@ export const HomePageDesktop: React.FC = () => {
               <div className="lg:col-span-7 space-y-6">
                 <ScrollReveal direction="down" delay={40} distance={50}>
                   <p className="text-[11px] sm:text-xs font-bold uppercase tracking-[0.26em] text-[#E2C585]">
-                    {isEn ? t.hero.overline : siteConfig.heroOverline}
+                    {language !== 'es' ? t.hero.overline : (siteConfig.heroOverline || t.hero.overline)}
                   </p>
                 </ScrollReveal>
 
                 <ScrollReveal direction="left" delay={120} distance={85}>
                   <h1 className="font-sans-ui text-4xl sm:text-6xl lg:text-[58px] font-extrabold text-white leading-[1.06] tracking-tight max-w-2xl">
-                    {isEn ? (
-                      <>
-                        Corporate Long-Stay
-                        <br />
-                        &amp; <span className="text-[#E5C98B]">Major Events Venue</span>
-                        <br />
-                        in Quito – Píntag.
-                      </>
-                    ) : (
-                      <>
-                        Hospedaje de Larga
-                        <br />
-                        Estadía y <span className="text-[#E5C98B]">Grandes Eventos</span>
-                        <br />
-                        en Quito – Píntag.
-                      </>
-                    )}
+                    {tr("Corporate Long-Stay", "Hospedaje de Larga")}
+                    <br />
+                    {tr("& ", "Estadía y ")}<span className="text-[#E5C98B]">{tr("Major Events Venue", "Grandes Eventos")}</span>
+                    <br />
+                    {tr("in Quito – Píntag.", "en Quito – Píntag.")}
                   </h1>
                 </ScrollReveal>
 
                 <ScrollReveal direction="left" delay={210} distance={80}>
                   <p className="text-sm sm:text-base lg:text-[17px] text-[#FAF7F2]/90 max-w-xl leading-relaxed font-normal">
-                    {isEn ? (
-                      <>
-                        Welcome to <strong className="text-white font-semibold">Hacienda Le Plus</strong> in Quito–Píntag: commercial priority in long-stay lodging with{' '}
-                        <strong className="text-[#E2C585] font-semibold">
-                          14 private rooms (28 to 80 guests)
-                        </strong>
-                        , macro-events and weddings, featuring heated swimming pool, on-site dining and sports facilities.
-                      </>
-                    ) : (
-                      <>
-                        Presentación de <strong className="text-white font-semibold">Hacienda Le Plus</strong> en Quito–Píntag: alojamiento corporativo y grupal con{' '}
-                        <strong className="text-[#E2C585] font-semibold">
-                          14 habitaciones (28 a 80 huéspedes)
-                        </strong>
-                        , macroeventos empresariales y bodas exclusivas, fortalecidos por nuestra piscina temperada, restaurante propio y áreas deportivas.
-                      </>
+                    {tr(
+                      "Welcome to Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging with 14 private rooms (28 to 80 guests), macro-events and weddings, featuring heated swimming pool, on-site dining and sports facilities.",
+                      "Presentación de Hacienda Le Plus en Quito–Píntag: alojamiento corporativo y grupal con 14 habitaciones (28 a 80 huéspedes), macroeventos empresariales y bodas exclusivas, fortalecidos por nuestra piscina temperada, restaurante propio y áreas deportivas."
                     )}
                   </p>
                 </ScrollReveal>
@@ -536,7 +511,7 @@ export const HomePageDesktop: React.FC = () => {
                       className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#E5C98B] hover:bg-[#C8A45D] text-[#06150F] font-bold text-xs sm:text-sm shadow-xl shadow-black/30 transition-all cursor-pointer"
                     >
                       <Search className="w-4 h-4 text-[#06150F]/80" />
-                      <span>{isEn ? 'Request Quote' : 'Solicitar Cotización'}</span>
+                      <span>{tr("Request Quote", "Solicitar Cotización")}</span>
                       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </a>
 
@@ -544,7 +519,7 @@ export const HomePageDesktop: React.FC = () => {
                       href="#rutas-comerciales"
                       className="inline-flex items-center gap-2 px-4 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF7F2] border border-white/20 backdrop-blur-md text-xs font-semibold transition-all"
                     >
-                      <span>{isEn ? 'Explore 3 Pillars' : 'Ver 3 Servicios'}</span>
+                      <span>{tr("Explore 3 Pillars", "Ver 3 Servicios")}</span>
                     </a>
 
                     <button
@@ -555,12 +530,8 @@ export const HomePageDesktop: React.FC = () => {
                       <Play className="w-3.5 h-3.5 fill-current" />
                       <span>
                         {videoEnabled
-                          ? isEn
-                            ? 'View Real Photo'
-                            : 'Ver Foto Real'
-                          : isEn
-                          ? 'HD Video Tour'
-                          : 'Video HD'}
+                          ? tr("View Real Photo", "Ver Foto Real")
+                          : tr("HD Video Tour", "Video HD")}
                       </span>
                     </button>
                   </div>
@@ -593,14 +564,10 @@ export const HomePageDesktop: React.FC = () => {
                     </div>
                     <div className="text-xs sm:text-sm text-[#FAF7F2]/90 leading-snug">
                       <strong className="text-white block font-semibold">
-                        {isEn
-                          ? 'Priority in Corporate Long Stays, Major Events & Weddings'
-                          : 'Prioridad en Larga Estadía Empresarial, Grandes Eventos y Bodas'}
+                        {tr("Priority in Corporate Long Stays, Major Events & Weddings", "Prioridad en Larga Estadía Empresarial, Grandes Eventos y Bodas")}
                       </strong>
                       <span className="text-[#E2C585]/90 text-xs">
-                        {isEn
-                          ? 'Quito–Píntag · San Juan de la Tola · WhatsApp +593 96 981 7891'
-                          : 'Ubicación Quito–Píntag · Barrio San Juan de la Tola · WhatsApp 0969817891'}
+                        {tr("Quito–Píntag · San Juan de la Tola · WhatsApp +593 96 981 7891", "Ubicación Quito–Píntag · Barrio San Juan de la Tola · WhatsApp 0969817891")}
                       </span>
                     </div>
                   </div>
@@ -630,7 +597,7 @@ export const HomePageDesktop: React.FC = () => {
                       />
                     </svg>
                     <span className="font-handwritten text-2xl sm:text-3xl text-[#E5C98B] -rotate-3 tracking-wide">
-                      {isEn ? 'Upcoming Gathering' : 'Próximo encuentro'}
+                      {tr("Upcoming Gathering", "Próximo encuentro")}
                     </span>
                   </div>
                 </ScrollReveal>
@@ -682,8 +649,8 @@ export const HomePageDesktop: React.FC = () => {
                         <button
                           type="button"
                           onClick={handleNextStop}
-                          title={isEn ? 'Switch featured venue' : 'Cambiar ambiente destacado'}
-                          aria-label={isEn ? 'Next venue at Hacienda Le Plus' : 'Siguiente ambiente de Hacienda Le Plus'}
+                          title={tr("Switch featured venue", "Cambiar ambiente destacado")}
+                          aria-label={tr("Next venue at Hacienda Le Plus", "Siguiente ambiente de Hacienda Le Plus")}
                           className="absolute -top-5 right-4 w-10 h-10 rounded-full bg-[#C8A45D] hover:bg-[#071912] text-[#071912] hover:text-[#E5C98B] shadow-md border-2 border-white flex items-center justify-center transition-colors cursor-pointer z-10"
                         >
                           <ArrowRight className="w-4 h-4" />
@@ -712,7 +679,7 @@ export const HomePageDesktop: React.FC = () => {
                               to={currentStop.route}
                               className="text-[#A6823C] hover:text-[#071912] font-bold underline whitespace-nowrap"
                             >
-                              {isEn ? 'Learn more' : 'Ver más'}
+                              {tr("Learn more", "Ver más")}
                             </Link>
                           </div>
                         </div>
@@ -731,12 +698,12 @@ export const HomePageDesktop: React.FC = () => {
                               }`}
                             >
                               {item.id === 'larga-estadia'
-                                ? (isEn ? 'Lodging' : 'Estadía')
+                                ? (tr("Lodging", "Estadía"))
                                 : item.id === 'grandes-eventos'
-                                ? (isEn ? 'Events' : 'Eventos')
+                                ? (tr("Events", "Eventos"))
                                 : item.id === 'bodas'
-                                ? (isEn ? 'Weddings' : 'Bodas')
-                                : (isEn ? 'Resort' : 'Hacienda')}
+                                ? (tr("Weddings", "Bodas"))
+                                : (tr("Resort", "Hacienda"))}
                             </button>
                           ))}
                         </div>
@@ -804,10 +771,10 @@ export const HomePageDesktop: React.FC = () => {
               <ScrollReveal direction="left" delay={40} distance={85}>
                 <div>
                   <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C88242] block mb-1">
-                    {isEn ? 'DIRECT ACCESS · 3 MAIN PILLARS & AMENITIES' : 'ACCESO DIRECTO · 3 SERVICIOS PRINCIPALES Y COMPLEMENTOS'}
+                    {tr("DIRECT ACCESS · 3 MAIN PILLARS & AMENITIES", "ACCESO DIRECTO · 3 SERVICIOS PRINCIPALES Y COMPLEMENTOS")}
                   </span>
                   <h3 className="font-sans-ui text-3xl sm:text-4xl font-extrabold text-[#071912] tracking-tight">
-                    {isEn ? 'Our Main Services and Amenities' : 'Nuestros Servicios Principales y Complementos'}
+                    {tr("Our Main Services and Amenities", "Nuestros Servicios Principales y Complementos")}
                   </h3>
                 </div>
               </ScrollReveal>
@@ -926,40 +893,29 @@ export const HomePageDesktop: React.FC = () => {
             <div className="lg:col-span-6 space-y-6">
               <ScrollReveal direction="right" delay={80} distance={90}>
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#C88242] block mb-1.5">
-                  {isEn
-                    ? 'ABOUT HACIENDA LE PLUS · QUITO–PÍNTAG VENUE'
-                    : 'PRESENTACIÓN DE HACIENDA LE PLUS · UBICACIÓN QUITO–PÍNTAG'}
+                  {tr("ABOUT HACIENDA LE PLUS · QUITO–PÍNTAG VENUE", "PRESENTACIÓN DE HACIENDA LE PLUS · UBICACIÓN QUITO–PÍNTAG")}
                 </span>
                 <h2
                   id="heading-rutas"
                   className="font-serif-luxury text-3xl sm:text-5xl font-semibold text-[#071912] leading-tight"
                 >
-                  {isEn ? (
-                    <>
-                      Exclusive resort facilities in{' '}
-                      <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em> for stays and major events.
-                    </>
-                  ) : (
-                    <>
-                      Instalaciones exclusivas en{' '}
-                      <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em> para estadías y eventos.
-                    </>
-                  )}
+                  {tr("Exclusive resort facilities in", "Instalaciones exclusivas en")}{' '}
+                  <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em>{' '}
+                  {tr("for stays and major events.", "para estadías y eventos.")}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="right" delay={180} distance={85}>
                 <p className="text-sm sm:text-base text-[#0A1F17]/75 leading-relaxed">
-                  {isEn ? (
-                    <>
-                      Located in <strong>Quito–Píntag (San Juan de la Tola, Calle Deus No. 100)</strong>, just <strong>40 minutes from Quito</strong> and{' '}
-                      <strong>30 minutes from Mariscal Sucre International Airport</strong>. Our facilities integrate long-stay lodging for corporate teams and groups (14 rooms for 28 to 80 guests), gala tents and lawns for macro-events and weddings, alongside a heated pool, restaurant, and sports facilities as value-added amenities.
-                    </>
-                  ) : (
-                    <>
-                      Ubicada en <strong>Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100)</strong>, a solo <strong>40 minutos de Quito</strong> y{' '}
-                      <strong>30 minutos del Aeropuerto Internacional Mariscal Sucre</strong>. Nuestras instalaciones integran hospedaje de larga estadía para empresas y grupos (14 habitaciones para 28 a 80 personas), carpas y jardines para grandes eventos y bodas, junto con piscina temperada, restaurante y actividades recreativas como complementos que fortalecen tu experiencia.
-                    </>
+                  {tr("Located in", "Ubicada en")}{' '}
+                  <strong>{tr("Quito–Píntag (San Juan de la Tola, Calle Deus No. 100)", "Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100)")}</strong>,{' '}
+                  {tr("just", "a solo")}{' '}
+                  <strong>{tr("40 minutes from Quito", "40 minutos de Quito")}</strong>{' '}
+                  {tr("and", "y")}{' '}
+                  <strong>{tr("30 minutes from Mariscal Sucre International Airport", "30 minutos del Aeropuerto Internacional Mariscal Sucre")}</strong>.{' '}
+                  {tr(
+                    "Our facilities integrate long-stay lodging for corporate teams and groups (14 rooms for 28 to 80 guests), gala tents and lawns for macro-events and weddings, alongside a heated pool, restaurant, and sports facilities as value-added amenities.",
+                    "Nuestras instalaciones integran hospedaje de larga estadía para empresas y grupos (14 habitaciones para 28 a 80 personas), carpas y jardines para grandes eventos y bodas, junto con piscina temperada, restaurante y actividades recreativas como complementos que fortalecen tu experiencia."
                   )}
                 </p>
               </ScrollReveal>
@@ -975,7 +931,7 @@ export const HomePageDesktop: React.FC = () => {
                       <BedDouble className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {isEn ? '14 Rooms' : '14 Habitaciones'}
+                      {tr("14 Rooms", "14 Habitaciones")}
                     </span>
                   </Link>
                 </ScrollReveal>
@@ -989,7 +945,7 @@ export const HomePageDesktop: React.FC = () => {
                       <Wifi className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {isEn ? 'Fiber & Halls' : 'Fibra & Salones'}
+                      {tr("Fiber & Halls", "Fibra & Salones")}
                     </span>
                   </Link>
                 </ScrollReveal>
@@ -1003,7 +959,7 @@ export const HomePageDesktop: React.FC = () => {
                       <Utensils className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {isEn ? 'Dining & Catering' : 'Restaurante & Catering'}
+                      {tr("Dining & Catering", "Restaurante & Catering")}
                     </span>
                   </Link>
                 </ScrollReveal>
@@ -1017,7 +973,7 @@ export const HomePageDesktop: React.FC = () => {
                       <Waves className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {isEn ? 'Pool & Courts' : 'Piscina & Canchas'}
+                      {tr("Pool & Courts", "Piscina & Canchas")}
                     </span>
                   </Link>
                 </ScrollReveal>
@@ -1116,7 +1072,7 @@ export const HomePageDesktop: React.FC = () => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-5 py-3 rounded-[4px] bg-[#C04D18] hover:bg-[#A33E10] text-white text-xs sm:text-[13px] font-bold shadow-sm transition-all cursor-pointer"
                   >
-                    <span>{isEn ? 'Quote Service' : 'Cotizar Servicio'}</span>
+                    <span>{tr("Quote Service", "Cotizar Servicio")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
                 </ScrollReveal>
@@ -1129,7 +1085,7 @@ export const HomePageDesktop: React.FC = () => {
                     <span className="w-7 h-7 rounded-full border-[1.8px] border-[#141413] group-hover:border-[#C04D18] flex items-center justify-center transition-colors">
                       <Play className="w-3 h-3 fill-current ml-0.5" />
                     </span>
-                    <span>{isEn ? 'View Page' : 'Ver Página'}</span>
+                    <span>{tr("View Page", "Ver Página")}</span>
                   </Link>
                 </ScrollReveal>
               </div>
@@ -1330,7 +1286,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="inline-flex items-center gap-2">
                   <Leaf className="w-4 h-4 text-[#7BA63C] fill-[#7BA63C]/30 -rotate-12" />
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#A3C468]">
-                    {isEn ? 'CLIENT REVIEWS' : 'RESEÑAS DE CLIENTES'}
+                    {tr("CLIENT REVIEWS", "RESEÑAS DE CLIENTES")}
                   </span>
                 </div>
               </ScrollReveal>
@@ -1340,27 +1296,15 @@ export const HomePageDesktop: React.FC = () => {
                   id="heading-evidencia"
                   className="font-serif-luxury text-3xl sm:text-4xl xl:text-[40px] font-semibold text-white leading-[1.1]"
                 >
-                  {isEn ? (
-                    <>
-                      Real Voices.
-                      <br />
-                      Positive Impact.
-                    </>
-                  ) : (
-                    <>
-                      Voces Reales.
-                      <br />
-                      Impacto Positivo.
-                    </>
-                  )}
+                  {tr("Real Voices.", "Voces Reales.")}
+                  <br />
+                  {tr("Positive Impact.", "Impacto Positivo.")}
                 </h2>
               </ScrollReveal>
 
               <ScrollReveal direction="left" delay={200} distance={80}>
                 <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed">
-                  {isEn
-                    ? 'We support every wedding, corporate retreat, and international delegation in Píntag to ensure a memorable, warm, and well-coordinated experience.'
-                    : 'Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.'}
+                  {tr("We support every wedding, corporate retreat, and international delegation in Píntag to ensure a memorable, warm, and well-coordinated experience.", "Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.")}
                 </p>
               </ScrollReveal>
 
@@ -1371,7 +1315,7 @@ export const HomePageDesktop: React.FC = () => {
                     onClick={() => setIsReviewModalOpen(true)}
                     className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-[#4B6E24] via-[#5E842E] to-[#749B3B] hover:from-[#577E2B] hover:to-[#82AD43] text-white text-xs sm:text-[13px] font-semibold shadow-[0_6px_20px_rgba(0,0,0,0.28)] border border-[#8AB34B]/40 transition-all duration-200 cursor-pointer group"
                   >
-                    <span>{isEn ? 'Leave a Review' : 'Dejar mi Opinión'}</span>
+                    <span>{tr("Leave a Review", "Dejar mi Opinión")}</span>
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -1549,42 +1493,38 @@ export const HomePageDesktop: React.FC = () => {
               <div className="flex items-center gap-2 mb-1">
                 <Leaf className="w-4 h-4 text-[#5E842E]" />
                 <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#5E842E]">
-                  {isEn ? 'NEW REVIEW AT HACIENDA LE PLUS' : 'NUEVA RESEÑA EN HACIENDA LE PLUS'}
+                  {tr("NEW REVIEW AT HACIENDA LE PLUS", "NUEVA RESEÑA EN HACIENDA LE PLUS")}
                 </span>
               </div>
 
               <h3 id="modal-review-title" className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#113221]">
-                {isEn ? 'Share your experience' : 'Comparte tu experiencia'}
+                {tr("Share your experience", "Comparte tu experiencia")}
               </h3>
               <p className="text-xs text-[#113221]/70 mt-1">
-                {isEn
-                  ? 'Your review will be published immediately in our real experience carousel.'
-                  : 'Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.'}
+                {tr("Your review will be published immediately in our real experience carousel.", "Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.")}
               </p>
 
               {reviewSubmittedSuccess ? (
                 <div className="my-6 p-5 rounded-2xl bg-[#113221] text-white text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-[#A3C468] mx-auto" />
                   <p className="font-bold text-sm">
-                    {isEn ? 'Thank you for sharing your experience!' : '¡Gracias por compartir tu opinión!'}
+                    {tr("Thank you for sharing your experience!", "¡Gracias por compartir tu opinión!")}
                   </p>
                   <p className="text-xs text-white/80">
-                    {isEn
-                      ? 'Your review is now visible at the beginning of the carousel.'
-                      : 'Tu reseña ya está visible al inicio del carrusel.'}
+                    {tr("Your review is now visible at the beginning of the carousel.", "Tu reseña ya está visible al inicio del carrusel.")}
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleAddClientReview} className="mt-4 space-y-4">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      {isEn ? 'Your Name, Family or Organization *' : 'Tu Nombre, Familia o Institución *'}
+                      {tr("Your Name, Family or Organization *", "Tu Nombre, Familia o Institución *")}
                     </label>
                     <input
                       type="text"
                       required
                       maxLength={40}
-                      placeholder={isEn ? 'e.g. Gomez Family / Andean Company' : 'Ej. Familia Gómez / Empresa Andina'}
+                      placeholder={tr("e.g. Gomez Family / Andean Company", "Ej. Familia Gómez / Empresa Andina")}
                       value={newReviewAuthor}
                       onChange={(e) => setNewReviewAuthor(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-sm text-[#113221] focus:outline-none focus:border-[#5E842E]"
@@ -1594,34 +1534,34 @@ export const HomePageDesktop: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        {isEn ? 'Experience Type' : 'Experiencia Vivida'}
+                        {tr("Experience Type", "Experiencia Vivida")}
                       </label>
                       <select
                         value={newReviewRole}
                         onChange={(e) => setNewReviewRole(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-xs font-semibold text-[#113221] focus:outline-none focus:border-[#5E842E]"
                       >
-                        <option value={isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}>
-                          {isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}
+                        <option value={tr("Weddings & Celebrations", "Bodas & Recepciones")}>
+                          {tr("Weddings & Celebrations", "Bodas & Recepciones")}
                         </option>
-                        <option value={isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}>
-                          {isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}
+                        <option value={tr("Corporate & Conventions", "Corporativo & GADs")}>
+                          {tr("Corporate & Conventions", "Corporativo & GADs")}
                         </option>
-                        <option value={isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}>
-                          {isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}
+                        <option value={tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}>
+                          {tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}
                         </option>
-                        <option value={isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}>
-                          {isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}
+                        <option value={tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}>
+                          {tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}
                         </option>
-                        <option value={isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}>
-                          {isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}
+                        <option value={tr("Dining & Catering", "Gastronomía & Eventos")}>
+                          {tr("Dining & Catering", "Gastronomía & Eventos")}
                         </option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        {isEn ? 'Rating' : 'Calificación'}
+                        {tr("Rating", "Calificación")}
                       </label>
                       <div className="flex items-center gap-1.5 h-[38px] px-3 rounded-xl bg-white border border-[#113221]/20">
                         {[1, 2, 3, 4, 5].map((starVal) => (
@@ -1630,7 +1570,7 @@ export const HomePageDesktop: React.FC = () => {
                             type="button"
                             onClick={() => setNewReviewRating(starVal)}
                             className="cursor-pointer focus:outline-none"
-                            aria-label={isEn ? `${starVal} stars` : `${starVal} estrellas`}
+                            aria-label={tr("${starVal} stars", "${starVal} estrellas")}
                           >
                             <Star
                               className={`w-4 h-4 transition-colors ${
@@ -1647,16 +1587,14 @@ export const HomePageDesktop: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      {isEn ? 'Your Comment or Review *' : 'Tu Comentario o Reseña *'}
+                      {tr("Your Comment or Review *", "Tu Comentario o Reseña *")}
                     </label>
                     <textarea
                       required
                       rows={3}
                       maxLength={170}
                       placeholder={
-                        isEn
-                          ? 'Tell us what you liked most about Hacienda Le Plus...'
-                          : 'Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus...'
+                        tr("Tell us what you liked most about Hacienda Le Plus...", "Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus...")
                       }
                       value={newReviewComment}
                       onChange={(e) => setNewReviewComment(e.target.value)}
@@ -1670,14 +1608,14 @@ export const HomePageDesktop: React.FC = () => {
                       onClick={() => setIsReviewModalOpen(false)}
                       className="px-4 py-2.5 rounded-full text-xs font-bold text-[#113221]/70 hover:bg-[#113221]/10 transition-colors cursor-pointer"
                     >
-                      {isEn ? 'Cancel' : 'Cancelar'}
+                      {tr("Cancel", "Cancelar")}
                     </button>
                     <button
                       type="submit"
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#4B6E24] to-[#6E9436] hover:from-[#577E2B] hover:to-[#7CA63E] text-white text-xs font-bold shadow-md transition-all cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{isEn ? 'Publish Review' : 'Publicar Opinión'}</span>
+                      <span>{tr("Publish Review", "Publicar Opinión")}</span>
                     </button>
                   </div>
                 </form>

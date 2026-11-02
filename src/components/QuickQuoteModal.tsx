@@ -6,7 +6,7 @@ import { DirectQuoteForm } from './DirectQuoteForm';
 
 export const QuickQuoteModal: React.FC = () => {
   const { isQuoteModalOpen, quoteModalPreset, closeQuoteModal, siteConfig } = useCMS();
-  const { t, isEn } = useLanguage();
+  const { t, tr } = useLanguage();
 
   if (!isQuoteModalOpen) return null;
 
@@ -36,9 +36,10 @@ export const QuickQuoteModal: React.FC = () => {
             {t.modals.quickQuoteTitle}
           </h2>
           <p className="text-xs sm:text-sm text-[#FAF7F2]/75 mt-1">
-            {isEn
-              ? 'Direct quotes tailored to headcount and duration via WhatsApp at +593 96 981 7891 and personalized assistance.'
-              : siteConfig.responseCommitment}
+            {tr(
+              'Direct quotes tailored to headcount and duration via WhatsApp at +593 96 981 7891 and personalized assistance.',
+              siteConfig.responseCommitment
+            )}
           </p>
         </div>
 

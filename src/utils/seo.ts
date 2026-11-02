@@ -53,7 +53,15 @@ export function useDocumentMeta({
     setMeta('meta[property="og:title"]', effectiveTitle);
     setMeta('meta[property="og:description"]', effectiveDescription);
     setMeta('meta[property="og:url"]', `https://www.haciendaleplus.com${canonicalPath}`);
-    setMeta('meta[property="og:locale"]', isEn ? 'en_US' : 'es_EC');
+    const localeMap: Record<string, string> = {
+      es: 'es_EC',
+      en: 'en_US',
+      pt: 'pt_BR',
+      fr: 'fr_FR',
+      de: 'de_DE',
+      zh: 'zh_CN',
+    };
+    setMeta('meta[property="og:locale"]', localeMap[lang] || (isEn ? 'en_US' : 'es_EC'));
     setMeta('meta[name="twitter:title"]', effectiveTitle);
     setMeta('meta[name="twitter:description"]', effectiveDescription);
 

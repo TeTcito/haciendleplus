@@ -9,7 +9,7 @@ import { LanguageSelector } from './LanguageSelector';
 
 export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   const { siteConfig } = useCMS();
-  const { isEn } = useLanguage();
+  const { isEn, tr } = useLanguage();
   const location = useLocation();
 
   if (location.pathname === '/admin') {
@@ -17,20 +17,20 @@ export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   }
 
   let context: WhatsAppContextType = 'general';
-  let contextLabel = isEn ? 'Request quote via WhatsApp at +593 96 981 7891' : 'Solicitar cotización por WhatsApp al 0969817891';
+  let contextLabel = tr("Request quote via WhatsApp at +593 96 981 7891", "Solicitar cotización por WhatsApp al 0969817891");
 
   if (location.pathname.includes('bodas')) {
     context = 'bodas';
-    contextLabel = isEn ? 'WhatsApp Weddings & Celebrations · 0969817891' : 'WhatsApp Bodas y Celebraciones · 0969817891';
+    contextLabel = tr("WhatsApp Weddings & Celebrations · 0969817891", "WhatsApp Bodas y Celebraciones · 0969817891");
   } else if (location.pathname.includes('corporativo')) {
     context = 'corporativo';
-    contextLabel = isEn ? 'WhatsApp Corporate & Major Events · 0969817891' : 'WhatsApp Grandes Eventos y Corporativo · 0969817891';
+    contextLabel = tr("WhatsApp Corporate & Major Events · 0969817891", "WhatsApp Grandes Eventos y Corporativo · 0969817891");
   } else if (location.pathname.includes('hospedaje')) {
     context = 'grupos';
-    contextLabel = isEn ? 'WhatsApp Group & Corporate Lodging · 0969817891' : 'WhatsApp Hospedaje Empresas y Grupos · 0969817891';
+    contextLabel = tr("WhatsApp Group & Corporate Lodging · 0969817891", "WhatsApp Hospedaje Empresas y Grupos · 0969817891");
   } else if (location.pathname.includes('contacto')) {
     context = 'visita';
-    contextLabel = isEn ? 'Schedule Resort Visit via WhatsApp · 0969817891' : 'Agendar Visita por WhatsApp · 0969817891';
+    contextLabel = tr("Schedule Resort Visit via WhatsApp · 0969817891", "Agendar Visita por WhatsApp · 0969817891");
   }
 
   const whatsappUrl = buildContextualWhatsAppUrl({

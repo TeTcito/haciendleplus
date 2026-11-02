@@ -11,10 +11,10 @@ export interface LanguageInfo {
 export const AVAILABLE_LANGUAGES: LanguageInfo[] = [
   { code: 'es', name: 'Español', shortLabel: 'ES', flag: '🇪🇸', enabled: true },
   { code: 'en', name: 'English', shortLabel: 'EN', flag: '🇺🇸', enabled: true },
-  { code: 'pt', name: 'Português', shortLabel: 'PT', flag: '🇧🇷', enabled: false },
-  { code: 'fr', name: 'Français', shortLabel: 'FR', flag: '🇫🇷', enabled: false },
-  { code: 'de', name: 'Deutsch', shortLabel: 'DE', flag: '🇩🇪', enabled: false },
-  { code: 'zh', name: '简体中文', shortLabel: 'ZH', flag: '🇨🇳', enabled: false },
+  { code: 'pt', name: 'Português', shortLabel: 'PT', flag: '🇧🇷', enabled: true },
+  { code: 'fr', name: 'Français', shortLabel: 'FR', flag: '🇫🇷', enabled: true },
+  { code: 'de', name: 'Deutsch', shortLabel: 'DE', flag: '🇩🇪', enabled: true },
+  { code: 'zh', name: '简体中文', shortLabel: 'ZH', flag: '🇨🇳', enabled: true },
 ];
 
 export interface Translations {

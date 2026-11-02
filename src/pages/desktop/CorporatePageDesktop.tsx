@@ -31,7 +31,7 @@ import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorpo
 
 export const CorporatePageDesktop: React.FC = () => {
   const { siteConfig, openQuoteModal } = useCMS();
-  const { language, isEn, t } = useLanguage();
+  const { language, isEn, t, tr } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
 
   const [currentPkgIndex, setCurrentPkgIndex] = useState(0);
@@ -50,7 +50,7 @@ export const CorporatePageDesktop: React.FC = () => {
     lang: language,
   });
 
-  const extendedCorpPackages = getCorporatePackages(isEn);
+  const extendedCorpPackages = getCorporatePackages(language);
 
   const currentPkg = extendedCorpPackages[currentPkgIndex] || extendedCorpPackages[0];
 
@@ -102,33 +102,19 @@ export const CorporatePageDesktop: React.FC = () => {
           <div className="max-w-lg lg:max-w-[34rem] xl:max-w-[38rem] space-y-6">
             <ScrollReveal direction="blur-up" duration={850}>
               <span className="inline-block text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.22em] text-[#E2C585] bg-[#06150F]/70 px-3.5 py-1 rounded-full border border-[#C8A45D]/35 mb-2">
-                {isEn ? 'MAJOR EVENTS & CORPORATE RETREATS · QUITO – PÍNTAG' : 'MACROEVENTOS Y ENCUENTROS EMPRESARIALES · QUITO – PÍNTAG'}
+                {tr("MAJOR EVENTS & CORPORATE RETREATS · QUITO – PÍNTAG", "MACROEVENTOS Y ENCUENTROS EMPRESARIALES · QUITO – PÍNTAG")}
               </span>
               <h1 className="font-serif-luxury text-4xl sm:text-5xl lg:text-[3.55rem] font-semibold text-white leading-[1.08] tracking-tight">
-                {isEn ? (
-                  <>
-                    Major Corporate Events &<br />
-                    <span className="italic font-normal text-[#E2C585]">Executive Experiences</span> at Le Plus.
-                  </>
-                ) : (
-                  <>
-                    Grandes Eventos y<br />
-                    <span className="italic font-normal text-[#E2C585]">Experiencias Corporativas</span> en Le Plus.
-                  </>
-                )}
+                {tr("Major Corporate Events &", "Grandes Eventos y")}<br />
+                <span className="italic font-normal text-[#E2C585]">{tr("Executive Experiences", "Experiencias Corporativas")}</span> {tr("at Le Plus.", "en Le Plus.")}
               </h1>
             </ScrollReveal>
 
             <ScrollReveal direction="left" delay={120} duration={750}>
               <p className="text-base sm:text-lg text-[#FAF7F2]/85 leading-relaxed max-w-xl font-normal">
-                {isEn ? (
-                  <>
-                    Year-end galas, team integration, conventions, and large-format celebrations in Quito–Píntag. Featuring <strong>structural tents, landscaped gardens, in-house catering, stage, and dance floor</strong>, complemented by sports facilities, heated pool, and on-site lodging.
-                  </>
-                ) : (
-                  <>
-                    Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Contamos con <strong>carpas, jardines, catering propio, tarima y pista de baile</strong>, fortalecidos con actividades deportivas, piscina temperada y hospedaje complementario.
-                  </>
+                {tr(
+                  "Year-end galas, team integration, conventions, and large-format celebrations in Quito–Píntag. Featuring structural tents, landscaped gardens, in-house catering, stage, and dance floor, complemented by sports facilities, heated pool, and on-site lodging.",
+                  "Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Contamos con carpas, jardines, catering propio, tarima y pista de baile, fortalecidos con actividades deportivas, piscina temperada y hospedaje complementario."
                 )}
               </p>
             </ScrollReveal>
@@ -143,7 +129,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   className="inline-flex items-center gap-2.5 px-7 py-4 rounded-full text-xs sm:text-sm font-bold bg-gradient-to-r from-[#C8A45D] to-[#DFB96E] text-[#06150F] hover:brightness-110 shadow-xl transition-all cursor-pointer active:scale-95"
                 >
                   <Calendar className="w-4 h-4" />
-                  <span>{isEn ? 'Request corporate proposal' : 'Solicitar propuesta empresarial'}</span>
+                  <span>{tr("Request corporate proposal", "Solicitar propuesta empresarial")}</span>
                 </a>
               </div>
             </ScrollReveal>
@@ -157,19 +143,9 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Coffee className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    {isEn ? (
-                      <>
-                        <span>Tents, gardens</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; in-house catering</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Carpas, jardines</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; catering propio</span>
-                      </>
-                    )}
+                    <span>{tr("Tents, gardens", "Carpas, jardines")}</span>
+                    <br />
+                    <span className="text-[#E2C585]">&amp; {tr("in-house catering", "catering propio")}</span>
                   </div>
                 </div>
 
@@ -179,19 +155,9 @@ export const CorporatePageDesktop: React.FC = () => {
                     <ShieldCheck className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    {isEn ? (
-                      <>
-                        <span>Stage, floor</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; pro sound</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Tarima, pista</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; sonido pro</span>
-                      </>
-                    )}
+                    <span>{tr("Stage, floor", "Tarima, pista")}</span>
+                    <br />
+                    <span className="text-[#E2C585]">&amp; {tr("pro sound", "sonido pro")}</span>
                   </div>
                 </div>
 
@@ -201,19 +167,9 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Wifi className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    {isEn ? (
-                      <>
-                        <span>Sports, pool</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; 14 suites</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Deportes, piscina</span>
-                        <br />
-                        <span className="text-[#E2C585]">&amp; 14 habitaciones</span>
-                      </>
-                    )}
+                    <span>{tr("Sports, pool", "Deportes, piscina")}</span>
+                    <br />
+                    <span className="text-[#E2C585]">&amp; {tr("14 suites", "14 habitaciones")}</span>
                   </div>
                 </div>
               </div>
@@ -246,12 +202,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {isEn ? 'Tents, Stage & Dance Floor' : 'Carpas, Tarima & Pista'}
+                  {tr("Tents, Stage & Dance Floor", "Carpas, Tarima & Pista")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {isEn
-                    ? 'Modular structural tents, professional elevated stage, lacquered dance floor, and convention hall.'
-                    : 'Carpas estructurales, tarima profesional, pista de baile y salón de convenciones.'}
+                  {tr("Modular structural tents, professional elevated stage, lacquered dance floor, and convention hall.", "Carpas estructurales, tarima profesional, pista de baile y salón de convenciones.")}
                 </p>
               </div>
             </div>
@@ -265,12 +219,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {isEn ? 'Catering & Dining Room' : 'Catering & Restaurante'}
+                  {tr("Catering & Dining Room", "Catering & Restaurante")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {isEn
-                    ? 'Year-end galas, integration BBQ banquets, continuous coffee breaks, and dedicated on-site restaurant.'
-                    : 'Banquetes de fin de año, parrilladas de integración, coffee breaks y restaurante propio.'}
+                  {tr("Year-end galas, integration BBQ banquets, continuous coffee breaks, and dedicated on-site restaurant.", "Banquetes de fin de año, parrilladas de integración, coffee breaks y restaurante propio.")}
                 </p>
               </div>
             </div>
@@ -284,12 +236,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {isEn ? 'Sports & 14×6m Heated Pool' : 'Deportes & Piscina 14×6m'}
+                  {tr("Sports & 14×6m Heated Pool", "Deportes & Piscina 14×6m")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {isEn
-                    ? '5,000 m² gardens, regulation sports courts, and heated covered pool with spa whirlpools.'
-                    : 'Jardines de 5.000 m², actividades deportivas y piscina temperada como complemento.'}
+                  {tr("5,000 m² gardens, regulation sports courts, and heated covered pool with spa whirlpools.", "Jardines de 5.000 m², actividades deportivas y piscina temperada como complemento.")}
                 </p>
               </div>
             </div>
@@ -303,12 +253,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {isEn ? 'On-Site Lodging' : 'Hospedaje Complementario'}
+                  {tr("On-Site Lodging", "Hospedaje Complementario")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {isEn
-                    ? '14 rooms and suites on-site (28 to 80 guests) complementing multi-day conferences and retreats.'
-                    : '14 habitaciones in situ (28 a 80 huéspedes) que fortalecen tu evento o convención.'}
+                  {tr("14 rooms and suites on-site (28 to 80 guests) complementing multi-day conferences and retreats.", "14 habitaciones in situ (28 a 80 huéspedes) que fortalecen tu evento o convención.")}
                 </p>
               </div>
             </div>
@@ -327,24 +275,14 @@ export const CorporatePageDesktop: React.FC = () => {
               {/* Lado Izquierdo: Título y Acción */}
               <ScrollReveal direction="left" duration={850} className="lg:col-span-4 space-y-4 text-center lg:text-left">
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#C8A45D] block">
-                  {isEn ? 'Major Events & Corporate Gatherings' : 'Macroeventos y Encuentros Empresariales'}
+                  {tr("Major Events & Corporate Gatherings", "Macroeventos y Encuentros Empresariales")}
                 </span>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl lg:text-5xl font-semibold text-white leading-tight">
-                  {isEn ? (
-                    <>
-                      Major Corporate<br />Events
-                    </>
-                  ) : (
-                    <>
-                      Grandes Eventos<br />Corporativos
-                    </>
-                  )}
+                  {tr("Major Corporate Events", "Grandes Eventos Corporativos")}
                 </h2>
 
                 <p className="text-xs sm:text-sm text-[#FAF7F2]/80 mt-2 leading-relaxed max-w-xs mx-auto lg:mx-0 font-normal">
-                  {isEn
-                    ? 'Year-end galas, team integration, conventions, and large-format celebrations with tents, gardens, catering, stage, dance floor, sports, pool, and lodging.'
-                    : 'Eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, deportes, piscina y hospedaje complementario.'}
+                  {tr("Year-end galas, team integration, conventions, and large-format celebrations with tents, gardens, catering, stage, dance floor, sports, pool, and lodging.", "Eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, deportes, piscina y hospedaje complementario.")}
                 </p>
 
                 <div className="pt-2">
@@ -353,7 +291,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     onClick={scrollToAforos}
                     className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full bg-[#FAF7F2] hover:bg-white text-[#06150F] font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer active:scale-95"
                   >
-                    <span>{isEn ? 'View spaces & capacities' : 'Ver espacios y aforos'}</span>
+                    <span>{tr("View spaces & capacities", "Ver espacios y aforos")}</span>
                     <ChevronDown className="w-4 h-4 text-[#A6823C]" />
                   </button>
                 </div>
@@ -368,7 +306,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: isEn ? 'Year-End Galas & Major Events' : 'Eventos de Fin de Año & Celebraciones de Gran Formato',
+                          itemName: tr("Year-End Galas & Major Events", "Eventos de Fin de Año & Celebraciones de Gran Formato"),
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -382,13 +320,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {isEn ? 'Year-End & Major Galas' : 'Fin de Año & Gran Formato'}
+                          {tr("Year-End & Major Galas", "Fin de Año & Gran Formato")}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {isEn ? 'Tents, gardens, stage, dance floor & catering' : 'Carpas, jardines, tarima, pista de baile y catering'}
+                          {tr("Tents, gardens, stage, dance floor & catering", "Carpas, jardines, tarima, pista de baile y catering")}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {isEn ? 'Up to 350+ guests' : 'Hasta 350+ pax'}
+                          {tr("Up to 350+ guests", "Hasta 350+ pax")}
                         </div>
                       </div>
                     </div>
@@ -400,7 +338,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: isEn ? 'Corporate Team Building, Sports & Pool' : 'Integración Empresarial, Actividades Deportivas y Piscina',
+                          itemName: tr("Corporate Team Building, Sports & Pool", "Integración Empresarial, Actividades Deportivas y Piscina"),
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -414,13 +352,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {isEn ? 'Team Building & Sports' : 'Integración & Deportes'}
+                          {tr("Team Building & Sports", "Integración & Deportes")}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {isEn ? 'Sports courts, 14×6m pool & country BBQ' : 'Canchas deportivas, piscina 14×6m & parrillada'}
+                          {tr("Sports courts, 14×6m pool & country BBQ", "Canchas deportivas, piscina 14×6m & parrillada")}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {isEn ? 'From $40 / guest' : 'Desde $40 / pax'}
+                          {tr("From $40 / guest", "Desde $40 / pax")}
                         </div>
                       </div>
                     </div>
@@ -432,7 +370,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       onClick={() =>
                         openQuoteModal({
                           serviceType: 'corporativo',
-                          itemName: isEn ? 'Conventions with On-Site Lodging (14 Rooms)' : 'Convenciones con Hospedaje Complementario (14 Habitaciones)',
+                          itemName: tr("Conventions with On-Site Lodging (14 Rooms)", "Convenciones con Hospedaje Complementario (14 Habitaciones)"),
                         })
                       }
                       className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
@@ -446,13 +384,13 @@ export const CorporatePageDesktop: React.FC = () => {
                       </div>
                       <div>
                         <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {isEn ? 'Conventions + Lodging' : 'Convenciones + Hospedaje'}
+                          {tr("Conventions + Lodging", "Convenciones + Hospedaje")}
                         </h4>
                         <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {isEn ? 'Pro AV hall, catering & 14 on-site rooms' : 'Salón AV pro, catering y 14 hab. complementarias'}
+                          {tr("Pro AV hall, catering & 14 on-site rooms", "Salón AV pro, catering y 14 hab. complementarias")}
                         </p>
                         <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {isEn ? '28 to 80 guests' : '28 a 80 huéspedes'}
+                          {tr("28 to 80 guests", "28 a 80 huéspedes")}
                         </div>
                       </div>
                     </div>
@@ -508,7 +446,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={prevPkg}
-                  aria-label={isEn ? 'Previous format' : 'Formato anterior'}
+                  aria-label={tr("Previous format", "Formato anterior")}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <ChevronLeft className="w-5 h-5 stroke-[1.75]" />
@@ -516,7 +454,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 <button
                   type="button"
                   onClick={nextPkg}
-                  aria-label={isEn ? 'Next format' : 'Siguiente formato'}
+                  aria-label={tr("Next format", "Siguiente formato")}
                   className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-sm"
                 >
                   <ChevronRight className="w-5 h-5 stroke-[1.75]" />
@@ -528,7 +466,7 @@ export const CorporatePageDesktop: React.FC = () => {
               <ScrollReveal direction="left" duration={850} className="lg:col-span-5 space-y-4 sm:space-y-5 text-left pr-0 lg:pr-4">
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.25em] text-[#C8A45D]">
                   <span>✦</span>
-                  <span>{isEn ? 'EXCLUSIVE FORMAT' : 'FORMATO EXCLUSIVO'}</span>
+                  <span>{tr("EXCLUSIVE FORMAT", "FORMATO EXCLUSIVO")}</span>
                   <span className="text-white/40 ml-2 font-mono text-[11px] tracking-normal">
                     0{currentPkgIndex + 1} / 0{extendedCorpPackages.length}
                   </span>
@@ -548,7 +486,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     {currentPkg.capacity}
                   </span>
                   <span className="text-white/30">•</span>
-                  <span>{isEn ? `From $${currentPkg.priceValue} / ${currentPkg.unit}` : `Desde $${currentPkg.priceValue} / ${currentPkg.unit}`}</span>
+                  <span>{tr("From $${currentPkg.priceValue} / ${currentPkg.unit}", "Desde $${currentPkg.priceValue} / ${currentPkg.unit}")}</span>
                 </div>
 
                 <div className="pt-3">
@@ -563,7 +501,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     className="group inline-flex items-center gap-2.5 text-sm sm:text-base font-semibold text-white cursor-pointer relative"
                   >
                     <span className="border-b-2 border-[#C8A45D] pb-1 group-hover:border-[#E2C585] group-hover:text-[#E2C585] transition-colors">
-                      {isEn ? 'Quote this format' : 'Cotizar este formato'}
+                      {tr("Quote this format", "Cotizar este formato")}
                     </span>
                     <ArrowRight className="w-4 h-4 text-[#C8A45D] group-hover:text-[#E2C585] group-hover:translate-x-1.5 transition-transform" />
                   </button>
@@ -630,17 +568,15 @@ export const CorporatePageDesktop: React.FC = () => {
             <ScrollReveal direction="left" duration={850} className="lg:col-span-3 space-y-4 text-left">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
                 <span>✦</span>
-                <span>{isEn ? 'INFRASTRUCTURE & CAPACITIES' : 'INFRAESTRUCTURA & AFOROS'}</span>
+                <span>{tr("INFRASTRUCTURE & CAPACITIES", "INFRAESTRUCTURA & AFOROS")}</span>
               </div>
 
               <h3 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold text-[#071912] leading-[1.12]">
-                {isEn ? 'Tents, gardens, stage & large-format spaces' : 'Carpas, jardines, tarima y espacios de gran formato'}
+                {tr("Tents, gardens, stage & large-format spaces", "Carpas, jardines, tarima y espacios de gran formato")}
               </h3>
 
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {isEn
-                  ? 'Year-end galas, team integration, conventions, and large-format celebrations (up to 400 pax) with in-house catering, dance floor, sports, pool, and lodging.'
-                  : 'Eventos de fin de año, integración, convenciones y celebraciones de gran formato (hasta 400 pax) con catering propio, pista de baile, actividades deportivas, piscina y hospedaje complementario.'}
+                {tr("Year-end galas, team integration, conventions, and large-format celebrations (up to 400 pax) with in-house catering, dance floor, sports, pool, and lodging.", "Eventos de fin de año, integración, convenciones y celebraciones de gran formato (hasta 400 pax) con catering propio, pista de baile, actividades deportivas, piscina y hospedaje complementario.")}
               </p>
 
               <div className="pt-2">
@@ -650,7 +586,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   className="group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#071912] cursor-pointer"
                 >
                   <span className="border-b-2 border-[#A6823C] pb-0.5 group-hover:border-[#071912] transition-colors">
-                    {isEn ? 'View spaces and facilities matrix' : 'Ver matriz de espacios e instalaciones'}
+                    {tr("View spaces and facilities matrix", "Ver matriz de espacios e instalaciones")}
                   </span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#A6823C] group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -662,9 +598,9 @@ export const CorporatePageDesktop: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-5">
                 {RESORT_SPACES.map((card, idx) => {
                   const dirs: ('up-left' | 'up' | 'up' | 'up-right')[] = ['up-left', 'up', 'up', 'up-right'];
-                  const title = isEn ? card.title_en : card.title_es;
-                  const subtitle = isEn ? card.subtitle_en : card.subtitle_es;
-                  const badge = isEn ? card.badge_en : card.badge_es;
+                  const title = tr(card.title_en, card.title_es);
+                  const subtitle = tr(card.subtitle_en, card.subtitle_es);
+                  const badge = tr(card.badge_en, card.badge_es);
 
                   return (
                     <ScrollReveal key={card.id} direction={dirs[idx % 4]} delay={60 + idx * 70} duration={700} className="h-full">
@@ -733,12 +669,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Presentation className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'Stage, Dance Floor & Tents' : 'Tarima, Pista de Baile & Carpas'}
+                  {tr("Stage, Dance Floor & Tents", "Tarima, Pista de Baile & Carpas")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? 'Modular structural tents on lawns, stage, dance floor, and pro technical production for year-end galas and conventions.'
-                    : 'Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos de fin de año y convenciones.'}
+                  {tr("Modular structural tents on lawns, stage, dance floor, and pro technical production for year-end galas and conventions.", "Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos de fin de año y convenciones.")}
                 </p>
               </div>
             </div>
@@ -749,12 +683,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Utensils className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'In-House Catering & Dining Room' : 'Catering Propio & Restaurante'}
+                  {tr("In-House Catering & Dining Room", "Catering Propio & Restaurante")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? 'Executive lunches, gala banquets, integration country BBQ, and continuous coffee breaks served punctually from our kitchen.'
-                    : 'Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos punctualmente desde nuestra cocina.'}
+                  {tr("Executive lunches, gala banquets, integration country BBQ, and continuous coffee breaks served punctually from our kitchen.", "Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos punctualmente desde nuestra cocina.")}
                 </p>
               </div>
             </div>
@@ -765,12 +697,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Wifi className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'Sports Activities & Heated Pool' : 'Actividades Deportivas & Piscina'}
+                  {tr("Sports Activities & Heated Pool", "Actividades Deportivas & Piscina")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? 'High-impact value additions: sports courts, 5-hectare team building circuits, heated covered pool, and spa.'
-                    : 'Complementos que fortalecen el evento: canchas deportivas, circuitos de team building en 5 hectáreas, piscina cubierta e hidromasaje.'}
+                  {tr("High-impact value additions: sports courts, 5-hectare team building circuits, heated covered pool, and spa.", "Complementos que fortalecen el evento: canchas deportivas, circuitos de team building en 5 hectáreas, piscina cubierta e hidromasaje.")}
                 </p>
               </div>
             </div>
@@ -781,12 +711,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <BedDouble className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'On-Site Complimentary Lodging' : 'Hospedaje Complementario In Situ'}
+                  {tr("On-Site Complimentary Lodging", "Hospedaje Complementario In Situ")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? '14 private rooms and suites (28–80 guests) to host executives, key speakers, or full teams during multi-day conventions.'
-                    : '14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones en convenciones de varios días.'}
+                  {tr("14 private rooms and suites (28–80 guests) to host executives, key speakers, or full teams during multi-day conventions.", "14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones en convenciones de varios días.")}
                 </p>
               </div>
             </div>
@@ -797,12 +725,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Car className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'Bus Access & Private Parking' : 'Parqueaderos & Acceso Buses'}
+                  {tr("Bus Access & Private Parking", "Parqueaderos & Acceso Buses")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? 'Spacious gated parking in Quito–Píntag with easy maneuverability for corporate coach buses, vans, and guest vehicles.'
-                    : 'Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos, furgonetas y vehículos de invitados.'}
+                  {tr("Spacious gated parking in Quito–Píntag with easy maneuverability for corporate coach buses, vans, and guest vehicles.", "Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos, furgonetas y vehículos de invitados.")}
                 </p>
               </div>
             </div>
@@ -813,12 +739,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <ShieldCheck className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {isEn ? 'Tax Invoicing & Symmetrical Fiber' : 'Facturación & Internet Fibra Óptica'}
+                  {tr("Tax Invoicing & Symmetrical Fiber", "Facturación & Internet Fibra Óptica")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {isEn
-                    ? 'Active tax status (RUC), electronic corporate billing, transparent milestones, and verified fiber-optic connectivity.'
-                    : 'RUC activo, facturación electrónica, hitos claros para departamentos de compras y conectividad Wi-Fi por fibra óptica verificada.'}
+                  {tr("Active tax status (RUC), electronic corporate billing, transparent milestones, and verified fiber-optic connectivity.", "RUC activo, facturación electrónica, hitos claros para departamentos de compras y conectividad Wi-Fi por fibra óptica verificada.")}
                 </p>
               </div>
             </div>
@@ -857,15 +781,13 @@ export const CorporatePageDesktop: React.FC = () => {
             {/* Lado Izquierdo: Titular y Explicación */}
             <ScrollReveal direction="left" duration={800} className="space-y-1.5 text-left max-w-lg">
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#A6823C] block">
-                {isEn ? 'Major Events & Corporate Experiences' : 'Macroeventos & Experiencias Corporativas'}
+                {tr("Major Events & Corporate Experiences", "Macroeventos & Experiencias Corporativas")}
               </span>
               <h3 className="font-serif-luxury text-2xl sm:text-3xl lg:text-[2.25rem] font-semibold text-[#071912] leading-[1.12]">
-                {isEn ? 'Formal Proposal for Your Company' : 'Cotización Formal para tu Empresa'}
+                {tr("Formal Proposal for Your Company", "Cotización Formal para tu Empresa")}
               </h3>
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {isEn
-                  ? 'Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.'
-                  : 'Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.'}
+                {tr("Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.", "Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.")}
               </p>
             </ScrollReveal>
 
@@ -876,7 +798,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   <input
                     type="email"
                     required
-                    placeholder={isEn ? 'Enter your corporate email...' : 'Ingresa tu correo corporativo...'}
+                    placeholder={tr("Enter your corporate email...", "Ingresa tu correo corporativo...")}
                     value={quickEmail}
                     onChange={(e) => setQuickEmail(e.target.value)}
                     className="w-full bg-transparent border-none text-xs sm:text-sm text-[#071912] placeholder-[#0A1F17]/45 focus:outline-none"
@@ -885,23 +807,21 @@ export const CorporatePageDesktop: React.FC = () => {
                     type="submit"
                     className="rounded-full px-5 sm:px-6 py-2.5 sm:py-2.5 bg-[#11261D] hover:bg-[#071912] text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all duration-200 shrink-0 shadow-sm active:scale-95"
                   >
-                    <span>{isEn ? 'Quote' : 'Cotizar'}</span>
+                    <span>{tr("Quote", "Cotizar")}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 pl-3 pr-2 mt-2">
                   <a
                     href={buildContextualWhatsAppUrl('corporativo', {
-                      customText: isEn
-                        ? 'Hello Hacienda Le Plus, I would like to request a corporate proposal for a major event, retreat or convention.'
-                        : 'Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención).',
+                      customText: tr("Hello Hacienda Le Plus, I would like to request a corporate proposal for a major event, retreat or convention.", "Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención)."),
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#123326] hover:text-[#25D366] transition-colors"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>{isEn ? 'Quote via WhatsApp: +593 96 981 7891' : 'Cotizar por WhatsApp: 0969817891'}</span>
+                    <span>{tr("Quote via WhatsApp: +593 96 981 7891", "Cotizar por WhatsApp: 0969817891")}</span>
                   </a>
                   {siteConfig?.corporateEmails?.corporativo && (
                     <span className="text-[11px] text-[#0A1F17]/55 font-normal">
@@ -933,22 +853,20 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="flex items-start justify-between gap-4 border-b border-[#0A1F17]/10 pb-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
-                  {isEn ? 'Technical & Logistics Planning' : 'Planificación Técnica y Logística'}
+                  {tr("Technical & Logistics Planning", "Planificación Técnica y Logística")}
                 </span>
                 <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold text-[#071912] mt-1">
-                  {isEn ? 'Technical Capacity Matrix by Space & Layout' : 'Matriz Técnica de Aforos por Espacio y Montaje'}
+                  {tr("Technical Capacity Matrix by Space & Layout", "Matriz Técnica de Aforos por Espacio y Montaje")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/70 mt-1">
-                  {isEn
-                    ? 'Comfortable capacities calculated to ensure ventilation, smooth circulation flow, and optimal visibility.'
-                    : 'Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.'}
+                  {tr("Comfortable capacities calculated to ensure ventilation, smooth circulation flow, and optimal visibility.", "Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAforosModal(false)}
                 className="w-9 h-9 rounded-full bg-[#FAF7F2] hover:bg-[#071912] hover:text-white flex items-center justify-center text-[#071912] transition-colors cursor-pointer shrink-0"
-                aria-label={isEn ? 'Close modal' : 'Cerrar modal'}
+                aria-label={tr("Close modal", "Cerrar modal")}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -975,14 +893,14 @@ export const CorporatePageDesktop: React.FC = () => {
                       }`}
                     >
                       <td className="py-3.5 px-4 font-semibold text-[#071912]">
-                        {isEn ? space.title_en : space.title_es}
+                        {tr(space.title_en, space.title_es)}
                       </td>
                       <td className="py-3.5 px-4 text-[#A6823C] font-semibold">{space.capacities.auditorium}</td>
                       <td className="py-3.5 px-4">{space.capacities.banquet}</td>
                       <td className="py-3.5 px-4">{space.capacities.school}</td>
                       <td className="py-3.5 px-4">{space.capacities.uShape}</td>
                       <td className="py-3.5 px-4 text-[#0A1F17]/75">
-                        {isEn ? space.notes_en : space.notes_es}
+                        {tr(space.notes_en, space.notes_es)}
                       </td>
                     </tr>
                   ))}
@@ -993,9 +911,7 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
               <span className="text-xs text-[#0A1F17]/60 flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-[#A6823C]" />
-                {isEn
-                  ? 'Audited capacities complying with event standards and optimal flow'
-                  : 'Aforos auditados según normativa de eventos y bioseguridad'}
+                {tr("Audited capacities complying with event standards and optimal flow", "Aforos auditados según normativa de eventos y bioseguridad")}
               </span>
               <button
                 type="button"
@@ -1005,8 +921,8 @@ export const CorporatePageDesktop: React.FC = () => {
                     serviceType: 'corporativo',
                     itemName:
                       selectedSpaceIndex !== null && RESORT_SPACES[selectedSpaceIndex]
-                        ? (isEn ? RESORT_SPACES[selectedSpaceIndex].title_en : RESORT_SPACES[selectedSpaceIndex].title_es)
-                        : 'Propuesta de Espacios y Aforos',
+                        ? tr(RESORT_SPACES[selectedSpaceIndex].title_en, RESORT_SPACES[selectedSpaceIndex].title_es)
+                        : tr('Spaces & Capacities Proposal', 'Propuesta de Espacios y Aforos'),
                   });
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-[#C8A45D] text-[#06150F] hover:bg-[#E2C585] transition-colors cursor-pointer"

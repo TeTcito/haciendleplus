@@ -36,6 +36,7 @@ import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
 import { CabinRoom } from '../../types/cms';
+import { tr } from '../../i18n/phraseDictionary';
 
 interface LodgingServiceItem {
   id: string;
@@ -48,75 +49,57 @@ interface LodgingServiceItem {
   itemName: string;
 }
 
-const getLodgingServicesCards = (isEn: boolean): LodgingServiceItem[] => [
+const getLodgingServicesCards = (langOrIsEn?: any): LodgingServiceItem[] => [
   {
     id: 'alimentacion-restaurante',
-    title: isEn ? 'Dining & Restaurant' : 'Alimentación & Restaurante',
-    badge: isEn ? 'Board' : 'Pensión',
+    title: tr("Dining & Restaurant", "Alimentación & Restaurante", langOrIsEn),
+    badge: tr("Board", "Pensión", langOrIsEn),
     badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
     image: '/images/hacienda/gastronomia-parrillada.jpg',
-    description: isEn
-      ? 'Breakfasts, lunches, dinners, and coffee breaks for corporate teams and delegations.'
-      : 'Desayunos, almuerzos, cenas y coffee breaks para empresas y delegaciones.',
+    description: tr("Breakfasts, lunches, dinners, and coffee breaks for corporate teams and delegations.", "Desayunos, almuerzos, cenas y coffee breaks para empresas y delegaciones.", langOrIsEn),
     serviceType: 'hospedaje',
-    itemName: isEn
-      ? '3-Meal Catering & Restaurant for Extended Stays'
-      : 'Alimentación 3 Tiempos y Restaurante para Larga Estadía',
+    itemName: tr("3-Meal Catering & Restaurant for Extended Stays", "Alimentación 3 Tiempos y Restaurante para Larga Estadía", langOrIsEn),
   },
   {
     id: 'internet-parqueaderos',
-    title: isEn ? 'Internet & Parking' : 'Internet & Parqueaderos',
-    badge: isEn ? 'Logistics' : 'Logística',
+    title: tr("Internet & Parking", "Internet & Parqueaderos", langOrIsEn),
+    badge: tr("Logistics", "Logística", langOrIsEn),
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
     image: '/images/hacienda/grupos-hxp.jpg',
-    description: isEn
-      ? 'High-speed dedicated fiber optic WiFi and secure parking for trucks, vans, and buses.'
-      : 'Fibra óptica de alta velocidad y estacionamiento seguro para camionetas y buses.',
+    description: tr("High-speed dedicated fiber optic WiFi and secure parking for trucks, vans, and buses.", "Fibra óptica de alta velocidad y estacionamiento seguro para camionetas y buses.", langOrIsEn),
     serviceType: 'hospedaje',
-    itemName: isEn
-      ? 'Corporate Stay with Fiber Optic WiFi & Private Parking'
-      : 'Estadía Corporativa con Internet Fibra Óptica y Parqueaderos',
+    itemName: tr("Corporate Stay with Fiber Optic WiFi & Private Parking", "Estadía Corporativa con Internet Fibra Óptica y Parqueaderos", langOrIsEn),
   },
   {
     id: 'piscina-bienestar',
-    title: isEn ? 'Amenity: Heated Pool' : 'Comp.: Piscina & Bienestar',
-    badge: isEn ? 'Amenity' : 'Complemento',
+    title: tr("Amenity: Heated Pool", "Comp.: Piscina & Bienestar", langOrIsEn),
+    badge: tr("Amenity", "Complemento", langOrIsEn),
     badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
     image: '/images/hacienda/area-humeda.jpg',
-    description: isEn
-      ? 'Heated 14×6m pool, 2 jacuzzis, sauna, and steam bath for team rest and recovery.'
-      : 'Piscina temperada 14×6 m, 2 hidromasajes, sauna y turco para el descanso.',
+    description: tr("Heated 14×6m pool, 2 jacuzzis, sauna, and steam bath for team rest and recovery.", "Piscina temperada 14×6 m, 2 hidromasajes, sauna y turco para el descanso.", langOrIsEn),
     serviceType: 'hospedaje',
-    itemName: isEn ? 'Heated Swimming Pool & Wet Zone Amenity' : 'Complemento Piscina Temperada y Zona Húmeda',
+    itemName: tr("Heated Swimming Pool & Wet Zone Amenity", "Complemento Piscina Temperada y Zona Húmeda", langOrIsEn),
   },
   {
     id: 'recreacion-deportes',
-    title: isEn ? 'Amenity: Sports Courts' : 'Comp.: Recreación & Canchas',
-    badge: isEn ? 'Amenity' : 'Complemento',
+    title: tr("Amenity: Sports Courts", "Comp.: Recreación & Canchas", langOrIsEn),
+    badge: tr("Amenity", "Complemento", langOrIsEn),
     badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
     image: '/images/hacienda/jardines-teambuilding.jpg',
-    description: isEn
-      ? '5,000 m² of green lawns, soccer field, volleyball, and basketball courts.'
-      : '5.000 m² de áreas verdes, canchas de fútbol, vóley y básquetbol para equipos.',
+    description: tr("5,000 m² of green lawns, soccer field, volleyball, and basketball courts.", "5.000 m² de áreas verdes, canchas de fútbol, vóley y básquetbol para equipos.", langOrIsEn),
     serviceType: 'grupos',
-    itemName: isEn
-      ? 'Group Lodging with Sports Courts & Recreation'
-      : 'Hospedaje Grupal con Actividades Recreativas y Canchas',
+    itemName: tr("Group Lodging with Sports Courts & Recreation", "Hospedaje Grupal con Actividades Recreativas y Canchas", langOrIsEn),
   },
 ];
 
 export const LodgingPageMobile: React.FC = () => {
   const { siteConfig, cabins, openQuoteModal } = useCMS();
-  const { language, isEn } = useLanguage();
+  const { language, isEn, tr } = useLanguage();
 
   // SEO Meta
   useDocumentMeta({
-    title: isEn
-      ? 'Lodging for Companies and Groups (Extended Stay) in Quito–Píntag | Hacienda Le Plus'
-      : 'Hospedaje para Empresas y Grupos (Larga Estadía) en Quito–Píntag | Hacienda Le Plus',
-    description: isEn
-      ? 'Extended-stay lodging for company staff, delegations, NGOs, volunteers, and international groups in Quito–Píntag. 14 rooms (28 to 80 guests), catering, fiber optic WiFi, parking, and custom quotes by guest count and duration.'
-      : 'Hospedaje de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. 14 habitaciones (28 a 80 personas), alimentación, internet fibra óptica, parqueaderos y cotización según número de personas y duración.',
+    title: tr("Lodging for Companies and Groups (Extended Stay) in Quito–Píntag | Hacienda Le Plus", "Hospedaje para Empresas y Grupos (Larga Estadía) en Quito–Píntag | Hacienda Le Plus"),
+    description: tr("Extended-stay lodging for company staff, delegations, NGOs, volunteers, and international groups in Quito–Píntag. 14 rooms (28 to 80 guests), catering, fiber optic WiFi, parking, and custom quotes by guest count and duration.", "Hospedaje de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. 14 habitaciones (28 a 80 personas), alimentación, internet fibra óptica, parqueaderos y cotización según número de personas y duración."),
     canonicalPath: '/hospedaje',
     lang: language,
   });
@@ -215,9 +198,9 @@ export const LodgingPageMobile: React.FC = () => {
   // Función al hacer clic en el botón "Cotizar Estadía" de la barra de cotización según personas y duración
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const dest = destination || (isEn ? 'Group / Corporate Lodging' : 'Hospedaje Grupal / Empresas');
-    const dur = stayDuration || (isEn ? 'Stay duration to arrange' : 'Estadía a convenir');
-    const guests = guestsSelection || (isEn ? 'To be specified' : 'Por definir');
+    const dest = destination || (tr("Group / Corporate Lodging", "Hospedaje Grupal / Empresas"));
+    const dur = stayDuration || (tr("Stay duration to arrange", "Estadía a convenir"));
+    const guests = guestsSelection || (tr("To be specified", "Por definir"));
     openQuoteModal({
       serviceType: 'hospedaje',
       itemName: `${dest} | ${dur} | ${guests}`,
@@ -228,41 +211,33 @@ export const LodgingPageMobile: React.FC = () => {
   const testimonials = [
     {
       id: 1,
-      quote: isEn
-        ? 'We lodged our international HXP mission of 42 volunteers across the 14 rooms. The 3-course catering, dedicated fiber optic WiFi, and bus parking operated seamlessly.'
-        : 'Alojamos a nuestra misión internacional HXP de 42 voluntarios en las 14 habitaciones. La alimentación de 3 tiempos, el internet por fibra óptica y los parqueaderos para buses funcionaron a la perfección.',
+      quote: tr("We lodged our international HXP mission of 42 volunteers across the 14 rooms. The 3-course catering, dedicated fiber optic WiFi, and bus parking operated seamlessly.", "Alojamos a nuestra misión internacional HXP de 42 voluntarios en las 14 habitaciones. La alimentación de 3 tiempos, el internet por fibra óptica y los parqueaderos para buses funcionaron a la perfección."),
       author: 'Sarah Mitchell',
-      role: isEn ? 'HXP Mission Coordinator · International NGO' : 'Coordinación Misión HXP · ONG Internacional',
+      role: tr("HXP Mission Coordinator · International NGO", "Coordinación Misión HXP · ONG Internacional"),
       avatar: '/images/avatars/mision-hxp.jpg',
       rating: 5,
     },
     {
       id: 2,
-      quote: isEn
-        ? 'Outstanding extended-stay option for our technical and executive staff close to Quito and the Airport. Comfortable rooms, stable internet, punctual meals, and corporate invoicing.'
-        : 'Excelente opción de larga estadía para nuestro personal técnico y directivo cerca de Quito y el Aeropuerto. Habitaciones cómodas, internet estable, alimentación puntual y facturación corporativa.',
+      quote: tr("Outstanding extended-stay option for our technical and executive staff close to Quito and the Airport. Comfortable rooms, stable internet, punctual meals, and corporate invoicing.", "Excelente opción de larga estadía para nuestro personal técnico y directivo cerca de Quito y el Aeropuerto. Habitaciones cómodas, internet estable, alimentación puntual y facturación corporativa."),
       author: 'Dr. Carlos Enríquez',
-      role: isEn ? 'Board of Directors · Corporate Operations' : 'Directorio Ejecutivo · Empresas & Proyectos',
+      role: tr("Board of Directors · Corporate Operations", "Directorio Ejecutivo · Empresas & Proyectos"),
       avatar: '/images/avatars/dr-carlos.jpg',
       rating: 5,
     },
     {
       id: 3,
-      quote: isEn
-        ? 'Our international delegation stayed the entire week in Píntag. The heated pool, on-site dining, and outdoor sports courts were the perfect complement after intense field days.'
-        : 'Tuvimos a nuestra delegación alojada toda la semana en Píntag. La piscina temperada, el restaurante y las canchas deportivas fueron el complemento ideal tras cada jornada de trabajo.',
-      author: isEn ? 'IMC Coordination' : 'Coordinación IMC',
-      role: isEn ? 'International Delegation · Extended Stay' : 'Delegación Internacional · Estadía Prolongada',
+      quote: tr("Our international delegation stayed the entire week in Píntag. The heated pool, on-site dining, and outdoor sports courts were the perfect complement after intense field days.", "Tuvimos a nuestra delegación alojada toda la semana en Píntag. La piscina temperada, el restaurante y las canchas deportivas fueron el complemento ideal tras cada jornada de trabajo."),
+      author: tr("IMC Coordination", "Coordinación IMC"),
+      role: tr("International Delegation · Extended Stay", "Delegación Internacional · Estadía Prolongada"),
       avatar: '/images/avatars/familia-andrade.jpg',
       rating: 5,
     },
     {
       id: 4,
-      quote: isEn
-        ? 'We booked the room wing for our guests and organizing crew. Spacious, 24/7 security, and transparent volume and duration quoting.'
-        : 'Reservamos el bloque de habitaciones para nuestros invitados y equipo organizador. Espacioso, seguro las 24 horas y con opciones claras de cotización según número de personas y días.',
+      quote: tr("We booked the room wing for our guests and organizing crew. Spacious, 24/7 security, and transparent volume and duration quoting.", "Reservamos el bloque de habitaciones para nuestros invitados y equipo organizador. Espacioso, seguro las 24 horas y con opciones claras de cotización según número de personas y días."),
       author: 'Valeria & Mateo',
-      role: isEn ? 'Group Lodging & Operations' : 'Hospedaje Grupal & Eventos',
+      role: tr("Group Lodging & Operations", "Hospedaje Grupal & Eventos"),
       avatar: '/images/avatars/valeria-mateo.jpg',
       rating: 5,
     },
@@ -277,9 +252,8 @@ export const LodgingPageMobile: React.FC = () => {
   };
 
   // Lista de habitaciones y cabañas con nombres en español o inglés (Prioridad Larga Estadía Empresas y Grupos)
-  const defaultCabins = getCabinsData(isEn);
-  const displayCabins: CabinRoom[] = isEn
-    ? defaultCabins.map((enCabin) => {
+  const defaultCabins = getCabinsData(language);
+  const displayCabins: CabinRoom[] = language !== 'es' ? defaultCabins.map((enCabin) => {
         const cmsCabin = cabins?.find((c) => c.id === enCabin.id);
         return cmsCabin
           ? { ...enCabin, pricePerNight: cmsCabin.pricePerNight, image: cmsCabin.image }
@@ -288,7 +262,7 @@ export const LodgingPageMobile: React.FC = () => {
     : cabins && cabins.length >= 4
     ? cabins.slice(0, 4)
     : defaultCabins;
-  const lodgingServices = getLodgingServicesCards(isEn);
+  const lodgingServices = getLodgingServicesCards(language);
 
   return (
     <main className="w-full bg-[#FAF7F2] text-[#0A1F17] overflow-x-hidden selection:bg-[#C8A45D]/30 selection:text-[#06150F]">
@@ -323,10 +297,10 @@ export const LodgingPageMobile: React.FC = () => {
               <ScrollReveal direction="left" delay={60} distance={20}>
                 <h1 className="text-white text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                   <span className="font-serif-luxury block text-[24px] sm:text-[30px] font-bold leading-[1.02] tracking-tight">
-                    {isEn ? 'Corporate Lodging' : 'Hospedaje para Empresas'}
+                    {tr("Corporate Lodging", "Hospedaje para Empresas")}
                   </span>
                   <span className="italic font-light text-[17px] sm:text-[22px] bg-gradient-to-r from-[#FAF7F2] via-[#E2C585] to-[#C8A45D] bg-clip-text text-transparent block leading-tight mt-0.5">
-                    {isEn ? 'Delegations & Groups' : 'Delegaciones y Grupos'}
+                    {tr("Delegations & Groups", "Delegaciones y Grupos")}
                   </span>
                 </h1>
               </ScrollReveal>
@@ -338,14 +312,14 @@ export const LodgingPageMobile: React.FC = () => {
                     href={buildContextualWhatsAppUrl({
                       phone: siteConfig.whatsappNumber,
                       context: 'hospedaje',
-                      itemName: isEn ? 'Corporate & Group Lodging' : 'Hospedaje para Empresas y Grupos',
+                      itemName: tr("Corporate & Group Lodging", "Hospedaje para Empresas y Grupos"),
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-fit items-center justify-center gap-1.5 px-3 h-[20px] rounded-full bg-[#13281F] hover:bg-[#0A1F17] text-[#E2C585] text-xs font-bold leading-none shadow-sm shadow-black/30 border border-[#C8A45D]/40 transition-all cursor-pointer active:scale-95"
                   >
                     <Search className="w-3 h-3 text-[#E2C585] shrink-0" />
-                    <span className="leading-none">{isEn ? 'Quote' : 'Cotizar'}</span>
+                    <span className="leading-none">{tr("Quote", "Cotizar")}</span>
                     <ArrowRight className="w-3 h-3 shrink-0" />
                   </a>
                 </div>
@@ -364,17 +338,17 @@ export const LodgingPageMobile: React.FC = () => {
             <div className="flex-1 min-w-0 h-full flex items-center px-1">
               <select
                 id="booking-dest-mini"
-                aria-label={isEn ? 'Group or Room Type' : 'Grupo o Tipo de Habitación'}
+                aria-label={tr("Group or Room Type", "Grupo o Tipo de Habitación")}
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 className={`w-full text-[10px] font-bold ${destination ? 'text-[#06150F]' : 'text-[#0A1F17]/50'} bg-transparent outline-none cursor-pointer truncate leading-none`}
               >
-                <option value="" disabled hidden>{isEn ? 'Group / Type' : 'Grupo / Tipo'}</option>
-                <option value="Personal de Empresas / Equipos Técnicos">{isEn ? 'Corporate Staff' : 'Empresas'}</option>
-                <option value="Delegaciones / ONG / Voluntarios (HXP / IMC)">{isEn ? 'Delegations / NGOs' : 'Delegaciones / ONG'}</option>
-                <option value="Grupos Internacionales y Misiones">{isEn ? 'International' : 'Internacionales'}</option>
-                <option value="Bloque Completo (14 Habitaciones · 28-80 Pax)">{isEn ? '14 Rooms (28-80p)' : '14 Hab. (28-80p)'}</option>
-                <option value="Suites Ejecutivas & Chalet (1-10 Pax)">{isEn ? 'Suites (1-10p)' : 'Suites (1-10p)'}</option>
+                <option value="" disabled hidden>{tr("Group / Type", "Grupo / Tipo")}</option>
+                <option value="Personal de Empresas / Equipos Técnicos">{tr("Corporate Staff", "Empresas")}</option>
+                <option value="Delegaciones / ONG / Voluntarios (HXP / IMC)">{tr("Delegations / NGOs", "Delegaciones / ONG")}</option>
+                <option value="Grupos Internacionales y Misiones">{tr("International", "Internacionales")}</option>
+                <option value="Bloque Completo (14 Habitaciones · 28-80 Pax)">{tr("14 Rooms (28-80p)", "14 Hab. (28-80p)")}</option>
+                <option value="Suites Ejecutivas & Chalet (1-10 Pax)">{tr("Suites (1-10p)", "Suites (1-10p)")}</option>
               </select>
             </div>
 
@@ -384,12 +358,12 @@ export const LodgingPageMobile: React.FC = () => {
             <div className="w-[78px] shrink-0 h-full flex items-center px-1">
               <select
                 id="booking-guests-mini"
-                aria-label={isEn ? 'Number of Guests' : 'Número de Personas'}
+                aria-label={tr("Number of Guests", "Número de Personas")}
                 value={guestsSelection}
                 onChange={(e) => setGuestsSelection(e.target.value)}
                 className={`w-full text-[10px] font-bold ${guestsSelection ? 'text-[#06150F]' : 'text-[#0A1F17]/50'} bg-transparent outline-none cursor-pointer truncate leading-none`}
               >
-                <option value="" disabled hidden>{isEn ? 'Guests' : 'Personas'}</option>
+                <option value="" disabled hidden>{tr("Guests", "Personas")}</option>
                 <option value="1 a 10 Personas (Suites / Chalet)">1-10 Pax</option>
                 <option value="10 a 25 Personas (Equipo / Empresa)">10-25 Pax</option>
                 <option value="28 a 50 Personas (Delegación / ONG / Empresa)">28-50 Pax</option>
@@ -403,16 +377,16 @@ export const LodgingPageMobile: React.FC = () => {
             <div className="w-[78px] shrink-0 h-full flex items-center px-1">
               <select
                 id="booking-duration-mini"
-                aria-label={isEn ? 'Stay Duration' : 'Duración de Estadía'}
+                aria-label={tr("Stay Duration", "Duración de Estadía")}
                 value={stayDuration}
                 onChange={(e) => setStayDuration(e.target.value)}
                 className={`w-full text-[10px] font-bold ${stayDuration ? 'text-[#06150F]' : 'text-[#0A1F17]/50'} bg-transparent outline-none cursor-pointer truncate leading-none`}
               >
-                <option value="" disabled hidden>{isEn ? 'Duration' : 'Duración'}</option>
-                <option value="3 a 6 Noches (Estadía Semanal Corta)">{isEn ? '3-6 nights' : '3-6 noches'}</option>
-                <option value="7 a 14 Noches (Estadía Semanal / Quincenal)">{isEn ? '1-2 weeks' : '1-2 sem.'}</option>
-                <option value="15 a 30+ Noches (Larga Estadía Mensual)">{isEn ? 'Monthly' : 'Mensual'}</option>
-                <option value="Convenio Corporativo Recurrente">{isEn ? 'Agreement' : 'Convenio'}</option>
+                <option value="" disabled hidden>{tr("Duration", "Duración")}</option>
+                <option value="3 a 6 Noches (Estadía Semanal Corta)">{tr("3-6 nights", "3-6 noches")}</option>
+                <option value="7 a 14 Noches (Estadía Semanal / Quincenal)">{tr("1-2 weeks", "1-2 sem.")}</option>
+                <option value="15 a 30+ Noches (Larga Estadía Mensual)">{tr("Monthly", "Mensual")}</option>
+                <option value="Convenio Corporativo Recurrente">{tr("Agreement", "Convenio")}</option>
               </select>
             </div>
 
@@ -421,10 +395,10 @@ export const LodgingPageMobile: React.FC = () => {
             {/* 4. Botón Submit */}
             <button
               type="submit"
-              aria-label={isEn ? 'Quote Stay' : 'Cotizar Estadía'}
+              aria-label={tr("Quote Stay", "Cotizar Estadía")}
               className="text-[#071912] hover:text-[#C8A45D] text-[10.5px] font-extrabold flex items-center gap-1 shrink-0 px-1.5 cursor-pointer transition-all active:scale-95 leading-none"
             >
-              <span>{isEn ? 'Quote' : 'Cotizar'}</span>
+              <span>{tr("Quote", "Cotizar")}</span>
               <ArrowRight className="w-3 h-3 text-[#C8A45D]" />
             </button>
           </form>
@@ -443,7 +417,7 @@ export const LodgingPageMobile: React.FC = () => {
                 <BedDouble className="w-[21px] h-[21px] stroke-[1.5]" />
               </div>
               <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#06150F] leading-tight">
-                {isEn ? '14 Rooms' : '14 Hab.'}
+                {tr("14 Rooms", "14 Hab.")}
               </span>
               <span className="text-[7px] text-[#0A1F17]/60 leading-none">28-80 Pax</span>
             </div>
@@ -454,10 +428,10 @@ export const LodgingPageMobile: React.FC = () => {
                 <Utensils className="w-[21px] h-[21px] stroke-[1.5]" />
               </div>
               <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#06150F] leading-tight">
-                {isEn ? 'Full Board' : 'Pensión'}
+                {tr("Full Board", "Pensión")}
               </span>
               <span className="text-[7px] text-[#0A1F17]/60 leading-none">
-                {isEn ? 'Catering' : 'Completa'}
+                {tr("Catering", "Completa")}
               </span>
             </div>
 
@@ -468,7 +442,7 @@ export const LodgingPageMobile: React.FC = () => {
               </div>
               <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#06150F] leading-tight">Internet</span>
               <span className="text-[7px] text-[#0A1F17]/60 leading-none">
-                {isEn ? 'Fiber Optic' : 'Fibra Óptica'}
+                {tr("Fiber Optic", "Fibra Óptica")}
               </span>
             </div>
 
@@ -478,10 +452,10 @@ export const LodgingPageMobile: React.FC = () => {
                 <ShieldCheck className="w-[21px] h-[21px] stroke-[1.5]" />
               </div>
               <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#06150F] leading-tight">
-                {isEn ? 'Parking' : 'Parqueo'}
+                {tr("Parking", "Parqueo")}
               </span>
               <span className="text-[7px] text-[#0A1F17]/60 leading-none">
-                {isEn ? 'Private' : 'Privado'}
+                {tr("Private", "Privado")}
               </span>
             </div>
 
@@ -491,10 +465,10 @@ export const LodgingPageMobile: React.FC = () => {
                 <Waves className="w-[21px] h-[21px] stroke-[1.5]" />
               </div>
               <span className="text-[8.5px] sm:text-[9.5px] font-bold text-[#06150F] leading-tight">
-                {isEn ? 'Pool' : 'Piscina'}
+                {tr("Pool", "Piscina")}
               </span>
               <span className="text-[7px] text-[#0A1F17]/60 leading-none">
-                {isEn ? 'Amenity' : 'Comp.'}
+                {tr("Amenity", "Comp.")}
               </span>
             </div>
           </div>
@@ -509,7 +483,7 @@ export const LodgingPageMobile: React.FC = () => {
           {/* Encabezado: Título a la izquierda y botones de desplazamiento a la derecha */}
           <div className="flex items-center justify-between px-4 sm:px-6">
             <h2 className="font-serif-luxury text-[18px] sm:text-[21px] font-bold text-[#06150F] leading-tight text-left">
-              {isEn ? 'Rooms & Cabins' : 'Habitaciones & Cabañas'}
+              {tr("Rooms & Cabins", "Habitaciones & Cabañas")}
             </h2>
 
             {/* Controles de Navegación del Carrusel al Margen Derecho */}
@@ -517,7 +491,7 @@ export const LodgingPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollCabins('left')}
-                aria-label={isEn ? 'Scroll left' : 'Desplazar hacia la izquierda'}
+                aria-label={tr("Scroll left", "Desplazar hacia la izquierda")}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4 text-[#3D352E]" />
@@ -525,7 +499,7 @@ export const LodgingPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollCabins('right')}
-                aria-label={isEn ? 'Scroll right' : 'Desplazar hacia la derecha'}
+                aria-label={tr("Scroll right", "Desplazar hacia la derecha")}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4 text-[#3D352E]" />
@@ -553,7 +527,7 @@ export const LodgingPageMobile: React.FC = () => {
                     loading="lazy"
                   />
                   <span className="absolute top-1.5 left-1.5 z-10 px-1.5 py-0.5 rounded text-[8px] font-bold bg-[#06150F]/85 backdrop-blur-xs text-[#E2C585] border border-[#C8A45D]/30 shadow-xs">
-                    {cabin.type || (isEn ? 'Extended Stay' : 'Larga Estadía')}
+                    {cabin.type || (tr("Extended Stay", "Larga Estadía"))}
                   </span>
                 </div>
 
@@ -576,7 +550,7 @@ export const LodgingPageMobile: React.FC = () => {
                       <div className="flex items-center gap-1 truncate">
                         <Bath className="w-2.5 h-2.5 text-[#C8A45D] shrink-0" />
                         <span className="truncate">
-                          {cabin.bathrooms} {cabin.bathrooms > 1 ? (isEn ? 'baths' : 'baños') : (isEn ? 'bath' : 'baño')}
+                          {cabin.bathrooms} {cabin.bathrooms > 1 ? (tr("baths", "baños")) : (tr("bath", "baño"))}
                         </span>
                       </div>
                     </div>
@@ -589,7 +563,7 @@ export const LodgingPageMobile: React.FC = () => {
                         ${cabin.pricePerNight}
                       </span>
                       <span className="text-[7.5px] text-[#0A1F17]/60 block -mt-0.5">
-                        {isEn ? '/ ref. night' : '/ ref. noche'}
+                        {tr("/ ref. night", "/ ref. noche")}
                       </span>
                     </div>
 
@@ -606,7 +580,7 @@ export const LodgingPageMobile: React.FC = () => {
                       }}
                     >
                       <span className="leading-none block" style={{ transform: 'translateY(-0.5px)' }}>
-                        {isEn ? 'View' : 'Ver'}
+                        {tr("View", "Ver")}
                       </span>
                     </button>
                   </div>
@@ -625,7 +599,7 @@ export const LodgingPageMobile: React.FC = () => {
           {/* Encabezado: Título a la izquierda y botones de desplazamiento a la derecha */}
           <div className="flex items-center justify-between px-4 sm:px-6">
             <h2 className="font-serif-luxury text-[18px] sm:text-[21px] font-bold text-[#06150F] leading-tight text-left">
-              {isEn ? 'Amenities & Services' : 'Servicios & Complementos'}
+              {tr("Amenities & Services", "Servicios & Complementos")}
             </h2>
 
             {/* Controles de Navegación del Carrusel al Margen Derecho */}
@@ -633,7 +607,7 @@ export const LodgingPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollServices('left')}
-                aria-label={isEn ? 'Scroll left' : 'Desplazar hacia la izquierda'}
+                aria-label={tr("Scroll left", "Desplazar hacia la izquierda")}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4 text-[#3D352E]" />
@@ -641,7 +615,7 @@ export const LodgingPageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => scrollServices('right')}
-                aria-label={isEn ? 'Scroll right' : 'Desplazar hacia la derecha'}
+                aria-label={tr("Scroll right", "Desplazar hacia la derecha")}
                 className="w-8 h-8 rounded-full border border-[#D5C7B2] bg-white hover:bg-[#FAF7F2] text-[#181512] flex items-center justify-center shadow-2xs active:scale-90 transition-all cursor-pointer"
               >
                 <ChevronRight className="w-4 h-4 text-[#3D352E]" />
@@ -688,7 +662,7 @@ export const LodgingPageMobile: React.FC = () => {
                   {/* Botón Ver */}
                   <div className="mt-2 pt-1.5 border-t border-[#0A1F17]/8 flex items-center justify-between">
                     <span className="text-[8px] font-semibold text-[#A6823C]">
-                      {isEn ? 'Lodging' : 'Estadía'}
+                      {tr("Lodging", "Estadía")}
                     </span>
 
                     <button
@@ -709,7 +683,7 @@ export const LodgingPageMobile: React.FC = () => {
                       }}
                     >
                       <span className="leading-none block" style={{ transform: 'translateY(-0.5px)' }}>
-                        {isEn ? 'View' : 'Ver'}
+                        {tr("View", "Ver")}
                       </span>
                     </button>
                   </div>
@@ -731,7 +705,7 @@ export const LodgingPageMobile: React.FC = () => {
               <div className="space-y-3">
                 <ScrollReveal direction="left" duration={750}>
                   <h2 className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#06150F] leading-tight text-left">
-                    {isEn ? 'Advantages for Companies & Groups' : 'Ventajas para Empresas y Grupos'}
+                    {tr("Advantages for Companies & Groups", "Ventajas para Empresas y Grupos")}
                   </h2>
                 </ScrollReveal>
 
@@ -744,7 +718,7 @@ export const LodgingPageMobile: React.FC = () => {
                         <Star className="w-4 h-4 stroke-[1.5]" />
                       </div>
                       <span className="text-[9px] font-bold text-[#06150F] leading-tight">
-                        {isEn ? <>Volume<br />Rates</> : <>Tarifas por<br />Volumen</>}
+                        {tr("Volume Rates", "Tarifas por Volumen")}
                       </span>
                     </div>
 
@@ -754,7 +728,7 @@ export const LodgingPageMobile: React.FC = () => {
                         <ShieldCheck className="w-4 h-4 stroke-[1.5]" />
                       </div>
                       <span className="text-[9px] font-bold text-[#06150F] leading-tight">
-                        {isEn ? <>Corporate<br />Billing</> : <>Facturación<br />Corporativa</>}
+                        {tr("Corporate Billing", "Facturación Corporativa")}
                       </span>
                     </div>
 
@@ -764,7 +738,7 @@ export const LodgingPageMobile: React.FC = () => {
                         <Calendar className="w-4 h-4 stroke-[1.5]" />
                       </div>
                       <span className="text-[9px] font-bold text-[#06150F] leading-tight">
-                        {isEn ? <>All-in-One<br />Operations</> : <>Operación<br />Todo en Uno</>}
+                        {tr("All-in-One Operations", "Operación Todo en Uno")}
                       </span>
                     </div>
 
@@ -774,7 +748,7 @@ export const LodgingPageMobile: React.FC = () => {
                         <PhoneCall className="w-4 h-4 stroke-[1.5]" />
                       </div>
                       <span className="text-[9px] font-bold text-[#06150F] leading-tight">
-                        {isEn ? <>24/7<br />Security</> : <>Seguridad<br />24/7</>}
+                        {tr("24/7 Security", "Seguridad 24/7")}
                       </span>
                     </div>
                   </div>
@@ -835,7 +809,7 @@ export const LodgingPageMobile: React.FC = () => {
                       type="button"
                       onClick={handlePrevTestimonial}
                       className="w-8 h-8 rounded-full bg-white border border-[#0A1F17]/10 hover:bg-[#071912] hover:text-[#E2C585] flex items-center justify-center text-[#0A1F17] transition-colors cursor-pointer"
-                      title={isEn ? 'Previous review' : 'Testimonio anterior'}
+                      title={tr("Previous review", "Testimonio anterior")}
                     >
                       <ArrowLeft className="w-3.5 h-3.5" />
                     </button>
@@ -843,7 +817,7 @@ export const LodgingPageMobile: React.FC = () => {
                       type="button"
                       onClick={handleNextTestimonial}
                       className="w-8 h-8 rounded-full bg-white border border-[#0A1F17]/10 hover:bg-[#071912] hover:text-[#E2C585] flex items-center justify-center text-[#0A1F17] transition-colors cursor-pointer"
-                      title={isEn ? 'Next review' : 'Siguiente testimonio'}
+                      title={tr("Next review", "Siguiente testimonio")}
                     >
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -885,12 +859,10 @@ export const LodgingPageMobile: React.FC = () => {
           <div className="relative z-10 w-full h-full px-4 pt-3 pb-2.5 sm:px-6 sm:pt-4 sm:pb-3 flex flex-col justify-between max-w-[76%] sm:max-w-[68%]">
             <div className="space-y-1">
               <h2 className="font-serif-luxury text-[19px] sm:text-[23px] font-bold text-white leading-[1.08] text-left">
-                {isEn ? 'Quote by Group Size & Duration' : 'Cotización según Personas & Duración'}
+                {tr("Quote by Group Size & Duration", "Cotización según Personas & Duración")}
               </h2>
               <p className="text-[12.5px] sm:text-[13.5px] text-[#FAF7F2]/85 leading-snug line-clamp-2 text-left">
-                {isEn
-                  ? 'Tailored proposals across 14 rooms for companies, delegations, and groups with catering, fiber optic WiFi, and parking.'
-                  : 'Propuestas a medida en 14 habitaciones para empresas, delegaciones y grupos con alimentación, fibra óptica y parqueaderos.'}
+                {tr("Tailored proposals across 14 rooms for companies, delegations, and groups with catering, fiber optic WiFi, and parking.", "Propuestas a medida en 14 habitaciones para empresas, delegaciones y grupos con alimentación, fibra óptica y parqueaderos.")}
               </p>
             </div>
 
@@ -900,13 +872,13 @@ export const LodgingPageMobile: React.FC = () => {
                 href={buildContextualWhatsAppUrl({
                   phone: siteConfig.whatsappNumber,
                   context: 'hospedaje',
-                  itemName: isEn ? 'Group & Corporate Lodging Quote' : 'Cotización Hospedaje Grupal y Empresas',
+                  itemName: tr("Group & Corporate Lodging Quote", "Cotización Hospedaje Grupal y Empresas"),
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-[#E2C585] hover:bg-[#C8A45D] text-[#06150F] text-[12px] sm:text-[13px] font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
               >
-                <span>{isEn ? 'Request Quote' : 'Solicitar Cotización'}</span>
+                <span>{tr("Request Quote", "Solicitar Cotización")}</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#06150F]" />
               </a>
             </div>
@@ -918,7 +890,7 @@ export const LodgingPageMobile: React.FC = () => {
                   <BedDouble className="w-3 h-3" />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#FAF7F2] leading-tight">
-                  {isEn ? '14 Rooms' : '14 Habitaciones'}
+                  {tr("14 Rooms", "14 Habitaciones")}
                 </span>
               </div>
 
@@ -927,7 +899,7 @@ export const LodgingPageMobile: React.FC = () => {
                   <Utensils className="w-3 h-3" />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#FAF7F2] leading-tight">
-                  {isEn ? 'Catering' : 'Alimentación'}
+                  {tr("Catering", "Alimentación")}
                 </span>
               </div>
 
@@ -936,7 +908,7 @@ export const LodgingPageMobile: React.FC = () => {
                   <Globe className="w-3 h-3" />
                 </div>
                 <span className="text-[10px] sm:text-[11px] font-bold text-[#FAF7F2] leading-tight">
-                  {isEn ? 'Fiber Optic' : 'Fibra Óptica'}
+                  {tr("Fiber Optic", "Fibra Óptica")}
                 </span>
               </div>
             </div>
@@ -986,14 +958,14 @@ export const LodgingPageMobile: React.FC = () => {
                       <BedDouble className="w-3.5 h-3.5" /> {selectedCabinModal.beds}
                     </span>
                     <span className="flex items-center gap-1">
-                      <Bath className="w-3.5 h-3.5" /> {selectedCabinModal.bathrooms} {isEn ? 'Bath(s)' : 'Baño(s)'}
+                      <Bath className="w-3.5 h-3.5" /> {selectedCabinModal.bathrooms} {tr("Bath(s)", "Baño(s)")}
                     </span>
                   </div>
                 </div>
 
                 <div className="text-right shrink-0">
                   <span className="text-[10px] uppercase text-[#0A1F17]/60 block">
-                    {isEn ? 'Base Rate' : 'Tarifa Base'}
+                    {tr("Base Rate", "Tarifa Base")}
                   </span>
                   <span className="font-serif-luxury text-3xl font-bold text-[#A6823C]">
                     ${selectedCabinModal.pricePerNight}
@@ -1007,7 +979,7 @@ export const LodgingPageMobile: React.FC = () => {
 
               <div className="space-y-2 pt-2">
                 <h5 className="text-xs font-bold uppercase tracking-wider text-[#06150F]">
-                  {isEn ? 'Included Amenities & Facilities' : 'Instalaciones & Complementos Incluidos'}
+                  {tr("Included Amenities & Facilities", "Instalaciones & Complementos Incluidos")}
                 </h5>
                 <div className="flex flex-wrap gap-2">
                   {selectedCabinModal.amenities.map((am, i) => (
@@ -1033,7 +1005,7 @@ export const LodgingPageMobile: React.FC = () => {
                 onClick={() => setSelectedCabinModal(null)}
                 className="px-5 py-2.5 rounded-full text-xs font-semibold text-[#0A1F17]/70 hover:bg-[#0A1F17]/10 transition-colors cursor-pointer"
               >
-                {isEn ? 'Close' : 'Cerrar'}
+                {tr("Close", "Cerrar")}
               </button>
 
               <a
@@ -1046,7 +1018,7 @@ export const LodgingPageMobile: React.FC = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold bg-[#071912] text-[#E2C585] hover:bg-[#123326] transition-colors cursor-pointer shadow-sm"
               >
-                <span>{isEn ? 'Quote by Guests & Duration' : 'Cotizar según Personas y Duración'}</span>
+                <span>{tr("Quote by Guests & Duration", "Cotizar según Personas y Duración")}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>
@@ -1064,9 +1036,7 @@ export const LodgingPageMobile: React.FC = () => {
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#E2C585]">
                 <Play className="w-4 h-4 fill-current" />
                 <span>
-                  {isEn
-                    ? 'Extended-Stay Facilities · Hacienda Le Plus Quito–Píntag'
-                    : 'Instalaciones Larga Estadía · Hacienda Le Plus Quito–Píntag'}
+                  {tr("Extended-Stay Facilities · Hacienda Le Plus Quito–Píntag", "Instalaciones Larga Estadía · Hacienda Le Plus Quito–Píntag")}
                 </span>
               </div>
               <button
@@ -1090,14 +1060,10 @@ export const LodgingPageMobile: React.FC = () => {
                   <Play className="w-7 h-7 fill-current ml-1" />
                 </div>
                 <h4 className="font-serif-luxury text-2xl sm:text-3xl text-white font-semibold">
-                  {isEn
-                    ? 'Lodging for Companies, Delegations & Groups'
-                    : 'Hospedaje para Empresas, Delegaciones y Grupos'}
+                  {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/80 max-w-md">
-                  {isEn
-                    ? '14 rooms (28 to 80 guests), 3-meal catering, fiber optic WiFi, private bus parking, and heated pool, dining, and sports area access.'
-                    : '14 habitaciones (28 a 80 personas), alimentación 3 tiempos, internet por fibra óptica, parqueaderos privados y complementos de piscina, restaurante y áreas deportivas.'}
+                  {tr("14 rooms (28 to 80 guests), 3-meal catering, fiber optic WiFi, private bus parking, and heated pool, dining, and sports area access.", "14 habitaciones (28 a 80 personas), alimentación 3 tiempos, internet por fibra óptica, parqueaderos privados y complementos de piscina, restaurante y áreas deportivas.")}
                 </p>
                 <button
                   type="button"
@@ -1105,16 +1071,12 @@ export const LodgingPageMobile: React.FC = () => {
                     setShowVideoModal(false);
                     openQuoteModal({
                       serviceType: 'hospedaje',
-                      itemName: isEn
-                        ? 'Corporate & Group Extended Stay Lodging'
-                        : 'Hospedaje Larga Estadía Empresas y Grupos',
+                      itemName: tr("Corporate & Group Extended Stay Lodging", "Hospedaje Larga Estadía Empresas y Grupos"),
                     });
                   }}
                   className="px-6 py-2.5 rounded-full text-xs font-bold bg-white text-[#06150F] hover:bg-[#E2C585] transition-colors cursor-pointer mt-2"
                 >
-                  {isEn
-                    ? 'Request Quote by Guests & Duration'
-                    : 'Solicitar Cotización según Personas y Duración'}
+                  {tr("Request Quote by Guests & Duration", "Solicitar Cotización según Personas y Duración")}
                 </button>
               </div>
             </div>
@@ -1131,14 +1093,10 @@ export const LodgingPageMobile: React.FC = () => {
             <div className="p-6 bg-[#071912] text-white flex items-center justify-between">
               <div>
                 <span className="text-xs font-bold uppercase tracking-wider text-[#C8A45D] block">
-                  {isEn
-                    ? 'Extended Stays · Companies, Delegations, NGOs & Groups'
-                    : 'Larga Estadía · Empresas, Delegaciones, ONGs y Grupos'}
+                  {tr("Extended Stays · Companies, Delegations, NGOs & Groups", "Larga Estadía · Empresas, Delegaciones, ONGs y Grupos")}
                 </span>
                 <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold">
-                  {isEn
-                    ? 'Quote Options by Group Size & Duration'
-                    : 'Opciones de Cotización según Número de Personas y Duración'}
+                  {tr("Quote Options by Group Size & Duration", "Opciones de Cotización según Número de Personas y Duración")}
                 </h3>
               </div>
               <button
@@ -1156,110 +1114,82 @@ export const LodgingPageMobile: React.FC = () => {
                   <thead>
                     <tr className="border-b border-[#0A1F17]/15 bg-[#FAF7F2] text-[#071912]">
                       <th className="py-3 px-4 font-bold">
-                        {isEn ? 'Scale by Number of Guests / Profile' : 'Escala por N.º de Personas / Perfil'}
+                        {tr("Scale by Number of Guests / Profile", "Escala por N.º de Personas / Perfil")}
                       </th>
                       <th className="py-3 px-4 font-bold">
-                        {isEn ? 'Short Stay (1 to 6 Nights)' : 'Estadía Corta (1 a 6 Noches)'}
+                        {tr("Short Stay (1 to 6 Nights)", "Estadía Corta (1 a 6 Noches)")}
                       </th>
                       <th className="py-3 px-4 font-bold text-[#A6823C]">
-                        {isEn ? 'Weekly Stay (7 to 14 Nights)' : 'Estadía Semanal (7 a 14 Noches)'}
+                        {tr("Weekly Stay (7 to 14 Nights)", "Estadía Semanal (7 a 14 Noches)")}
                       </th>
                       <th className="py-3 px-4 font-bold text-[#071912]">
-                        {isEn ? 'Extended Stay (15 to 30+ Nights)' : 'Larga Estadía (15 a 30+ Noches)'}
+                        {tr("Extended Stay (15 to 30+ Nights)", "Larga Estadía (15 a 30+ Noches)")}
                       </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#0A1F17]/10">
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn
-                          ? '1 to 10 Guests (Executive Suites & Chalet)'
-                          : '1 a 10 Personas (Suites Ejecutivas & Chalet)'}
+                        {tr("1 to 10 Guests (Executive Suites & Chalet)", "1 a 10 Personas (Suites Ejecutivas & Chalet)")}
                       </td>
                       <td className="py-3 px-4">
-                        {isEn
-                          ? 'From $55 / guest (Breakfast + Fiber Optic WiFi)'
-                          : 'Desde $55 / persona (Desayuno + Fibra Óptica)'}
+                        {tr("From $55 / guest (Breakfast + Fiber Optic WiFi)", "Desde $55 / persona (Desayuno + Fibra Óptica)")}
                       </td>
                       <td className="py-3 px-4 font-semibold text-emerald-700">
-                        {isEn ? 'Weekly Corporate Rate (-15%)' : 'Tarifa Corporativa Semanal (-15%)'}
+                        {tr("Weekly Corporate Rate (-15%)", "Tarifa Corporativa Semanal (-15%)")}
                       </td>
                       <td className="py-3 px-4 font-semibold text-emerald-700">
-                        {isEn ? 'Monthly Agreement (-25% + Catering)' : 'Convenio Mensual (-25% + Alimentación)'}
+                        {tr("Monthly Agreement (-25% + Catering)", "Convenio Mensual (-25% + Alimentación)")}
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn
-                          ? '10 to 25 Guests (Company Staff / Teams)'
-                          : '10 a 25 Personas (Personal de Empresas / Equipos)'}
+                        {tr("10 to 25 Guests (Company Staff / Teams)", "10 a 25 Personas (Personal de Empresas / Equipos)")}
                       </td>
                       <td className="py-3 px-4">
-                        {isEn
-                          ? 'Multiple-occupancy rooms + fleet parking'
-                          : 'Habitaciones múltiples + parqueadero flotas'}
+                        {tr("Multiple-occupancy rooms + fleet parking", "Habitaciones múltiples + parqueadero flotas")}
                       </td>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn ? 'Half board or 3 meals + Fiber Optic WiFi' : 'Media pensión o 3 tiempos + Fibra Óptica'}
+                        {tr("Half board or 3 meals + Fiber Optic WiFi", "Media pensión o 3 tiempos + Fibra Óptica")}
                       </td>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn
-                          ? 'Preferential rate by project scope & duration'
-                          : 'Tarifa preferencial por proyecto y duración'}
+                        {tr("Preferential rate by project scope & duration", "Tarifa preferencial por proyecto y duración")}
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn
-                          ? '28 to 50 Guests (Delegations, NGOs & Volunteers)'
-                          : '28 a 50 Personas (Delegaciones, ONGs y Voluntarios)'}
+                        {tr("28 to 50 Guests (Delegations, NGOs & Volunteers)", "28 a 50 Personas (Delegaciones, ONGs y Voluntarios)")}
                       </td>
                       <td className="py-3 px-4">
-                        {isEn
-                          ? 'Exclusive room wing + briefing room + bus lot'
-                          : 'Bloque exclusivo + salón operativo + buses'}
+                        {tr("Exclusive room wing + briefing room + bus lot", "Bloque exclusivo + salón operativo + buses")}
                       </td>
                       <td className="py-3 px-4 font-semibold text-[#A6823C]">
-                        {isEn
-                          ? 'From $45 / pax per night (3 full meals)'
-                          : 'Desde $45 / pax por noche (3 comidas)'}
+                        {tr("From $45 / pax per night (3 full meals)", "Desde $45 / pax por noche (3 comidas)")}
                       </td>
                       <td className="py-3 px-4 font-semibold text-emerald-700">
-                        {isEn
-                          ? 'Special mission quote (HXP / IMC / Aid)'
-                          : 'Cotización especial misiones (HXP / IMC)'}
+                        {tr("Special mission quote (HXP / IMC / Aid)", "Cotización especial misiones (HXP / IMC)")}
                       </td>
                     </tr>
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {isEn
-                          ? '50 to 80 Guests (Entire Wing · 14 Rooms)'
-                          : '50 a 80 Personas (Bloque Completo 14 Habitaciones)'}
+                        {tr("50 to 80 Guests (Entire Wing · 14 Rooms)", "50 a 80 Personas (Bloque Completo 14 Habitaciones)")}
                       </td>
                       <td className="py-3 px-4 font-bold">
-                        {isEn
-                          ? 'Exclusive Hacienda buy-out ($980 base/night)'
-                          : 'Hacienda en exclusividad ($980 base/noche)'}
+                        {tr("Exclusive Hacienda buy-out ($980 base/night)", "Hacienda en exclusividad ($980 base/noche)")}
                       </td>
                       <td className="py-3 px-4 font-bold text-[#A6823C]">
-                        {isEn
-                          ? 'Full board + private halls + parking'
-                          : 'Pensión completa + salones + parqueaderos'}
+                        {tr("Full board + private halls + parking", "Pensión completa + salones + parqueaderos")}
                       </td>
                       <td className="py-3 px-4 font-bold text-[#071912]">
-                        {isEn
-                          ? 'Maximum volume & duration discount'
-                          : 'Máximo beneficio por volumen y duración'}
+                        {tr("Maximum volume & duration discount", "Máximo beneficio por volumen y duración")}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
               <p className="text-xs text-[#0A1F17]/70 bg-[#FAF7F2] p-3.5 rounded-xl border border-[#0A1F17]/10">
-                <strong>{isEn ? 'Included facilities enhancing your stay:' : 'Complementos que fortalecen tu estadía:'}</strong>{' '}
-                {isEn
-                  ? 'Every plan enjoys coordinated access to our heated swimming pool (14×6m), on-site restaurant, and 5,000 m² of recreation grounds and sports courts in Quito–Píntag.'
-                  : 'Todas las modalidades cuentan con acceso coordinado a nuestra piscina temperada (14×6m), restaurante propio y 5.000 m² de áreas recreativas y canchas deportivas en Quito–Píntag.'}
+                <strong>{tr("Included facilities enhancing your stay:", "Complementos que fortalecen tu estadía:")}</strong>{' '}
+                {tr("Every plan enjoys coordinated access to our heated swimming pool (14×6m), on-site restaurant, and 5,000 m² of recreation grounds and sports courts in Quito–Píntag.", "Todas las modalidades cuentan con acceso coordinado a nuestra piscina temperada (14×6m), restaurante propio y 5.000 m² de áreas recreativas y canchas deportivas en Quito–Píntag.")}
               </p>
             </div>
 
@@ -1269,19 +1199,19 @@ export const LodgingPageMobile: React.FC = () => {
                 onClick={() => setShowComparisonModal(false)}
                 className="px-5 py-2.5 rounded-full text-xs font-semibold text-[#0A1F17]/70 hover:bg-[#0A1F17]/10 transition-colors cursor-pointer"
               >
-                {isEn ? 'Close' : 'Cerrar'}
+                {tr("Close", "Cerrar")}
               </button>
               <a
                 href={buildContextualWhatsAppUrl({
                   phone: siteConfig.whatsappNumber,
                   context: 'hospedaje',
-                  itemName: isEn ? 'Personalized Lodging Quote' : 'Cotización Hospedaje Personalizada',
+                  itemName: tr("Personalized Lodging Quote", "Cotización Hospedaje Personalizada"),
                 })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-xs font-bold bg-[#071912] text-[#E2C585] hover:bg-[#123326] transition-colors cursor-pointer shadow-sm"
               >
-                <span>{isEn ? 'Request Personalized Quote' : 'Solicitar Cotización Personalizada'}</span>
+                <span>{tr("Request Personalized Quote", "Solicitar Cotización Personalizada")}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </a>
             </div>

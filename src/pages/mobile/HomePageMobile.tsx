@@ -251,11 +251,11 @@ const SectionDividerTitle: React.FC<SectionDividerTitleProps> = ({
 
 export const HomePageMobile: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
-  const { language, isEn, t } = useLanguage();
+  const { language, isEn, t, tr } = useLanguage();
 
-  const heroStopCards = getHeroStopCards(isEn);
-  const mainServicesCards = getSection2Cards(isEn);
-  const portfolioServices = getPortfolioServices(isEn);
+  const heroStopCards = getHeroStopCards(language);
+  const mainServicesCards = getSection2Cards(language);
+  const portfolioServices = getPortfolioServices(language);
 
   useDocumentMeta({
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
@@ -315,8 +315,8 @@ export const HomePageMobile: React.FC = () => {
     }
     return [];
   });
-  const defaultReviews = getClientReviews(isEn);
-  const reviews = isEn ? defaultReviews : userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
+  const defaultReviews = getClientReviews(language);
+  const reviews = language !== 'es' ? defaultReviews : userReviews.length > 0 ? [...userReviews, ...defaultReviews] : defaultReviews;
 
   const [reviewStartIndex, setReviewStartIndex] = useState(0);
   const [reviewTransition, setReviewTransition] = useState<'visible' | 'exiting-left' | 'exiting-right'>('visible');
@@ -489,17 +489,8 @@ export const HomePageMobile: React.FC = () => {
             <div className="max-w-[50%] space-y-1.5">
               <ScrollReveal direction="left" delay={60} distance={20}>
                 <h1 className="font-serif-luxury text-[36px] sm:text-[40px] font-bold text-white leading-[0.98] tracking-tight">
-                  {isEn ? (
-                    <>
-                      Long Stays <br />
-                      <span className="text-[#E5C98B] italic font-normal">&amp; Major Events</span>
-                    </>
-                  ) : (
-                    <>
-                      Larga Estadía <br />
-                      <span className="text-[#E5C98B] italic font-normal">&amp; Grandes Eventos</span>
-                    </>
-                  )}
+                  {tr("Long Stays", "Larga Estadía")} <br />
+                  <span className="text-[#E5C98B] italic font-normal">&amp; {tr("Major Events", "Grandes Eventos")}</span>
                 </h1>
               </ScrollReveal>
 
@@ -512,7 +503,7 @@ export const HomePageMobile: React.FC = () => {
                     className="inline-flex w-fit items-center justify-center gap-1.5 px-3 h-[19px] rounded-full bg-[#E5C98B] hover:bg-[#C8A45D] text-[#06150F] text-xs font-bold leading-none shadow-sm shadow-black/30 transition-all cursor-pointer active:scale-95"
                   >
                     <Search className="w-3 h-3 text-[#06150F]/80 shrink-0" />
-                    <span className="leading-none">{isEn ? 'Quote' : 'Cotizar'}</span>
+                    <span className="leading-none">{tr("Quote", "Cotizar")}</span>
                     <ArrowRight className="w-3 h-3 shrink-0" />
                   </button>
                 </div>
@@ -556,7 +547,7 @@ export const HomePageMobile: React.FC = () => {
             <div className="flex items-center justify-between gap-2">
               <ScrollReveal direction="left" delay={40} distance={20}>
                 <h3 className="font-sans-ui text-lg sm:text-xl font-extrabold text-[#071912] tracking-tight">
-                  {isEn ? 'Our Services' : 'Nuestros Servicios'}
+                  {tr("Our Services", "Nuestros Servicios")}
                 </h3>
               </ScrollReveal>
 
@@ -565,7 +556,7 @@ export const HomePageMobile: React.FC = () => {
                 <button
                   type="button"
                   onClick={handlePrevServiceCard}
-                  aria-label={isEn ? 'Previous service' : 'Servicio anterior'}
+                  aria-label={tr("Previous service", "Servicio anterior")}
                   className="w-7 h-7 rounded-full bg-[#EAE2D5] hover:bg-[#D8CDBC] active:scale-90 flex items-center justify-center text-[#071912] transition-all shadow-2xs cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -573,7 +564,7 @@ export const HomePageMobile: React.FC = () => {
                 <button
                   type="button"
                   onClick={handleNextServiceCard}
-                  aria-label={isEn ? 'Next service' : 'Servicio siguiente'}
+                  aria-label={tr("Next service", "Servicio siguiente")}
                   className="w-7 h-7 rounded-full bg-[#EAE2D5] hover:bg-[#D8CDBC] active:scale-90 flex items-center justify-center text-[#071912] transition-all shadow-2xs cursor-pointer"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -629,7 +620,7 @@ export const HomePageMobile: React.FC = () => {
                         {/* Enlace y botón flecha */}
                         <div className="mt-2 pt-1.5 border-t border-[#071912]/8 flex items-center justify-between">
                           <span className="text-[9px] font-bold text-[#C88242] uppercase tracking-wider">
-                            {isEn ? 'Explore' : 'Explorar'}
+                            {tr("Explore", "Explorar")}
                           </span>
                           <div className="w-5 h-5 rounded-full bg-[#FAF7F2] shadow-xs border border-white flex items-center justify-center shrink-0 group-hover:bg-[#C8A45D] transition-all">
                             <ArrowRight className="w-2.5 h-2.5 text-[#C88242] group-hover:text-white group-hover:translate-x-0.5 transition-all" />
@@ -651,7 +642,7 @@ export const HomePageMobile: React.FC = () => {
             <ScrollReveal direction="zoom-in" delay={50} scale={0.96}>
               <SectionDividerTitle
                 id="heading-rutas"
-                title={isEn ? 'Exclusive Facilities' : 'Instalaciones Exclusivas'}
+                title={tr("Exclusive Facilities", "Instalaciones Exclusivas")}
               />
             </ScrollReveal>
 
@@ -666,7 +657,7 @@ export const HomePageMobile: React.FC = () => {
                     <BedDouble className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {isEn ? '14 Rooms' : '14 Hab.'}
+                    {tr("14 Rooms", "14 Hab.")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -680,7 +671,7 @@ export const HomePageMobile: React.FC = () => {
                     <Wifi className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {isEn ? 'Fiber & Hall' : 'Fibra & Salón'}
+                    {tr("Fiber & Hall", "Fibra & Salón")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -694,7 +685,7 @@ export const HomePageMobile: React.FC = () => {
                     <Utensils className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {isEn ? 'Restaurant' : 'Restaurante'}
+                    {tr("Restaurant", "Restaurante")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -708,7 +699,7 @@ export const HomePageMobile: React.FC = () => {
                     <Waves className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {isEn ? 'Pool' : 'Piscina'}
+                    {tr("Pool", "Piscina")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -864,7 +855,7 @@ export const HomePageMobile: React.FC = () => {
               className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#25D366] hover:bg-[#1FAF53] text-[#071912] text-xs font-extrabold shadow-xs cursor-pointer active:scale-95 transition-all"
             >
               <WhatsAppIcon className="w-3.5 h-3.5" />
-              <span>{isEn ? 'Quote Service' : 'Cotizar Servicio'}</span>
+              <span>{tr("Quote Service", "Cotizar Servicio")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
 
@@ -873,7 +864,7 @@ export const HomePageMobile: React.FC = () => {
               className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-[#141413]/10 text-xs font-bold text-[#141413] hover:text-[#C04D18] active:scale-95 transition-all"
             >
               <Play className="w-3 h-3 fill-current" />
-              <span>{isEn ? 'View Page' : 'Ver Página'}</span>
+              <span>{tr("View Page", "Ver Página")}</span>
             </Link>
           </div>
         </div>
@@ -941,16 +932,14 @@ export const HomePageMobile: React.FC = () => {
               <ScrollReveal direction="zoom-in" delay={50} scale={0.96}>
                 <SectionDividerTitle
                   id="heading-evidencia"
-                  title={isEn ? 'Real Voices & Reviews' : 'Voces Reales & Reseñas'}
+                  title={tr("Real Voices & Reviews", "Voces Reales & Reseñas")}
                   theme="light"
                 />
               </ScrollReveal>
 
               <ScrollReveal direction="left" delay={140} distance={30}>
                 <p className="text-xs sm:text-[13px] text-white/80 leading-relaxed text-center">
-                  {isEn
-                    ? 'We support every wedding, corporate retreat, and international delegation in Píntag to ensure a memorable, warm, and well-coordinated experience.'
-                    : 'Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.'}
+                  {tr("We support every wedding, corporate retreat, and international delegation in Píntag to ensure a memorable, warm, and well-coordinated experience.", "Acompañamos cada boda, retiro corporativo y delegación internacional en Píntag para asegurar que tu experiencia sea memorable, cálida y bien coordinada.")}
                 </p>
               </ScrollReveal>
 
@@ -961,7 +950,7 @@ export const HomePageMobile: React.FC = () => {
                     onClick={() => setIsReviewModalOpen(true)}
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#4B6E24] via-[#5E842E] to-[#749B3B] hover:from-[#577E2B] hover:to-[#82AD43] text-white text-xs font-semibold shadow-md border border-[#8AB34B]/40 transition-all duration-200 cursor-pointer active:scale-95"
                   >
-                    <span>{isEn ? 'Leave a Review' : 'Dejar mi Opinión'}</span>
+                    <span>{tr("Leave a Review", "Dejar mi Opinión")}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -1051,7 +1040,7 @@ export const HomePageMobile: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsReviewModalOpen(false)}
-                aria-label={isEn ? 'Close dialog' : 'Cerrar ventana'}
+                aria-label={tr("Close dialog", "Cerrar ventana")}
                 className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#113221]/10 hover:bg-[#113221] text-[#113221] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -1060,42 +1049,38 @@ export const HomePageMobile: React.FC = () => {
               <div className="flex items-center gap-2 mb-1">
                 <Leaf className="w-4 h-4 text-[#5E842E]" />
                 <span className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#5E842E]">
-                  {isEn ? 'NEW REVIEW AT HACIENDA LE PLUS' : 'NUEVA RESEÑA EN HACIENDA LE PLUS'}
+                  {tr("NEW REVIEW AT HACIENDA LE PLUS", "NUEVA RESEÑA EN HACIENDA LE PLUS")}
                 </span>
               </div>
 
               <h3 id="modal-review-title" className="font-serif-luxury text-2xl sm:text-3xl font-bold text-[#113221]">
-                {isEn ? 'Share your experience' : 'Comparte tu experiencia'}
+                {tr("Share your experience", "Comparte tu experiencia")}
               </h3>
               <p className="text-xs text-[#113221]/70 mt-1">
-                {isEn
-                  ? 'Your review will be published immediately in our real experience carousel.'
-                  : 'Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.'}
+                {tr("Your review will be published immediately in our real experience carousel.", "Tu comentario se publicará inmediatamente en nuestro carrusel de experiencias reales.")}
               </p>
 
               {reviewSubmittedSuccess ? (
                 <div className="my-6 p-5 rounded-2xl bg-[#113221] text-white text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-[#A3C468] mx-auto" />
                   <p className="font-bold text-sm">
-                    {isEn ? 'Thank you for sharing your experience!' : '¡Gracias por compartir tu opinión!'}
+                    {tr("Thank you for sharing your experience!", "¡Gracias por compartir tu opinión!")}
                   </p>
                   <p className="text-xs text-white/80">
-                    {isEn
-                      ? 'Your review is now visible at the beginning of the carousel.'
-                      : 'Tu reseña ya está visible al inicio del carrusel.'}
+                    {tr("Your review is now visible at the beginning of the carousel.", "Tu reseña ya está visible al inicio del carrusel.")}
                   </p>
                 </div>
               ) : (
                 <form onSubmit={handleAddClientReview} className="mt-4 space-y-4">
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      {isEn ? 'Your Name, Family or Organization *' : 'Tu Nombre, Familia o Institución *'}
+                      {tr("Your Name, Family or Organization *", "Tu Nombre, Familia o Institución *")}
                     </label>
                     <input
                       type="text"
                       required
                       maxLength={40}
-                      placeholder={isEn ? 'e.g. Gomez Family / Andean Company' : 'Ej. Familia Gómez / Empresa Andina'}
+                      placeholder={tr("e.g. Gomez Family / Andean Company", "Ej. Familia Gómez / Empresa Andina")}
                       value={newReviewAuthor}
                       onChange={(e) => setNewReviewAuthor(e.target.value)}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-sm text-[#113221] focus:outline-none focus:border-[#5E842E]"
@@ -1105,34 +1090,34 @@ export const HomePageMobile: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        {isEn ? 'Experience Type' : 'Experiencia Vivida'}
+                        {tr("Experience Type", "Experiencia Vivida")}
                       </label>
                       <select
                         value={newReviewRole}
                         onChange={(e) => setNewReviewRole(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-xs font-semibold text-[#113221] focus:outline-none focus:border-[#5E842E]"
                       >
-                        <option value={isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}>
-                          {isEn ? 'Weddings & Celebrations' : 'Bodas & Recepciones'}
+                        <option value={tr("Weddings & Celebrations", "Bodas & Recepciones")}>
+                          {tr("Weddings & Celebrations", "Bodas & Recepciones")}
                         </option>
-                        <option value={isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}>
-                          {isEn ? 'Corporate & Conventions' : 'Corporativo & GADs'}
+                        <option value={tr("Corporate & Conventions", "Corporativo & GADs")}>
+                          {tr("Corporate & Conventions", "Corporativo & GADs")}
                         </option>
-                        <option value={isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}>
-                          {isEn ? 'NGO Delegation / Long Stay' : 'Delegación ONG / HXP'}
+                        <option value={tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}>
+                          {tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}
                         </option>
-                        <option value={isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}>
-                          {isEn ? 'Suites & Wellness Spa' : 'Suites & Zona Húmeda'}
+                        <option value={tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}>
+                          {tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}
                         </option>
-                        <option value={isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}>
-                          {isEn ? 'Dining & Catering' : 'Gastronomía & Eventos'}
+                        <option value={tr("Dining & Catering", "Gastronomía & Eventos")}>
+                          {tr("Dining & Catering", "Gastronomía & Eventos")}
                         </option>
                       </select>
                     </div>
 
                     <div>
                       <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                        {isEn ? 'Rating' : 'Calificación'}
+                        {tr("Rating", "Calificación")}
                       </label>
                       <div className="flex items-center gap-1.5 h-[38px] px-3 rounded-xl bg-white border border-[#113221]/20">
                         {[1, 2, 3, 4, 5].map((starVal) => (
@@ -1141,7 +1126,7 @@ export const HomePageMobile: React.FC = () => {
                             type="button"
                             onClick={() => setNewReviewRating(starVal)}
                             className="cursor-pointer focus:outline-none"
-                            aria-label={isEn ? `${starVal} stars` : `${starVal} estrellas`}
+                            aria-label={tr("${starVal} stars", "${starVal} estrellas")}
                           >
                             <Star
                               className={`w-4 h-4 transition-colors ${
@@ -1158,16 +1143,14 @@ export const HomePageMobile: React.FC = () => {
 
                   <div>
                     <label className="block text-xs font-bold uppercase tracking-wider text-[#113221]/80 mb-1">
-                      {isEn ? 'Your Comment or Review *' : 'Tu Comentario o Reseña *'}
+                      {tr("Your Comment or Review *", "Tu Comentario o Reseña *")}
                     </label>
                     <textarea
                       required
                       rows={3}
                       maxLength={170}
                       placeholder={
-                        isEn
-                          ? 'Tell us what you liked most about Hacienda Le Plus...'
-                          : 'Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus...'
+                        tr("Tell us what you liked most about Hacienda Le Plus...", "Cuéntanos qué fue lo que más te gustó de Hacienda Le Plus...")
                       }
                       value={newReviewComment}
                       onChange={(e) => setNewReviewComment(e.target.value)}
@@ -1181,14 +1164,14 @@ export const HomePageMobile: React.FC = () => {
                       onClick={() => setIsReviewModalOpen(false)}
                       className="px-4 py-2.5 rounded-full text-xs font-bold text-[#113221]/70 hover:bg-[#113221]/10 transition-colors cursor-pointer"
                     >
-                      {isEn ? 'Cancel' : 'Cancelar'}
+                      {tr("Cancel", "Cancelar")}
                     </button>
                     <button
                       type="submit"
                       className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#4B6E24] to-[#6E9436] hover:from-[#577E2B] hover:to-[#7CA63E] text-white text-xs font-bold shadow-md transition-all cursor-pointer"
                     >
                       <Send className="w-3.5 h-3.5" />
-                      <span>{isEn ? 'Publish Review' : 'Publicar Opinión'}</span>
+                      <span>{tr("Publish Review", "Publicar Opinión")}</span>
                     </button>
                   </div>
                 </form>

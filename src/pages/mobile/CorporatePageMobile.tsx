@@ -32,7 +32,7 @@ import { CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorporatePackages } 
 
 export const CorporatePageMobile: React.FC = () => {
   const { siteConfig, openQuoteModal } = useCMS();
-  const { language, isEn, t } = useLanguage();
+  const { language, isEn, t, tr } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
   const formatosCarouselRef = useRef<HTMLDivElement | null>(null);
 
@@ -62,7 +62,7 @@ export const CorporatePageMobile: React.FC = () => {
     lang: language,
   });
 
-  const extendedCorpPackages = getCorporatePackages(isEn);
+  const extendedCorpPackages = getCorporatePackages(language);
 
   const currentPkg = extendedCorpPackages[currentPkgIndex] || extendedCorpPackages[0];
 
@@ -123,21 +123,10 @@ export const CorporatePageMobile: React.FC = () => {
           <div className="max-w-[50%] space-y-1.5 sm:space-y-2">
             <ScrollReveal direction="left" delay={60} distance={15}>
               <h1 className="text-white text-left font-serif-luxury font-bold text-[28px] sm:text-[36px] leading-[0.98] tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                {isEn ? (
-                  <>
-                    Major Events &amp;{' '}
-                    <span className="italic font-light text-[21px] sm:text-[27px] bg-gradient-to-r from-[#FAF7F2] via-[#E2C585] to-[#C8A45D] bg-clip-text text-transparent block mt-0.5 leading-tight">
-                      Corporate Retreats
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    Grandes Eventos &amp;{' '}
-                    <span className="italic font-light text-[21px] sm:text-[27px] bg-gradient-to-r from-[#FAF7F2] via-[#E2C585] to-[#C8A45D] bg-clip-text text-transparent block mt-0.5 leading-tight">
-                      Experiencias Corporativas
-                    </span>
-                  </>
-                )}
+                {tr("Major Events &", "Grandes Eventos &")}{' '}
+                <span className="italic font-light text-[21px] sm:text-[27px] bg-gradient-to-r from-[#FAF7F2] via-[#E2C585] to-[#C8A45D] bg-clip-text text-transparent block mt-0.5 leading-tight">
+                  {tr("Corporate Retreats", "Experiencias Corporativas")}
+                </span>
               </h1>
             </ScrollReveal>
 
@@ -148,19 +137,19 @@ export const CorporatePageMobile: React.FC = () => {
                   <div className="w-3.5 h-3.5 rounded-full bg-[#C8A45D]/20 border border-[#C8A45D]/40 flex items-center justify-center text-[#E2C585] shrink-0">
                     <Coffee className="w-2 h-2" />
                   </div>
-                  <span className="truncate">{isEn ? 'Tents, gardens & catering' : 'Carpas, jardines & catering'}</span>
+                  <span className="truncate">{tr("Tents, gardens & catering", "Carpas, jardines & catering")}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-3.5 h-3.5 rounded-full bg-[#C8A45D]/20 border border-[#C8A45D]/40 flex items-center justify-center text-[#E2C585] shrink-0">
                     <ShieldCheck className="w-2 h-2" />
                   </div>
-                  <span className="truncate">{isEn ? 'Stage, floor & pro sound' : 'Tarima, pista & sonido pro'}</span>
+                  <span className="truncate">{tr("Stage, floor & pro sound", "Tarima, pista & sonido pro")}</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <div className="w-3.5 h-3.5 rounded-full bg-[#C8A45D]/20 border border-[#C8A45D]/40 flex items-center justify-center text-[#E2C585] shrink-0">
                     <BedDouble className="w-2 h-2" />
                   </div>
-                  <span className="truncate">{isEn ? 'Pool & 14 on-site rooms' : 'Piscina & 14 hab. complementarias'}</span>
+                  <span className="truncate">{tr("Pool & 14 on-site rooms", "Piscina & 14 hab. complementarias")}</span>
                 </div>
               </div>
             </ScrollReveal>
@@ -175,7 +164,7 @@ export const CorporatePageMobile: React.FC = () => {
                   className="inline-flex w-fit items-center justify-center gap-1 rounded bg-[#13281F] hover:bg-[#0A1F17] text-[#E2C585] border border-[#C8A45D]/40 text-[9.5px] font-bold shadow-2xs active:scale-95 transition-all cursor-pointer"
                   style={{ padding: '2px 6px', lineHeight: 1 }}
                 >
-                  <span>{isEn ? 'Quote' : 'Cotizar'}</span>
+                  <span>{tr("Quote", "Cotizar")}</span>
                   <ArrowRight className="w-2.5 h-2.5 text-[#E2C585] shrink-0" />
                 </a>
               </div>
@@ -195,7 +184,7 @@ export const CorporatePageMobile: React.FC = () => {
               <Presentation className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75]" />
             </div>
             <span className="font-serif-luxury text-[11px] sm:text-xs font-bold text-[#071912] leading-tight line-clamp-2">
-              {isEn ? 'Tents & Stage' : 'Carpas & Tarima'}
+              {tr("Tents & Stage", "Carpas & Tarima")}
             </span>
           </div>
 
@@ -205,7 +194,7 @@ export const CorporatePageMobile: React.FC = () => {
               <Coffee className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75]" />
             </div>
             <span className="font-serif-luxury text-[11px] sm:text-xs font-bold text-[#071912] leading-tight line-clamp-2">
-              {isEn ? 'In-House Dining' : 'Catering Propio'}
+              {tr("In-House Dining", "Catering Propio")}
             </span>
           </div>
 
@@ -215,7 +204,7 @@ export const CorporatePageMobile: React.FC = () => {
               <Trees className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75]" />
             </div>
             <span className="font-serif-luxury text-[11px] sm:text-xs font-bold text-[#071912] leading-tight line-clamp-2">
-              {isEn ? 'Sports & Pool' : 'Deportes & Piscina'}
+              {tr("Sports & Pool", "Deportes & Piscina")}
             </span>
           </div>
 
@@ -225,7 +214,7 @@ export const CorporatePageMobile: React.FC = () => {
               <BedDouble className="w-5 h-5 sm:w-6 sm:h-6 stroke-[1.75]" />
             </div>
             <span className="font-serif-luxury text-[11px] sm:text-xs font-bold text-[#071912] leading-tight line-clamp-2">
-              {isEn ? '14 Rooms' : '14 Habitaciones'}
+              {tr("14 Rooms", "14 Habitaciones")}
             </span>
           </div>
         </div>
@@ -241,14 +230,14 @@ export const CorporatePageMobile: React.FC = () => {
             {/* Título en lado izquierdo sin etiqueta y sin mensaje */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-left">
               <h2 className="font-serif-luxury text-2xl sm:text-3xl lg:text-4xl font-semibold text-white leading-tight">
-                {isEn ? 'Major Corporate Events' : 'Grandes Eventos Corporativos'}
+                {tr("Major Corporate Events", "Grandes Eventos Corporativos")}
               </h2>
               <button
                 type="button"
                 onClick={scrollToAforos}
                 className="inline-flex w-fit items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-[#FAF7F2] hover:bg-white text-[#06150F] font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
               >
-                <span>{isEn ? 'View capacities' : 'Ver aforos'}</span>
+                <span>{tr("View capacities", "Ver aforos")}</span>
                 <ChevronDown className="w-3.5 h-3.5 text-[#A6823C]" />
               </button>
             </div>
@@ -260,7 +249,7 @@ export const CorporatePageMobile: React.FC = () => {
                 onClick={() =>
                   openQuoteModal({
                     serviceType: 'corporativo',
-                    itemName: isEn ? 'Year-End Galas & Major Events' : 'Eventos de Fin de Año & Celebraciones de Gran Formato',
+                    itemName: tr("Year-End Galas & Major Events", "Eventos de Fin de Año & Celebraciones de Gran Formato"),
                   })
                 }
                 className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
@@ -273,10 +262,10 @@ export const CorporatePageMobile: React.FC = () => {
                   />
                 </div>
                 <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {isEn ? 'Year-End & Galas' : 'Fin de Año & Gran Formato'}
+                  {tr("Year-End & Galas", "Fin de Año & Gran Formato")}
                 </h4>
                 <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {isEn ? 'Up to 350+ pax' : 'Hasta 350+ pax'}
+                  {tr("Up to 350+ pax", "Hasta 350+ pax")}
                 </div>
               </div>
 
@@ -285,7 +274,7 @@ export const CorporatePageMobile: React.FC = () => {
                 onClick={() =>
                   openQuoteModal({
                     serviceType: 'corporativo',
-                    itemName: isEn ? 'Team Building, Sports & Pool' : 'Integración Empresarial, Actividades Deportivas y Piscina',
+                    itemName: tr("Team Building, Sports & Pool", "Integración Empresarial, Actividades Deportivas y Piscina"),
                   })
                 }
                 className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
@@ -298,10 +287,10 @@ export const CorporatePageMobile: React.FC = () => {
                   />
                 </div>
                 <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {isEn ? 'Team Building & Sports' : 'Integración & Deportes'}
+                  {tr("Team Building & Sports", "Integración & Deportes")}
                 </h4>
                 <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {isEn ? 'From $40 / pax' : 'Desde $40 / pax'}
+                  {tr("From $40 / pax", "Desde $40 / pax")}
                 </div>
               </div>
 
@@ -310,7 +299,7 @@ export const CorporatePageMobile: React.FC = () => {
                 onClick={() =>
                   openQuoteModal({
                     serviceType: 'corporativo',
-                    itemName: isEn ? 'Conventions with On-Site Lodging' : 'Convenciones con Hospedaje Complementario (14 Habitaciones)',
+                    itemName: tr("Conventions with On-Site Lodging", "Convenciones con Hospedaje Complementario (14 Habitaciones)"),
                   })
                 }
                 className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
@@ -323,10 +312,10 @@ export const CorporatePageMobile: React.FC = () => {
                   />
                 </div>
                 <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {isEn ? 'Conventions + Rooms' : 'Convenciones + Hospedaje'}
+                  {tr("Conventions + Rooms", "Convenciones + Hospedaje")}
                 </h4>
                 <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {isEn ? '28 to 80 guests' : '28 a 80 huéspedes'}
+                  {tr("28 to 80 guests", "28 a 80 huéspedes")}
                 </div>
               </div>
             </div>
@@ -339,13 +328,13 @@ export const CorporatePageMobile: React.FC = () => {
             {/* Cabecera con título generalizado a la izquierda y flechas de navegación a la derecha */}
             <div className="flex items-center justify-between">
               <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white">
-                {isEn ? 'Exclusive Formats' : 'Formatos Exclusivos'}
+                {tr("Exclusive Formats", "Formatos Exclusivos")}
               </h3>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => scrollFormatos('left')}
-                  aria-label={isEn ? 'Previous format' : 'Anterior formato'}
+                  aria-label={tr("Previous format", "Anterior formato")}
                   className="w-8 h-8 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <ChevronLeft className="w-4 h-4 stroke-[1.75]" />
@@ -353,7 +342,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => scrollFormatos('right')}
-                  aria-label={isEn ? 'Next format' : 'Siguiente formato'}
+                  aria-label={tr("Next format", "Siguiente formato")}
                   className="w-8 h-8 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-2xs"
                 >
                   <ChevronRight className="w-4 h-4 stroke-[1.75]" />
@@ -396,7 +385,7 @@ export const CorporatePageMobile: React.FC = () => {
                         {pkg.capacity}
                       </div>
                       <div className="text-[9px] text-[#FAF7F2]/70">
-                        {isEn ? `From $${pkg.priceValue} / ${pkg.unit}` : `Desde $${pkg.priceValue} / ${pkg.unit}`}
+                        {tr("From $${pkg.priceValue} / ${pkg.unit}", "Desde $${pkg.priceValue} / ${pkg.unit}")}
                       </div>
                     </div>
 
@@ -410,7 +399,7 @@ export const CorporatePageMobile: React.FC = () => {
                       }
                       className="w-full mt-1 py-1 rounded bg-[#13281F] hover:bg-[#06150F] text-[#FAF7F2] text-[9.5px] font-bold border border-[#C8A45D]/30 shadow-2xs active:scale-95 transition-all cursor-pointer flex items-center justify-center gap-1"
                     >
-                      <span>{isEn ? 'Quote' : 'Cotizar'}</span>
+                      <span>{tr("Quote", "Cotizar")}</span>
                       <ArrowRight className="w-2.5 h-2.5 text-[#C8A45D]" />
                     </button>
                   </div>
@@ -435,11 +424,11 @@ export const CorporatePageMobile: React.FC = () => {
             <ScrollReveal direction="left" duration={850} className="lg:col-span-3 space-y-4 text-left">
               <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
                 <span>✦</span>
-                <span>{isEn ? 'INFRASTRUCTURE & CAPACITIES' : 'INFRAESTRUCTURA & AFOROS'}</span>
+                <span>{tr("INFRASTRUCTURE & CAPACITIES", "INFRAESTRUCTURA & AFOROS")}</span>
               </div>
 
               <h3 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold text-[#071912] leading-[1.12]">
-                {isEn ? 'Tents, gardens, stage & large-format spaces' : 'Carpas, jardines, tarima y espacios de gran formato'}
+                {tr("Tents, gardens, stage & large-format spaces", "Carpas, jardines, tarima y espacios de gran formato")}
               </h3>
 
               <div className="pt-2">
@@ -449,7 +438,7 @@ export const CorporatePageMobile: React.FC = () => {
                   className="group inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#071912] cursor-pointer"
                 >
                   <span className="border-b-2 border-[#A6823C] pb-0.5 group-hover:border-[#071912] transition-colors">
-                    {isEn ? 'View spaces and facilities matrix' : 'Ver matriz de espacios e instalaciones'}
+                    {tr("View spaces and facilities matrix", "Ver matriz de espacios e instalaciones")}
                   </span>
                   <ArrowRight className="w-3.5 h-3.5 text-[#A6823C] group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -461,9 +450,9 @@ export const CorporatePageMobile: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-5">
                 {CORPORATE_SPACES_CARDS.map((card, idx) => {
                   const dirs: ('up-left' | 'up' | 'up' | 'up-right')[] = ['up-left', 'up', 'up', 'up-right'];
-                  const title = isEn ? card.title_en : card.title;
-                  const subtitle = isEn ? card.subtitle_en : card.subtitle;
-                  const badge = isEn ? card.badge_en : card.badge;
+                  const title = tr(card.title_en, card.title);
+                  const subtitle = tr(card.subtitle_en, card.subtitle);
+                  const badge = tr(card.badge_en, card.badge);
 
                   return (
                     <ScrollReveal key={card.id} direction={dirs[idx % 4]} delay={60 + idx * 70} duration={700} className="h-full">
@@ -521,9 +510,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <Presentation className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? 'Modular structural tents on lawns, stage, dance floor, and pro AV production.'
-                  : 'Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos y convenciones.'}
+                {tr("Modular structural tents on lawns, stage, dance floor, and pro AV production.", "Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos y convenciones.")}
               </p>
             </div>
 
@@ -533,9 +520,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <Utensils className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? 'Executive lunches, gala banquets, country integration BBQ, and continuous coffee breaks.'
-                  : 'Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos puntualmente.'}
+                {tr("Executive lunches, gala banquets, country integration BBQ, and continuous coffee breaks.", "Almuerzos ejecutivos, banquetes de gala, parrilladas de integración y coffee breaks continuos servidos puntualmente.")}
               </p>
             </div>
 
@@ -545,9 +530,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <Wifi className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? 'Value additions: regulation sports courts, outdoor team building circuits, heated pool, and spa.'
-                  : 'Complementos que fortalecen el evento: canchas deportivas, circuitos de team building, piscina cubierta e hidromasaje.'}
+                {tr("Value additions: regulation sports courts, outdoor team building circuits, heated pool, and spa.", "Complementos que fortalecen el evento: canchas deportivas, circuitos de team building, piscina cubierta e hidromasaje.")}
               </p>
             </div>
 
@@ -557,9 +540,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <BedDouble className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? '14 private rooms and suites (28–80 guests) to host executives, speakers, or delegations on-site.'
-                  : '14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones in situ.'}
+                {tr("14 private rooms and suites (28–80 guests) to host executives, speakers, or delegations on-site.", "14 habitaciones y suites privadas (28–80 huéspedes) para alojar a directivos, expositores o delegaciones in situ.")}
               </p>
             </div>
 
@@ -569,9 +550,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <Car className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? 'Gated private parking in Quito–Píntag with easy maneuverability for corporate coach buses.'
-                  : 'Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos y vehículos.'}
+                {tr("Gated private parking in Quito–Píntag with easy maneuverability for corporate coach buses.", "Amplio estacionamiento privado interno en Quito–Píntag con maniobra cómoda para buses corporativos y vehículos.")}
               </p>
             </div>
 
@@ -581,9 +560,7 @@ export const CorporatePageMobile: React.FC = () => {
                 <ShieldCheck className="w-4 h-4 stroke-[1.75]" />
               </div>
               <p className="text-[10.5px] text-[#FAF7F2]/80 leading-relaxed">
-                {isEn
-                  ? 'Active tax ID (RUC), verified corporate invoicing, procurement milestones, and fiber-optic Wi-Fi.'
-                  : 'RUC activo, facturación electrónica, hitos claros para compras y conectividad Wi-Fi por fibra óptica verificada.'}
+                {tr("Active tax ID (RUC), verified corporate invoicing, procurement milestones, and fiber-optic Wi-Fi.", "RUC activo, facturación electrónica, hitos claros para compras y conectividad Wi-Fi por fibra óptica verificada.")}
               </p>
             </div>
           </div>
@@ -618,15 +595,13 @@ export const CorporatePageMobile: React.FC = () => {
             {/* Lado Izquierdo */}
             <ScrollReveal direction="left" duration={800} className="space-y-1.5 text-left max-w-lg">
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#A6823C] block">
-                {isEn ? 'Major Events & Corporate Experiences' : 'Macroeventos & Experiencias Corporativas'}
+                {tr("Major Events & Corporate Experiences", "Macroeventos & Experiencias Corporativas")}
               </span>
               <h3 className="font-serif-luxury text-2xl sm:text-3xl lg:text-[2.25rem] font-semibold text-[#071912] leading-[1.12]">
-                {isEn ? 'Formal Proposal for Your Company' : 'Cotización Formal para tu Empresa'}
+                {tr("Formal Proposal for Your Company", "Cotización Formal para tu Empresa")}
               </h3>
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {isEn
-                  ? 'Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.'
-                  : 'Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.'}
+                {tr("Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.", "Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.")}
               </p>
             </ScrollReveal>
 
@@ -637,7 +612,7 @@ export const CorporatePageMobile: React.FC = () => {
                   <input
                     type="email"
                     required
-                    placeholder={isEn ? 'Enter your corporate email...' : 'Ingresa tu correo corporativo...'}
+                    placeholder={tr("Enter your corporate email...", "Ingresa tu correo corporativo...")}
                     value={quickEmail}
                     onChange={(e) => setQuickEmail(e.target.value)}
                     className="w-full bg-transparent border-none text-xs sm:text-sm text-[#071912] placeholder-[#0A1F17]/45 focus:outline-none"
@@ -646,23 +621,21 @@ export const CorporatePageMobile: React.FC = () => {
                     type="submit"
                     className="rounded-full px-5 sm:px-6 py-2.5 sm:py-2.5 bg-[#11261D] hover:bg-[#071912] text-white text-xs sm:text-sm font-semibold flex items-center gap-1.5 cursor-pointer transition-all duration-200 shrink-0 shadow-sm active:scale-95"
                   >
-                    <span>{isEn ? 'Quote' : 'Cotizar'}</span>
+                    <span>{tr("Quote", "Cotizar")}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex flex-wrap items-center justify-between gap-2 pl-3 pr-2 mt-2">
                   <a
                     href={buildContextualWhatsAppUrl('corporativo', {
-                      customText: isEn
-                        ? 'Hello Hacienda Le Plus, I would like to request a corporate proposal for a major event, retreat or convention.'
-                        : 'Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención).',
+                      customText: tr("Hello Hacienda Le Plus, I would like to request a corporate proposal for a major event, retreat or convention.", "Hola Hacienda Le Plus, deseo solicitar una cotización para un gran evento / experiencia corporativa (fin de año, integración o convención)."),
                     })}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#123326] hover:text-[#25D366] transition-colors"
                   >
                     <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
-                    <span>{isEn ? 'Quote via WhatsApp: +593 96 981 7891' : 'Cotizar por WhatsApp: 0969817891'}</span>
+                    <span>{tr("Quote via WhatsApp: +593 96 981 7891", "Cotizar por WhatsApp: 0969817891")}</span>
                   </a>
                   {siteConfig?.corporateEmails?.corporativo && (
                     <span className="text-[11px] text-[#0A1F17]/55 font-normal">
@@ -693,22 +666,20 @@ export const CorporatePageMobile: React.FC = () => {
             <div className="flex items-start justify-between gap-4 border-b border-[#0A1F17]/10 pb-4">
               <div>
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#A6823C]">
-                  {isEn ? 'Technical & Logistics Planning' : 'Planificación Técnica y Logística'}
+                  {tr("Technical & Logistics Planning", "Planificación Técnica y Logística")}
                 </span>
                 <h3 className="font-serif-luxury text-2xl sm:text-3xl font-semibold text-[#071912] mt-1">
-                  {isEn ? 'Technical Capacity Matrix by Space & Layout' : 'Matriz Técnica de Aforos por Espacio y Montaje'}
+                  {tr("Technical Capacity Matrix by Space & Layout", "Matriz Técnica de Aforos por Espacio y Montaje")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/70 mt-1">
-                  {isEn
-                    ? 'Comfortable capacities calculated to ensure ventilation, smooth circulation flow, and optimal visibility.'
-                    : 'Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.'}
+                  {tr("Comfortable capacities calculated to ensure ventilation, smooth circulation flow, and optimal visibility.", "Capacidades cómodas calculadas para garantizar ventilación, flujo de circulación y visibilidad óptima.")}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowAforosModal(false)}
                 className="w-9 h-9 rounded-full bg-[#FAF7F2] hover:bg-[#071912] hover:text-white flex items-center justify-center text-[#071912] transition-colors cursor-pointer shrink-0"
-                aria-label={isEn ? 'Close modal' : 'Cerrar modal'}
+                aria-label={tr("Close modal", "Cerrar modal")}
               >
                 <X className="w-5 h-5" />
               </button>
@@ -734,12 +705,12 @@ export const CorporatePageMobile: React.FC = () => {
                         selectedSpaceIndex === idx ? 'bg-[#C8A45D]/10' : ''
                       }`}
                     >
-                      <td className="py-3.5 px-4 font-semibold text-[#071912]">{isEn ? row.space_en || row.space : row.space}</td>
+                      <td className="py-3.5 px-4 font-semibold text-[#071912]">{tr(row.space_en || row.space, row.space)}</td>
                       <td className="py-3.5 px-4 text-[#A6823C] font-semibold">{row.auditorium}</td>
                       <td className="py-3.5 px-4">{row.banquet}</td>
                       <td className="py-3.5 px-4">{row.school}</td>
                       <td className="py-3.5 px-4">{row.uShape}</td>
-                      <td className="py-3.5 px-4 text-[#0A1F17]/75">{isEn ? row.notes_en || row.notes : row.notes}</td>
+                      <td className="py-3.5 px-4 text-[#0A1F17]/75">{tr(row.notes_en || row.notes, row.notes)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -749,7 +720,7 @@ export const CorporatePageMobile: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
               <span className="text-xs text-[#0A1F17]/60 flex items-center gap-1.5">
                 <Users className="w-4 h-4 text-[#A6823C]" />
-                {isEn ? 'Audited capacities complying with event standards and optimal flow' : 'Aforos auditados según normativa de eventos y bioseguridad'}
+                {tr("Audited capacities complying with event standards and optimal flow", "Aforos auditados según normativa de eventos y bioseguridad")}
               </span>
               <button
                 type="button"
@@ -759,8 +730,8 @@ export const CorporatePageMobile: React.FC = () => {
                     serviceType: 'corporativo',
                     itemName:
                       selectedSpaceIndex !== null && CORPORATE_SPACES_TABLE[selectedSpaceIndex]
-                        ? (isEn ? CORPORATE_SPACES_TABLE[selectedSpaceIndex].space_en || CORPORATE_SPACES_TABLE[selectedSpaceIndex].space : CORPORATE_SPACES_TABLE[selectedSpaceIndex].space)
-                        : 'Propuesta de Espacios y Aforos',
+                        ? tr(CORPORATE_SPACES_TABLE[selectedSpaceIndex].space_en || CORPORATE_SPACES_TABLE[selectedSpaceIndex].space, CORPORATE_SPACES_TABLE[selectedSpaceIndex].space)
+                        : tr('Spaces & Capacities Proposal', 'Propuesta de Espacios y Aforos'),
                   });
                 }}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold bg-[#C8A45D] text-[#06150F] hover:bg-[#E2C585] transition-colors cursor-pointer"

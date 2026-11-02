@@ -34,7 +34,7 @@ const getBgPath = (cx: number, w: number) => {
 export const MobileBottomNav: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isEn } = useLanguage();
+  const { language, tr } = useLanguage();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const borderPathRef = useRef<SVGPathElement>(null);
@@ -46,13 +46,13 @@ export const MobileBottomNav: React.FC = () => {
 
   const navItems: NavItem[] = useMemo(
     () => [
-      { path: '/', label: isEn ? 'Home' : 'Inicio', icon: Home, activeColor: '#E2C585' },
-      { path: '/bodas', label: isEn ? 'Weddings' : 'Bodas', icon: Heart, activeColor: '#E5C98B' },
-      { path: '/hospedaje', label: isEn ? 'Lodging' : 'Hospedaje', icon: BedDouble, activeColor: '#DFB96E' },
-      { path: '/corporativo', label: isEn ? 'Events' : 'Eventos', icon: Building2, activeColor: '#C8A45D' },
-      { path: '/contacto', label: isEn ? 'Contact' : 'Contacto', icon: PhoneCall, activeColor: '#E2C585' },
+      { path: '/', label: tr("Home", "Inicio"), icon: Home, activeColor: '#E2C585' },
+      { path: '/bodas', label: tr("Weddings", "Bodas"), icon: Heart, activeColor: '#E5C98B' },
+      { path: '/hospedaje', label: tr("Lodging", "Hospedaje"), icon: BedDouble, activeColor: '#DFB96E' },
+      { path: '/corporativo', label: tr("Events", "Eventos"), icon: Building2, activeColor: '#C8A45D' },
+      { path: '/contacto', label: tr("Contact", "Contacto"), icon: PhoneCall, activeColor: '#E2C585' },
     ],
-    [isEn]
+    [language, tr]
   );
 
   const getActiveIndex = useCallback((): number => {

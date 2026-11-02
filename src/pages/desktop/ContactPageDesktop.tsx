@@ -24,7 +24,7 @@ import { ScrollReveal } from '../../components/ScrollReveal';
 
 export const ContactPageDesktop: React.FC = () => {
   const { siteConfig, addLead } = useCMS();
-  const { language, isEn, t } = useLanguage();
+  const { language, isEn, t, tr } = useLanguage();
 
   useDocumentMeta({
     title: 'Contáctanos y Ubicación en Píntag | Hacienda Le Plus',
@@ -139,12 +139,10 @@ export const ContactPageDesktop: React.FC = () => {
         <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <ScrollReveal direction="down" duration={850} className="space-y-3">
             <h1 className="font-serif-luxury text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight drop-shadow-md">
-              {isEn ? 'Contact Us' : 'Contáctanos'}
+              {tr("Contact Us", "Contáctanos")}
             </h1>
             <p className="text-sm sm:text-base lg:text-lg text-[#FAF7F2]/85 max-w-xl mx-auto leading-relaxed font-light">
-              {isEn
-                ? 'Hacienda Le Plus is ready to offer the perfect solution tailored to your requirements.'
-                : 'Hacienda Le Plus está lista para ofrecerte la solución perfecta según tus necesidades y requerimientos.'}
+              {tr("Hacienda Le Plus is ready to offer the perfect solution tailored to your requirements.", "Hacienda Le Plus está lista para ofrecerte la solución perfecta según tus necesidades y requerimientos.")}
             </p>
           </ScrollReveal>
         </div>
@@ -164,12 +162,10 @@ export const ContactPageDesktop: React.FC = () => {
                 {/* Encabezado izquierdo */}
                 <div className="space-y-2">
                   <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-[#06150F]">
-                    {isEn ? 'Get in touch' : 'Ponte en contacto'}
+                    {tr("Get in touch", "Ponte en contacto")}
                   </h2>
                   <p className="text-xs sm:text-sm text-[#0A1F17]/70 leading-relaxed font-light">
-                    {isEn
-                      ? 'We are at your disposal to coordinate property visits, answer questions, or craft a personalized proposal for your event or stay.'
-                      : 'Estamos a tu disposición para coordinar visitas a la hacienda, resolver cualquier consulta o preparar una propuesta personalizada a la medida de tu evento o descanso.'}
+                    {tr("We are at your disposal to coordinate property visits, answer questions, or craft a personalized proposal for your event or stay.", "Estamos a tu disposición para coordinar visitas a la hacienda, resolver cualquier consulta o preparar una propuesta personalizada a la medida de tu evento o descanso.")}
                   </p>
                 </div>
 
@@ -182,7 +178,7 @@ export const ContactPageDesktop: React.FC = () => {
                     </div>
                     <div className="space-y-0.5">
                       <h4 className="font-bold text-sm text-[#06150F]">
-                        {isEn ? 'Main Office & Resort' : 'Oficina Principal & Hacienda'}
+                        {tr("Main Office & Resort", "Oficina Principal & Hacienda")}
                       </h4>
                       <p className="text-xs text-[#0A1F17]/70 leading-relaxed">
                         {siteConfig.address}
@@ -200,7 +196,7 @@ export const ContactPageDesktop: React.FC = () => {
                     </div>
                     <div className="space-y-0.5">
                       <h4 className="font-bold text-sm text-[#06150F]">
-                        {isEn ? 'Email Addresses' : 'Correos Electrónicos'}
+                        {tr("Email Addresses", "Correos Electrónicos")}
                       </h4>
                       <a
                         href={`mailto:${siteConfig.corporateEmails.general}`}
@@ -224,10 +220,10 @@ export const ContactPageDesktop: React.FC = () => {
                     </div>
                     <div className="space-y-0.5">
                       <h4 className="font-bold text-sm text-[#06150F]">
-                        {isEn ? 'Call Us & WhatsApp' : 'Llámanos & WhatsApp'}
+                        {tr("Call Us & WhatsApp", "Llámanos & WhatsApp")}
                       </h4>
                       <p className="text-xs text-[#0A1F17]/80 font-medium">
-                        {isEn ? 'Phone' : 'Teléfono'}: {siteConfig.phoneDisplay}
+                        {tr("Phone", "Teléfono")}: {siteConfig.phoneDisplay}
                       </p>
                       <p className="text-xs text-[#0A1F17]/80 font-medium">
                         WhatsApp: +593 96 981 7891
@@ -240,7 +236,7 @@ export const ContactPageDesktop: React.FC = () => {
               {/* Redes Sociales con botones circulares */}
               <div className="pt-4 border-t border-[#0A1F17]/10 space-y-3">
                 <h5 className="font-bold text-xs sm:text-sm text-[#06150F]">
-                  {isEn ? 'Follow us on social media' : 'Síguenos en nuestras redes'}
+                  {tr("Follow us on social media", "Síguenos en nuestras redes")}
                 </h5>
                 <div className="flex items-center gap-2.5">
                   <a
@@ -289,12 +285,10 @@ export const ContactPageDesktop: React.FC = () => {
             <ScrollReveal direction="right" delay={120} duration={850} className="lg:col-span-7 p-7 sm:p-10 lg:p-12 space-y-6 bg-white h-full">
               <div>
                 <h2 className="font-serif-luxury text-3xl sm:text-4xl font-bold text-[#06150F]">
-                  {isEn ? 'Send us a message' : 'Envíanos un mensaje'}
+                  {tr("Send us a message", "Envíanos un mensaje")}
                 </h2>
                 <p className="text-xs text-[#0A1F17]/65 mt-1 font-light">
-                  {isEn
-                    ? 'Fill out the fields and we will respond within 24 business hours.'
-                    : 'Completa los campos y te responderemos en menos de 24 horas hábiles.'}
+                  {tr("Fill out the fields and we will respond within 24 business hours.", "Completa los campos y te responderemos en menos de 24 horas hábiles.")}
                 </p>
               </div>
 
@@ -304,14 +298,10 @@ export const ContactPageDesktop: React.FC = () => {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h3 className="font-serif-luxury text-2xl font-bold text-[#06150F]">
-                    {isEn ? 'Message successfully received!' : '¡Mensaje recibido con éxito!'}
+                    {tr("Message successfully received!", "¡Mensaje recibido con éxito!")}
                   </h3>
                   <p className="text-xs sm:text-sm text-[#0A1F17]/80 max-w-md mx-auto leading-relaxed">
-                    {isEn ? (
-                      <>Thank you for contacting us, <strong>{formData.name}</strong>. A Hacienda Le Plus representative will reach out shortly.</>
-                    ) : (
-                      <>Muchas gracias por contactarnos, <strong>{formData.name}</strong>. Un asesor de Hacienda Le Plus se comunicará contigo a la brevedad posible.</>
-                    )}
+                    {tr("Thank you for contacting us,", "Muchas gracias por contactarnos,")} <strong>{formData.name}</strong>. {tr("A Hacienda Le Plus representative will reach out shortly.", "Un asesor de Hacienda Le Plus se comunicará contigo a la brevedad posible.")}
                   </p>
                   <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
                     <a
@@ -325,14 +315,14 @@ export const ContactPageDesktop: React.FC = () => {
                       className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-bold bg-[#25D366] hover:bg-[#20bd5a] text-white transition-colors shadow-sm"
                     >
                       <WhatsAppIcon variant="monochrome" className="w-4 h-4 fill-current text-white" />
-                      <span>{isEn ? 'Also reach out on WhatsApp' : 'Escribir también por WhatsApp'}</span>
+                      <span>{tr("Also reach out on WhatsApp", "Escribir también por WhatsApp")}</span>
                     </a>
                     <button
                       type="button"
                       onClick={handleReset}
                       className="px-5 py-3 rounded-full text-xs font-semibold border border-[#0A1F17]/20 text-[#06150F] hover:bg-[#06150F] hover:text-white transition-colors cursor-pointer"
                     >
-                      {isEn ? 'Send another message' : 'Enviar otro mensaje'}
+                      {tr("Send another message", "Enviar otro mensaje")}
                     </button>
                   </div>
                 </div>
@@ -342,7 +332,7 @@ export const ContactPageDesktop: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label htmlFor="contact-name" className="text-xs font-bold text-[#06150F] block">
-                        {isEn ? 'Full Name' : 'Nombre'}
+                        {tr("Full Name", "Nombre")}
                       </label>
                       <input
                         id="contact-name"
@@ -350,7 +340,7 @@ export const ContactPageDesktop: React.FC = () => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder={isEn ? 'Your full name' : 'Tu nombre y apellido'}
+                        placeholder={tr("Your full name", "Tu nombre y apellido")}
                         required
                         className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner"
                       />
@@ -358,7 +348,7 @@ export const ContactPageDesktop: React.FC = () => {
 
                     <div className="space-y-1.5">
                       <label htmlFor="contact-company" className="text-xs font-bold text-[#06150F] block">
-                        {isEn ? 'Company / Organization' : 'Empresa / Organización'}
+                        {tr("Company / Organization", "Empresa / Organización")}
                       </label>
                       <input
                         id="contact-company"
@@ -366,7 +356,7 @@ export const ContactPageDesktop: React.FC = () => {
                         name="company"
                         value={formData.company}
                         onChange={handleChange}
-                        placeholder={isEn ? 'Company name or event type' : 'Empresa o tipo de evento'}
+                        placeholder={tr("Company name or event type", "Empresa o tipo de evento")}
                         className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner"
                       />
                     </div>
@@ -376,7 +366,7 @@ export const ContactPageDesktop: React.FC = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label htmlFor="contact-phone" className="text-xs font-bold text-[#06150F] block">
-                        {isEn ? 'Phone Number' : 'Teléfono'}
+                        {tr("Phone Number", "Teléfono")}
                       </label>
                       <input
                         id="contact-phone"
@@ -392,7 +382,7 @@ export const ContactPageDesktop: React.FC = () => {
 
                     <div className="space-y-1.5">
                       <label htmlFor="contact-email" className="text-xs font-bold text-[#06150F] block">
-                        {isEn ? 'Email Address' : 'Correo Electrónico'}
+                        {tr("Email Address", "Correo Electrónico")}
                       </label>
                       <input
                         id="contact-email"
@@ -400,7 +390,7 @@ export const ContactPageDesktop: React.FC = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder={isEn ? 'you@email.com' : 'tu@correo.com'}
+                        placeholder={tr("you@email.com", "tu@correo.com")}
                         required
                         className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner"
                       />
@@ -410,7 +400,7 @@ export const ContactPageDesktop: React.FC = () => {
                   {/* Fila 3: Asunto */}
                   <div className="space-y-1.5">
                     <label htmlFor="contact-subject" className="text-xs font-bold text-[#06150F] block">
-                      {isEn ? 'Subject' : 'Asunto'}
+                      {tr("Subject", "Asunto")}
                     </label>
                     <input
                       id="contact-subject"
@@ -418,7 +408,7 @@ export const ContactPageDesktop: React.FC = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder={isEn ? 'e.g. Wedding Quote, Corporate Retreat, or Cabin Booking' : 'Ej: Cotización Boda, Retiro Corporativo o Reserva de Cabaña'}
+                      placeholder={tr("e.g. Wedding Quote, Corporate Retreat, or Cabin Booking", "Ej: Cotización Boda, Retiro Corporativo o Reserva de Cabaña")}
                       required
                       className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner"
                     />
@@ -427,7 +417,7 @@ export const ContactPageDesktop: React.FC = () => {
                   {/* Fila 4: Mensaje */}
                   <div className="space-y-1.5">
                     <label htmlFor="contact-message" className="text-xs font-bold text-[#06150F] block">
-                      {isEn ? 'Message' : 'Mensaje'}
+                      {tr("Message", "Mensaje")}
                     </label>
                     <textarea
                       id="contact-message"
@@ -435,7 +425,7 @@ export const ContactPageDesktop: React.FC = () => {
                       rows={4}
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder={isEn ? 'Share the details of your inquiry, estimated guest count, or tentative dates...' : 'Escribe aquí los detalles de tu consulta, número estimado de invitados o fecha tentativa...'}
+                      placeholder={tr("Share the details of your inquiry, estimated guest count, or tentative dates...", "Escribe aquí los detalles de tu consulta, número estimado de invitados o fecha tentativa...")}
                       required
                       className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner resize-y"
                     />
@@ -504,7 +494,7 @@ export const ContactPageDesktop: React.FC = () => {
 
                 <div className="pt-2 border-t border-[#0A1F17]/10 flex items-center justify-between gap-3 text-xs">
                   <span className="text-[11px] text-[#0A1F17]/60">
-                    {isEn ? '30 min from Airport' : 'A 30 min del Aeropuerto'}
+                    {tr("30 min from Airport", "A 30 min del Aeropuerto")}
                   </span>
                   <a
                     href={siteConfig.googleMapsDirectUrl}
@@ -513,7 +503,7 @@ export const ContactPageDesktop: React.FC = () => {
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-bold bg-[#06150F] text-[#E2C585] hover:bg-[#1B4735] transition-colors shadow-sm"
                   >
                     <Navigation className="w-3 h-3" />
-                    <span>{isEn ? 'Directions' : 'Cómo llegar'}</span>
+                    <span>{tr("Directions", "Cómo llegar")}</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
