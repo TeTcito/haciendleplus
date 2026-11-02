@@ -31,15 +31,26 @@ import { ScrollReveal } from '../../components/ScrollReveal';
 import { CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorporatePackages } from '../../data/resortSpaces';
 
 export const CorporatePageMobile: React.FC = () => {
-  const { siteConfig, openQuoteModal } = useCMS();
+  const { siteConfig, corporateExclusiveFormats, corporateHighlights, openQuoteModal } = useCMS();
   const { language, isEn, t, tr } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
   const formatosCarouselRef = useRef<HTMLDivElement | null>(null);
+  const highlightsCarouselRef = useRef<HTMLDivElement | null>(null);
 
   const scrollFormatos = (direction: 'left' | 'right') => {
     if (formatosCarouselRef.current) {
       const scrollAmount = 160;
       formatosCarouselRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth',
+      });
+    }
+  };
+
+  const scrollHighlights = (direction: 'left' | 'right') => {
+    if (highlightsCarouselRef.current) {
+      const scrollAmount = 140;
+      highlightsCarouselRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
       });
@@ -62,7 +73,25 @@ export const CorporatePageMobile: React.FC = () => {
     lang: language,
   });
 
-  const extendedCorpPackages = getCorporatePackages(language);
+  const defaultCorpPackages = getCorporatePackages(language);
+  const extendedCorpPackages =
+    corporateExclusiveFormats && corporateExclusiveFormats.length > 0
+      ? corporateExclusiveFormats.map((cmsPkg) => {
+          if (language !== 'es') {
+            const matched = defaultCorpPackages.find((p) => p.id === cmsPkg.id);
+            if (matched) {
+              return {
+                ...matched,
+                priceValue: cmsPkg.priceValue,
+                image: cmsPkg.image,
+                videoUrl: cmsPkg.videoUrl,
+                mediaType: cmsPkg.mediaType,
+              };
+            }
+          }
+          return cmsPkg;
+        })
+      : defaultCorpPackages;
 
   const currentPkg = extendedCorpPackages[currentPkgIndex] || extendedCorpPackages[0];
 
@@ -227,97 +256,75 @@ export const CorporatePageMobile: React.FC = () => {
         {/* Sección 3: Grandes Eventos Corporativos (Título sin etiqueta ni mensaje, apartados en una sola fila) */}
         <section className="w-full bg-[#071912] text-[#FAF7F2] py-8 sm:py-10 px-4 sm:px-6 border-t border-b border-[#C8A45D]/20 relative z-10">
           <div className="w-full max-w-[1440px] mx-auto space-y-6">
-            {/* Título en lado izquierdo sin etiqueta y sin mensaje */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 text-left">
-              <h2 className="font-serif-luxury text-2xl sm:text-3xl lg:text-4xl font-semibold text-white leading-tight">
+            {/* Título en lado izquierdo con controles de carrusel */}
+            <div className="flex items-center justify-between gap-2 text-left">
+              <h2 className="font-serif-luxury text-xl sm:text-3xl font-semibold text-white leading-tight">
                 {tr("Major Corporate Events", "Grandes Eventos Corporativos")}
               </h2>
-              <button
-                type="button"
-                onClick={scrollToAforos}
-                className="inline-flex w-fit items-center justify-center gap-1.5 px-4 py-1.5 rounded-full bg-[#FAF7F2] hover:bg-white text-[#06150F] font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
-              >
-                <span>{tr("View capacities", "Ver aforos")}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-[#A6823C]" />
-              </button>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => scrollHighlights('left')}
+                  aria-label="Anterior"
+                  className="w-7 h-7 rounded-full border border-white/20 bg-white/5 text-white flex items-center justify-center cursor-pointer"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollHighlights('right')}
+                  aria-label="Siguiente"
+                  className="w-7 h-7 rounded-full border border-white/20 bg-white/5 text-white flex items-center justify-center cursor-pointer"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
-            {/* Apartados en una sola fila */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 items-start">
-              {/* Apartado 1: Fin de Año & Gran Formato */}
-              <div
-                onClick={() =>
-                  openQuoteModal({
-                    serviceType: 'corporativo',
-                    itemName: tr("Year-End Galas & Major Events", "Eventos de Fin de Año & Celebraciones de Gran Formato"),
-                  })
-                }
-                className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
-              >
-                <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-md group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1">
-                  <img
-                    src="/images/hacienda/boda-carpa-gala.jpg"
-                    alt="Eventos de Fin de Año, Carpas, Tarima y Pista de Baile"
-                    className="w-full h-full object-cover rounded-full"
-                  />
+            {/* Apartados en Carrusel Horizontal */}
+            <div
+              ref={highlightsCarouselRef}
+              className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none pb-1"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {corporateHighlights.map((item) => (
+                <div
+                  key={item.id}
+                  onClick={() =>
+                    openQuoteModal({
+                      serviceType: 'corporativo',
+                      itemName: tr(item.whatsappItemName, item.whatsappItemName),
+                    })
+                  }
+                  className="w-[30vw] min-w-[105px] max-w-[140px] shrink-0 snap-start group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
+                >
+                  <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-md group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1">
+                    {item.mediaType === 'video' && item.videoUrl ? (
+                      <video
+                        src={item.videoUrl}
+                        poster={item.image}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    ) : (
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-full object-cover rounded-full"
+                      />
+                    )}
+                  </div>
+                  <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
+                    {tr(item.title, item.title)}
+                  </h4>
+                  <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
+                    {tr(item.highlightMetric, item.highlightMetric)}
+                  </div>
                 </div>
-                <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {tr("Year-End & Galas", "Fin de Año & Gran Formato")}
-                </h4>
-                <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {tr("Up to 350+ pax", "Hasta 350+ pax")}
-                </div>
-              </div>
-
-              {/* Apartado 2: Integración, Deportes & Piscina */}
-              <div
-                onClick={() =>
-                  openQuoteModal({
-                    serviceType: 'corporativo',
-                    itemName: tr("Team Building, Sports & Pool", "Integración Empresarial, Actividades Deportivas y Piscina"),
-                  })
-                }
-                className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
-              >
-                <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-md group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1">
-                  <img
-                    src="/images/hacienda/jardines-teambuilding.jpg"
-                    alt="Integración, Actividades Deportivas y Piscina"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </div>
-                <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {tr("Team Building & Sports", "Integración & Deportes")}
-                </h4>
-                <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {tr("From $40 / pax", "Desde $40 / pax")}
-                </div>
-              </div>
-
-              {/* Apartado 3: Convenciones + Hospedaje Complementario */}
-              <div
-                onClick={() =>
-                  openQuoteModal({
-                    serviceType: 'corporativo',
-                    itemName: tr("Conventions with On-Site Lodging", "Convenciones con Hospedaje Complementario (14 Habitaciones)"),
-                  })
-                }
-                className="group cursor-pointer text-center p-2 rounded-xl hover:bg-white/5 transition-all duration-300"
-              >
-                <div className="w-20 h-20 sm:w-28 sm:h-28 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-md group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1">
-                  <img
-                    src="/images/hacienda/reunion-corporativa.jpg"
-                    alt="Convenciones y Hospedaje Complementario"
-                    className="w-full h-full object-cover rounded-full"
-                  />
-                </div>
-                <h4 className="font-serif-luxury text-xs sm:text-sm font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2 line-clamp-2 leading-tight">
-                  {tr("Conventions + Rooms", "Convenciones + Hospedaje")}
-                </h4>
-                <div className="text-[10px] sm:text-xs font-bold text-[#E2C585] mt-1">
-                  {tr("28 to 80 guests", "28 a 80 huéspedes")}
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>

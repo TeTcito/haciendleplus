@@ -93,7 +93,7 @@ const getLodgingServicesCards = (langOrIsEn?: any): LodgingServiceItem[] => [
 ];
 
 export const LodgingPageMobile: React.FC = () => {
-  const { siteConfig, cabins, openQuoteModal } = useCMS();
+  const { siteConfig, cabins, lodgingServices: cmsLodgingServices, openQuoteModal } = useCMS();
   const { language, isEn, tr } = useLanguage();
 
   // SEO Meta
@@ -251,18 +251,44 @@ export const LodgingPageMobile: React.FC = () => {
     setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  // Lista de habitaciones y cabañas con nombres en español o inglés (Prioridad Larga Estadía Empresas y Grupos)
+  // Lista de habitaciones y cabañas sincronizadas con CMS (sin recortar a 4 para soportar nuevas tarjetas)
   const defaultCabins = getCabinsData(language);
-  const displayCabins: CabinRoom[] = language !== 'es' ? defaultCabins.map((enCabin) => {
-        const cmsCabin = cabins?.find((c) => c.id === enCabin.id);
-        return cmsCabin
-          ? { ...enCabin, pricePerNight: cmsCabin.pricePerNight, image: cmsCabin.image }
-          : enCabin;
-      })
-    : cabins && cabins.length >= 4
-    ? cabins.slice(0, 4)
-    : defaultCabins;
-  const lodgingServices = getLodgingServicesCards(language);
+  const displayCabins: CabinRoom[] =
+    cabins && cabins.length > 0
+      ? cabins.map((cmsCabin) => {
+          if (language !== 'es') {
+            const matchedDefault = defaultCabins.find((c) => c.id === cmsCabin.id);
+            if (matchedDefault) {
+              return {
+                ...matchedDefault,
+                pricePerNight: cmsCabin.pricePerNight,
+                showPrice: cmsCabin.showPrice,
+                image: cmsCabin.image,
+                videoUrl: cmsCabin.videoUrl,
+                mediaType: cmsCabin.mediaType,
+              };
+            }
+          }
+          return cmsCabin;
+        })
+      : defaultCabins;
+
+  const lodgingServices =
+    cmsLodgingServices && cmsLodgingServices.length > 0
+      ? cmsLodgingServices.map((card) => ({
+          id: card.id,
+          title: tr(card.title, card.title),
+          badge: tr(card.badge, card.badge),
+          badgeClass:
+            card.badgeClass || 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
+          image: card.image,
+          videoUrl: card.videoUrl,
+          mediaType: card.mediaType,
+          description: tr(card.description, card.description),
+          serviceType: card.serviceType,
+          itemName: tr(card.itemName, card.itemName),
+        }))
+      : getLodgingServicesCards(language);
 
   return (
     <main className="w-full bg-[#FAF7F2] text-[#0A1F17] overflow-x-hidden selection:bg-[#C8A45D]/30 selection:text-[#06150F]">

@@ -30,11 +30,12 @@ import { ScrollReveal } from '../../components/ScrollReveal';
 import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorporatePackages } from '../../data/resortSpaces';
 
 export const CorporatePageDesktop: React.FC = () => {
-  const { siteConfig, openQuoteModal } = useCMS();
+  const { siteConfig, corporateExclusiveFormats, corporateHighlights, openQuoteModal } = useCMS();
   const { language, isEn, t, tr } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
 
   const [currentPkgIndex, setCurrentPkgIndex] = useState(0);
+  const [highlightStartIndex, setHighlightStartIndex] = useState(0);
   const [showAforosModal, setShowAforosModal] = useState(false);
   const [selectedSpaceIndex, setSelectedSpaceIndex] = useState<number | null>(null);
   const [quickEmail, setQuickEmail] = useState('');
@@ -50,9 +51,27 @@ export const CorporatePageDesktop: React.FC = () => {
     lang: language,
   });
 
-  const extendedCorpPackages = getCorporatePackages(language);
+  const defaultCorpPackages = getCorporatePackages(language);
+  const extendedCorpPackages =
+    corporateExclusiveFormats && corporateExclusiveFormats.length > 0
+      ? corporateExclusiveFormats.map((cmsPkg) => {
+          if (language !== 'es') {
+            const matched = defaultCorpPackages.find((p) => p.id === cmsPkg.id);
+            if (matched) {
+              return {
+                ...matched,
+                priceValue: cmsPkg.priceValue,
+                image: cmsPkg.image,
+                videoUrl: cmsPkg.videoUrl,
+                mediaType: cmsPkg.mediaType,
+              };
+            }
+          }
+          return cmsPkg;
+        })
+      : defaultCorpPackages;
 
-  const currentPkg = extendedCorpPackages[currentPkgIndex] || extendedCorpPackages[0];
+  const currentPkg = extendedCorpPackages[currentPkgIndex % extendedCorpPackages.length] || extendedCorpPackages[0];
 
   const prevPkg = () => {
     setCurrentPkgIndex((prev) => (prev === 0 ? extendedCorpPackages.length - 1 : prev - 1));
@@ -60,6 +79,22 @@ export const CorporatePageDesktop: React.FC = () => {
 
   const nextPkg = () => {
     setCurrentPkgIndex((prev) => (prev === extendedCorpPackages.length - 1 ? 0 : prev + 1));
+  };
+
+  const visibleHighlightsCount = Math.min(3, corporateHighlights.length || 3);
+  const visibleHighlights = Array.from(
+    { length: visibleHighlightsCount },
+    (_, i) => corporateHighlights[(highlightStartIndex + i) % corporateHighlights.length]
+  );
+
+  const prevHighlight = () => {
+    setHighlightStartIndex((prev) =>
+      (prev - 1 + corporateHighlights.length) % corporateHighlights.length
+    );
+  };
+
+  const nextHighlight = () => {
+    setHighlightStartIndex((prev) => (prev + 1) % corporateHighlights.length);
   };
 
   const handleQuickQuote = (e: React.FormEvent) => {
@@ -297,104 +332,81 @@ export const CorporatePageDesktop: React.FC = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Lado Derecho: 3 Ítems Circulares con Divisor Vertical */}
-              <div className="lg:col-span-8">
+              {/* Lado Derecho: Carrusel Horizontal de Grandes Eventos Corporativos */}
+              <div className="lg:col-span-8 space-y-4">
+                <div className="flex items-center justify-end gap-2">
+                  <span className="text-[11px] font-mono text-[#E2C585]/80 mr-1">
+                    {corporateHighlights.length} {tr("formats", "modalidades")}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={prevHighlight}
+                    aria-label={tr("Previous", "Anterior")}
+                    className="w-9 h-9 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextHighlight}
+                    aria-label={tr("Next", "Siguiente")}
+                    className="w-9 h-9 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white/90 hover:text-white flex items-center justify-center transition-all cursor-pointer active:scale-95"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-6 items-center">
-                  {/* Ítem Circular 1: Eventos de Fin de Año & Gran Formato */}
-                  <ScrollReveal direction="zoom-in" delay={80} duration={700}>
-                    <div
-                      onClick={() =>
-                        openQuoteModal({
-                          serviceType: 'corporativo',
-                          itemName: tr("Year-End Galas & Major Events", "Eventos de Fin de Año & Celebraciones de Gran Formato"),
-                        })
-                      }
-                      className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
+                  {visibleHighlights.map((item, idx) => (
+                    <ScrollReveal
+                      key={`${item.id}-${idx}`}
+                      direction="zoom-in"
+                      delay={80 + idx * 80}
+                      duration={700}
+                      className={idx === 2 ? 'sm:border-l sm:border-[#C8A45D]/20 sm:pl-6' : ''}
                     >
-                      <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-xl group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1.5">
-                        <img
-                          src="/images/hacienda/boda-carpa-gala.jpg"
-                          alt="Eventos de Fin de Año, Carpas, Tarima y Pista de Baile"
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {tr("Year-End & Major Galas", "Fin de Año & Gran Formato")}
-                        </h4>
-                        <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {tr("Tents, gardens, stage, dance floor & catering", "Carpas, jardines, tarima, pista de baile y catering")}
-                        </p>
-                        <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {tr("Up to 350+ guests", "Hasta 350+ pax")}
+                      <div
+                        onClick={() =>
+                          openQuoteModal({
+                            serviceType: 'corporativo',
+                            itemName: tr(item.whatsappItemName, item.whatsappItemName),
+                          })
+                        }
+                        className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
+                      >
+                        <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-xl group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1.5">
+                          {item.mediaType === 'video' && item.videoUrl ? (
+                            <video
+                              src={item.videoUrl}
+                              poster={item.image}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          ) : (
+                            <img
+                              src={item.image}
+                              alt={item.title}
+                              className="w-full h-full object-cover rounded-full"
+                            />
+                          )}
+                        </div>
+                        <div>
+                          <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
+                            {tr(item.title, item.title)}
+                          </h4>
+                          <p className="text-xs text-[#FAF7F2]/75 mt-1">
+                            {tr(item.subtitle, item.subtitle)}
+                          </p>
+                          <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
+                            {tr(item.highlightMetric, item.highlightMetric)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </ScrollReveal>
-
-                  {/* Ítem Circular 2: Integración, Deportes & Piscina */}
-                  <ScrollReveal direction="zoom-in" delay={160} duration={700}>
-                    <div
-                      onClick={() =>
-                        openQuoteModal({
-                          serviceType: 'corporativo',
-                          itemName: tr("Corporate Team Building, Sports & Pool", "Integración Empresarial, Actividades Deportivas y Piscina"),
-                        })
-                      }
-                      className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
-                    >
-                      <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-xl group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1.5">
-                        <img
-                          src="/images/hacienda/jardines-teambuilding.jpg"
-                          alt="Integración, Actividades Deportivas y Piscina"
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {tr("Team Building & Sports", "Integración & Deportes")}
-                        </h4>
-                        <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {tr("Sports courts, 14×6m pool & country BBQ", "Canchas deportivas, piscina 14×6m & parrillada")}
-                        </p>
-                        <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {tr("From $40 / guest", "Desde $40 / pax")}
-                        </div>
-                      </div>
-                    </div>
-                  </ScrollReveal>
-
-                  {/* Ítem Circular 3: Convenciones + Hospedaje Complementario */}
-                  <ScrollReveal direction="zoom-in" delay={240} duration={700} className="sm:border-l sm:border-[#C8A45D]/20 sm:pl-6">
-                    <div
-                      onClick={() =>
-                        openQuoteModal({
-                          serviceType: 'corporativo',
-                          itemName: tr("Conventions with On-Site Lodging (14 Rooms)", "Convenciones con Hospedaje Complementario (14 Habitaciones)"),
-                        })
-                      }
-                      className="group cursor-pointer text-center space-y-3 p-3 rounded-2xl hover:bg-white/5 transition-all duration-300"
-                    >
-                      <div className="w-36 h-36 sm:w-44 sm:h-44 lg:w-48 lg:h-48 mx-auto rounded-full overflow-hidden border-2 border-[#C8A45D]/60 shadow-xl group-hover:border-[#DFB96E] group-hover:scale-105 transition-all duration-300 p-1.5">
-                        <img
-                          src="/images/hacienda/reunion-corporativa.jpg"
-                          alt="Convenciones y Hospedaje Complementario"
-                          className="w-full h-full object-cover rounded-full"
-                        />
-                      </div>
-                      <div>
-                        <h4 className="font-serif-luxury text-xl sm:text-2xl font-bold text-white group-hover:text-[#E2C585] transition-colors mt-2">
-                          {tr("Conventions + Lodging", "Convenciones + Hospedaje")}
-                        </h4>
-                        <p className="text-xs text-[#FAF7F2]/75 mt-1">
-                          {tr("Pro AV hall, catering & 14 on-site rooms", "Salón AV pro, catering y 14 hab. complementarias")}
-                        </p>
-                        <div className="text-sm sm:text-base font-bold text-[#E2C585] mt-1.5">
-                          {tr("28 to 80 guests", "28 a 80 huéspedes")}
-                        </div>
-                      </div>
-                    </div>
-                  </ScrollReveal>
+                    </ScrollReveal>
+                  ))}
                 </div>
               </div>
             </div>

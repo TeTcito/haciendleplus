@@ -156,14 +156,32 @@ const ServiceCardIcon: React.FC<{ type: 'rings' | 'flower' | 'camera' | 'couple'
 };
 
 export const WeddingsPageDesktop: React.FC = () => {
-  const { siteConfig, packages, photos, openQuoteModal } = useCMS();
+  const { siteConfig, packages, photos, weddingProposals, openQuoteModal } = useCMS();
   const { language, isEn, t, tr } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [isDirectFormOpen, setIsDirectFormOpen] = useState(false);
 
   const weddingServices = getWeddingServices(language);
-  const weddingCarouselServices = getWeddingPresets(language);
+  const defaultWeddingPresets = getWeddingPresets(language);
+  const weddingCarouselServices =
+    weddingProposals && weddingProposals.length > 0
+      ? weddingProposals.map((prop) => {
+          if (language !== 'es') {
+            const matched = defaultWeddingPresets.find((p) => p.id === prop.id);
+            if (matched) {
+              return {
+                ...matched,
+                price: prop.price,
+                image: prop.image,
+                videoUrl: prop.videoUrl,
+                mediaType: prop.mediaType,
+              };
+            }
+          }
+          return prop;
+        })
+      : defaultWeddingPresets;
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => ({ ...prev, [id]: !prev[id] }));

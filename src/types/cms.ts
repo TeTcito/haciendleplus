@@ -49,6 +49,9 @@ export interface ServicePackage {
   inclusions: string[];
   highlightBadge?: string;
   image: string;
+  videoUrl?: string;
+  mediaType?: 'image' | 'video';
+  showPrice?: boolean;
   whatsappIntent: string;
   featuredInHome: boolean;
 }
@@ -62,12 +65,85 @@ export interface CabinRoom {
   beds: string;
   bathrooms: number;
   pricePerNight: number;
+  showPrice?: boolean;
   weekendNote: string;
   description: string;
   amenities: string[];
   image: string;
+  videoUrl?: string;
+  mediaType?: 'image' | 'video';
   available: boolean;
   featuredInHome: boolean;
+}
+
+/**
+ * MÓDULO: SERVICIOS DE ESTADÍA Y COMPLEMENTOS
+ * 1) Tarjeta Principal Grande ("Operación Completa para Larga Estadía") con soporte de Video
+ * 2) Las 4+ Tarjetas de Servicios y Complementos con soporte de Video e Imagen
+ */
+export interface LodgingFeaturedBanner {
+  id: string;
+  overline: string;
+  titleLine1: string;
+  titleLine2: string;
+  description: string;
+  locationBadge: string;
+  videoButtonText: string;
+  image: string;
+  videoUrl?: string;
+  mediaType: 'image' | 'video';
+}
+
+export interface LodgingServiceCard {
+  id: string;
+  title: string;
+  badge: string;
+  badgeClass?: string;
+  description: string;
+  ctaText: string;
+  image: string;
+  videoUrl?: string;
+  mediaType: 'image' | 'video';
+  serviceType: 'hospedaje' | 'grupos';
+  itemName: string;
+}
+
+/**
+ * MÓDULO: BODAS Y CELEBRACIONES — PROPUESTAS NUPCIALES DESTACADAS (CARRUSEL)
+ */
+export interface WeddingProposalSpec {
+  label: string;
+  icon: 'users' | 'bed' | 'tent' | 'utensils' | 'glass' | 'sparkles';
+}
+
+export interface WeddingProposalCard {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  badgeClass: string;
+  image: string;
+  videoUrl?: string;
+  mediaType?: 'image' | 'video';
+  specs: WeddingProposalSpec[];
+  price: string;
+  unit: string;
+  showPrice?: boolean;
+  serviceType: 'bodas';
+}
+
+/**
+ * MÓDULO: GRANDES EVENTOS CORPORATIVOS — MACROEVENTOS Y ENCUENTROS EMPRESARIALES (CARRUSEL HORIZONTAL)
+ */
+export interface CorporateHighlightItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  highlightMetric: string;
+  image: string;
+  videoUrl?: string;
+  mediaType?: 'image' | 'video';
+  whatsappItemName: string;
 }
 
 export interface EventPhoto {

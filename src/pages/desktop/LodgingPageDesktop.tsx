@@ -36,8 +36,9 @@ import { CabinRoom } from '../../types/cms';
 import { getCabinsData } from '../../data/resortSpaces';
 
 export const LodgingPageDesktop: React.FC = () => {
-  const { siteConfig, cabins, openQuoteModal } = useCMS();
+  const { siteConfig, cabins, lodgingHeroBanner, lodgingServices, openQuoteModal } = useCMS();
   const { language, isEn, t, tr } = useLanguage();
+  const [cabinPageStart, setCabinPageStart] = useState(0);
 
   // SEO Meta
   useDocumentMeta({
@@ -183,17 +184,33 @@ export const LodgingPageDesktop: React.FC = () => {
     setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  // Lista de habitaciones y cabañas con soporte bilingüe (Prioridad Larga Estadía Empresas y Grupos)
+  // Lista de habitaciones y cabañas con soporte bilingüe y sincronización completa con el Panel Admin
   const defaultCabins = getCabinsData(language);
-  const displayCabins: CabinRoom[] = language !== 'es' ? defaultCabins.map((enCabin) => {
-        const cmsCabin = cabins?.find((c) => c.id === enCabin.id);
-        return cmsCabin
-          ? { ...enCabin, pricePerNight: cmsCabin.pricePerNight, image: cmsCabin.image }
-          : enCabin;
-      })
-    : cabins && cabins.length >= 4
-    ? cabins.slice(0, 4)
-    : defaultCabins;
+  const allCabins: CabinRoom[] =
+    cabins && cabins.length > 0
+      ? cabins.map((cmsCabin) => {
+          if (language !== 'es') {
+            const matchedDefault = defaultCabins.find((c) => c.id === cmsCabin.id);
+            if (matchedDefault) {
+              return {
+                ...matchedDefault,
+                pricePerNight: cmsCabin.pricePerNight,
+                showPrice: cmsCabin.showPrice,
+                image: cmsCabin.image,
+                videoUrl: cmsCabin.videoUrl,
+                mediaType: cmsCabin.mediaType,
+              };
+            }
+          }
+          return cmsCabin;
+        })
+      : defaultCabins;
+
+  const visibleCabinsCount = 4;
+  const displayCabins: CabinRoom[] =
+    allCabins.length <= visibleCabinsCount
+      ? allCabins
+      : Array.from({ length: visibleCabinsCount }, (_, i) => allCabins[(cabinPageStart + i) % allCabins.length]);
 
   return (
     <main className="w-full bg-[#FAF7F2] text-[#0A1F17] overflow-x-hidden selection:bg-[#C8A45D]/30 selection:text-[#06150F]">
@@ -539,8 +556,33 @@ export const LodgingPageDesktop: React.FC = () => {
             </div>
           </ScrollReveal>
 
-          {/* Right Column: 4 Tarjetas de Habitación con Alimentación, Internet y Parqueaderos */}
-          <div className="lg:col-span-9">
+          {/* Right Column: Carrusel de Habitaciones para Empresas y Grupos */}
+          <div className="lg:col-span-9 space-y-4">
+            {allCabins.length > 4 && (
+              <div className="flex items-center justify-end gap-2">
+                <span className="text-xs text-[#0A1F17]/60 mr-2">
+                  {tr("Carousel", "Carrusel")}: {allCabins.length} {tr("options", "opciones")}
+                </span>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setCabinPageStart((prev) => (prev - 1 + allCabins.length) % allCabins.length)
+                  }
+                  className="w-9 h-9 rounded-full bg-white border border-[#0A1F17]/15 hover:bg-[#071912] hover:text-[#E2C585] flex items-center justify-center transition-all cursor-pointer shadow-xs"
+                  aria-label="Anterior"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCabinPageStart((prev) => (prev + 1) % allCabins.length)}
+                  className="w-9 h-9 rounded-full bg-white border border-[#0A1F17]/15 hover:bg-[#071912] hover:text-[#E2C585] flex items-center justify-center transition-all cursor-pointer shadow-xs"
+                  aria-label="Siguiente"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
               {displayCabins.map((cabin, idx) => {
                 const directions: ('up-left' | 'up' | 'up' | 'up-right')[] = ['up-left', 'up', 'up', 'up-right'];
@@ -554,15 +596,27 @@ export const LodgingPageDesktop: React.FC = () => {
                   >
                     <article className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 hover:border-[#C8A45D]/50 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full">
                       <div>
-                        {/* Imagen de la habitación */}
+                        {/* Imagen o Video de la habitación */}
                         <div className="relative h-48 overflow-hidden bg-[#0A1F17]">
-                          <img
-                            src={cabin.image}
-                            alt={cabin.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />
+                          {cabin.mediaType === 'video' && cabin.videoUrl ? (
+                            <video
+                              src={cabin.videoUrl}
+                              poster={cabin.image}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <img
+                              src={cabin.image}
+                              alt={cabin.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                              loading="lazy"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80 pointer-events-none" />
                           <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 backdrop-blur-sm text-[#E2C585] border border-[#C8A45D]/30">
                             {cabin.type || (tr("Long Stay", "Larga Estadía"))}
                           </span>
@@ -604,12 +658,18 @@ export const LodgingPageDesktop: React.FC = () => {
 
                       {/* Tarifa por noche y botón circular */}
                       <div className="p-4 sm:p-5 pt-2 flex items-center justify-between border-t border-[#0A1F17]/8 mt-1 bg-[#FAF7F2]/50">
-                        <div className="flex items-baseline gap-1">
-                          <span className="font-bold text-base sm:text-xl text-[#06150F]">
-                            ${cabin.pricePerNight}
+                        {cabin.showPrice !== false ? (
+                          <div className="flex items-baseline gap-1">
+                            <span className="font-bold text-base sm:text-xl text-[#06150F]">
+                              ${cabin.pricePerNight}
+                            </span>
+                            <span className="text-[11px] text-[#0A1F17]/60">/{tr(" ref. (long-stay discount)", " ref. (desc. larga estadía)")}</span>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-semibold text-[#A6823C]">
+                            {tr("Preferential Rate", "Tarifa Preferencial")}
                           </span>
-                          <span className="text-[11px] text-[#0A1F17]/60">/{tr(" ref. (long-stay discount)", " ref. (desc. larga estadía)")}</span>
-                        </div>
+                        )}
 
                         <button
                           type="button"
@@ -635,35 +695,76 @@ export const LodgingPageDesktop: React.FC = () => {
       <section className="w-full bg-[#FAF7F2] border-t border-[#0A1F17]/10 py-16 lg:py-24">
         <div className="w-full px-4 sm:px-6 lg:px-10 xl:px-14">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
-            {/* Lado izquierdo: Banner de Larga Estadía y Complementos */}
+            {/* Lado izquierdo: 1ra Tarjeta Grande — Operación Completa para Larga Estadía (Con soporte de Video) */}
             <ScrollReveal direction="left" duration={850} className="lg:col-span-5 xl:col-span-5 h-full">
               <div className="relative rounded-3xl overflow-hidden min-h-[500px] sm:min-h-[560px] h-full flex flex-col justify-between p-8 sm:p-10 text-white shadow-2xl hover:scale-[1.015] hover:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] transition-all duration-300 group bg-[#06150F]">
-                <img
-                  src="/images/hacienda/piscina-nocturna.jpg"
-                  alt="Instalaciones y Complementos para Empresas y Grupos en Quito–Píntag"
-                  className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
-                />
+                {lodgingHeroBanner.mediaType === 'video' && lodgingHeroBanner.videoUrl ? (
+                  <video
+                    key={lodgingHeroBanner.videoUrl}
+                    src={lodgingHeroBanner.videoUrl}
+                    poster={lodgingHeroBanner.image}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+                  />
+                ) : (
+                  <img
+                    src={lodgingHeroBanner.image || '/images/hacienda/piscina-nocturna.jpg'}
+                    alt="Instalaciones y Complementos para Empresas y Grupos en Quito–Píntag"
+                    className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#06150F] via-[#06150F]/65 to-[#06150F]/30 pointer-events-none" />
 
-                {/* Textos en español */}
+                {/* Textos sincronizados con CMS */}
                 <div className="relative z-10 space-y-3.5">
                   <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#E2C585] block">
-                    {tr("COMPANIES, DELEGATIONS, NGOS & VOLUNTEERS", "EMPRESAS, DELEGACIONES, ONGS Y VOLUNTARIOS")}
+                    {tr(
+                      lodgingHeroBanner.overline === 'EMPRESAS, DELEGACIONES, ONGS Y VOLUNTARIOS'
+                        ? 'COMPANIES, DELEGATIONS, NGOS & VOLUNTEERS'
+                        : lodgingHeroBanner.overline,
+                      lodgingHeroBanner.overline
+                    )}
                   </span>
                   <h3 className="font-serif-luxury text-3xl sm:text-5xl font-normal text-white leading-tight max-w-md">
-                    {tr("Full Operation", "Operación Completa")} <br />
-                    {tr("for Extended Stays", "para Larga Estadía")}
+                    {tr(
+                      lodgingHeroBanner.titleLine1 === 'Operación Completa'
+                        ? 'Full Operation'
+                        : lodgingHeroBanner.titleLine1,
+                      lodgingHeroBanner.titleLine1
+                    )}{' '}
+                    <br />
+                    {tr(
+                      lodgingHeroBanner.titleLine2 === 'para Larga Estadía'
+                        ? 'for Extended Stays'
+                        : lodgingHeroBanner.titleLine2,
+                      lodgingHeroBanner.titleLine2
+                    )}
                   </h3>
                   <p className="text-xs sm:text-sm text-[#FAF7F2]/85 max-w-sm leading-relaxed font-light">
-                    {tr("Lodging across 14 rooms with daily catering, fiber-optic internet, and private parking, fortified by our heated pool, restaurant, and recreational sports grounds.", "Alojamiento en 14 habitaciones con alimentación diaria, internet por fibra óptica y parqueaderos privados, fortalecido con nuestra piscina temperada, restaurante y actividades recreativas como complementos.")}
+                    {tr(
+                      lodgingHeroBanner.description.startsWith('Alojamiento en 14 habitaciones')
+                        ? 'Lodging across 14 rooms with daily catering, fiber-optic internet, and private parking, fortified by our heated pool, restaurant, and recreational sports grounds.'
+                        : lodgingHeroBanner.description,
+                      lodgingHeroBanner.description
+                    )}
                   </p>
                   <div className="inline-flex items-center gap-1.5 text-xs text-[#E2C585] pt-1">
                     <MapPin className="w-3.5 h-3.5" />
-                    <span>{tr("Quito – Píntag · 40 min from Quito & 30 min from the Airport", "Quito – Píntag · A 40 min de Quito y 30 min del Aeropuerto")}</span>
+                    <span>
+                      {tr(
+                        lodgingHeroBanner.locationBadge.startsWith('Quito – Píntag')
+                          ? 'Quito – Píntag · 40 min from Quito & 30 min from the Airport'
+                          : lodgingHeroBanner.locationBadge,
+                        lodgingHeroBanner.locationBadge
+                      )}
+                    </span>
                   </div>
                 </div>
 
-                {/* Botón central de video en español */}
+                {/* Botón central de video */}
                 <div className="relative z-10 my-auto py-6 flex items-center justify-center">
                   <button
                     type="button"
@@ -674,12 +775,17 @@ export const LodgingPageDesktop: React.FC = () => {
                       <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                     </div>
                     <span className="text-xs font-bold tracking-wider uppercase">
-                      {tr("Tour Facilities", "Ver Instalaciones")}
+                      {tr(
+                        lodgingHeroBanner.videoButtonText === 'Ver Instalaciones'
+                          ? 'Tour Facilities'
+                          : lodgingHeroBanner.videoButtonText,
+                        lodgingHeroBanner.videoButtonText
+                      )}
                     </span>
                   </button>
                 </div>
 
-                {/* Botones inferiores en español */}
+                {/* Botones inferiores */}
                 <div className="relative z-10 pt-4 flex flex-wrap items-center gap-3">
                   <a
                     href={buildContextualWhatsAppUrl('hospedaje')}
@@ -701,7 +807,7 @@ export const LodgingPageDesktop: React.FC = () => {
               </div>
             </ScrollReveal>
 
-            {/* Lado derecho: 4 Tarjetas de Servicios Esenciales y Complementos que Fortalecen la Larga Estadía */}
+            {/* Lado derecho: 4+ Tarjetas de Servicios Esenciales y Complementos (con soporte de Video e Imagen) */}
             <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-between space-y-6">
               <ScrollReveal direction="down" duration={700} className="space-y-1.5">
                 <h3 className="font-serif-luxury text-3xl sm:text-4xl font-normal text-[#06150F]">
@@ -713,164 +819,78 @@ export const LodgingPageDesktop: React.FC = () => {
               </ScrollReveal>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1 items-stretch">
-                {/* Card 1: Alimentación & Restaurante */}
-                <ScrollReveal direction="tilt-left" delay={60} duration={750} className="h-full">
-                  <div
-                    onClick={() =>
-                      openQuoteModal({
-                        serviceType: 'hospedaje',
-                        itemName: tr("3-Meal Catering and Restaurant for Long Stay", "Alimentación 3 Tiempos y Restaurante para Larga Estadía"),
-                      })
-                    }
-                    className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
-                  >
-                    <div>
-                      <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
-                        <img
-                          src="/images/hacienda/gastronomia-parrillada.jpg"
-                          alt="Alimentación y Restaurante en Hacienda Le Plus"
-                          className="w-full h-full object-cover object-center block"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 text-[#E2C585] backdrop-blur-sm border border-[#C8A45D]/30">
-                          {tr("Catering & Meals", "Alimentación & Comp.")}
-                        </span>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {tr("Catering & Restaurant", "Alimentación & Restaurante")}
-                        </h4>
-                        <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
-                          {tr("Scheduled breakfasts, lunches, dinners, and coffee breaks for companies and groups, with in-house restaurant.", "Desayunos, almuerzos, cenas y coffee breaks programados para empresas y grupos, con restaurante propio como complemento.")}
-                        </p>
-                      </div>
-                    </div>
+                {lodgingServices.map((card, idx) => {
+                  const directions: ('tilt-left' | 'zoom-in' | 'zoom-in' | 'tilt-right')[] = [
+                    'tilt-left',
+                    'zoom-in',
+                    'zoom-in',
+                    'tilt-right',
+                  ];
+                  return (
+                    <ScrollReveal
+                      key={card.id || idx}
+                      direction={directions[idx % 4]}
+                      delay={60 + idx * 80}
+                      duration={750}
+                      className="h-full"
+                    >
+                      <div
+                        onClick={() => {
+                          if (card.id === 'lodging-srv-3') {
+                            setShowComparisonModal(true);
+                          } else {
+                            openQuoteModal({
+                              serviceType: card.serviceType || 'hospedaje',
+                              itemName: tr(card.itemName, card.itemName),
+                            });
+                          }
+                        }}
+                        className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
+                      >
+                        <div>
+                          <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
+                            {card.mediaType === 'video' && card.videoUrl ? (
+                              <video
+                                key={card.videoUrl}
+                                src={card.videoUrl}
+                                poster={card.image}
+                                autoPlay
+                                muted
+                                loop
+                                playsInline
+                                className="w-full h-full object-cover object-center block"
+                              />
+                            ) : (
+                              <img
+                                src={card.image}
+                                alt={card.title}
+                                className="w-full h-full object-cover object-center block group-hover:scale-105 transition-transform duration-500"
+                                loading="lazy"
+                              />
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                            <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 text-[#E2C585] backdrop-blur-sm border border-[#C8A45D]/30">
+                              {tr(card.badge, card.badge)}
+                            </span>
+                          </div>
+                          <div className="p-4 space-y-2">
+                            <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
+                              {tr(card.title, card.title)}
+                            </h4>
+                            <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
+                              {tr(card.description, card.description)}
+                            </p>
+                          </div>
+                        </div>
 
-                    <div className="p-4 pt-2 border-t border-[#0A1F17]/5 flex items-center justify-between text-[11px] font-semibold text-[#A6823C] group-hover:text-[#06150F] transition-colors">
-                      <span>{tr("Quote with meal plan", "Cotizar con pensión")}</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </ScrollReveal>
-
-                {/* Card 2: Internet Fibra Óptica & Parqueaderos */}
-                <ScrollReveal direction="zoom-in" delay={140} duration={750} className="h-full">
-                  <div
-                    onClick={() =>
-                      openQuoteModal({
-                        serviceType: 'hospedaje',
-                        itemName: tr("Corporate Stay with Fiber-Optic Wi-Fi & Parking", "Estadía Corporativa con Internet Fibra Óptica y Parqueaderos"),
-                      })
-                    }
-                    className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
-                  >
-                    <div>
-                      <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
-                        <img
-                          src="/images/hacienda/grupos-hxp.jpg"
-                          alt="Internet Fibra Óptica, Salones y Parqueaderos para Empresas y ONGs"
-                          className="w-full h-full object-cover object-center block"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 text-[#E2C585] backdrop-blur-sm border border-[#C8A45D]/30">
-                          {tr("Internet & Parking", "Internet & Parqueadero")}
-                        </span>
+                        <div className="p-4 pt-2 border-t border-[#0A1F17]/5 flex items-center justify-between text-[11px] font-semibold text-[#A6823C] group-hover:text-[#06150F] transition-colors">
+                          <span>{tr(card.ctaText.replace(' →', ''), card.ctaText.replace(' →', ''))}</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {tr("Internet & Parking", "Internet & Parqueaderos")}
-                        </h4>
-                        <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
-                          {tr("High-speed fiber-optic Wi-Fi, work meeting rooms, and secure internal parking for cars, vans, and buses.", "Wi-Fi por fibra óptica de alta estabilidad, salones de trabajo y parqueaderos internos seguros para autos, camionetas y buses.")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="p-4 pt-2 border-t border-[#0A1F17]/5 flex items-center justify-between text-[11px] font-semibold text-[#A6823C] group-hover:text-[#06150F] transition-colors">
-                      <span>{tr("Inquire logistics", "Consultar logística")}</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </ScrollReveal>
-
-                {/* Card 3: Complemento Piscina Temperada & Zona Húmeda */}
-                <ScrollReveal direction="zoom-in" delay={220} duration={750} className="h-full">
-                  <div
-                    onClick={() => setShowComparisonModal(true)}
-                    className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
-                  >
-                    <div>
-                      <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
-                        <img
-                          src="/images/hacienda/area-humeda.jpg"
-                          alt="Complemento Piscina 14x6m y Hidromasajes"
-                          className="w-full h-full object-cover object-center block"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 text-[#E2C585] backdrop-blur-sm border border-[#C8A45D]/30">
-                          {tr("Amenity", "Complemento")}
-                        </span>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {tr("Amenity: Pool & Spa", "Comp.: Piscina & Bienestar")}
-                        </h4>
-                        <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
-                          {tr("14×6 m heated pool, 2 hot tubs, sauna, and steam room as an amenity enhancing your staff and group rest.", "Piscina temperada de 14×6 m, dos hidromasajes, sauna y turco como complemento que fortalece el descanso del personal y grupos.")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="p-4 pt-2 border-t border-[#0A1F17]/5 flex items-center justify-between text-[11px] font-semibold text-[#A6823C] group-hover:text-[#06150F] transition-colors">
-                      <span>{tr("View inclusions", "Ver inclusiones")}</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </ScrollReveal>
-
-                {/* Card 4: Complemento Actividades Recreativas y Canchas */}
-                <ScrollReveal direction="tilt-right" delay={300} duration={750} className="h-full">
-                  <div
-                    onClick={() =>
-                      openQuoteModal({
-                        serviceType: 'grupos',
-                        itemName: tr("Group Lodging with Recreational Sports & Courts", "Hospedaje Grupal con Actividades Recreativas y Canchas"),
-                      })
-                    }
-                    className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
-                  >
-                    <div>
-                      <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
-                        <img
-                          src="/images/hacienda/jardines-teambuilding.jpg"
-                          alt="Complemento Actividades Recreativas y Canchas Deportivas"
-                          className="w-full h-full object-cover object-center block"
-                          loading="lazy"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
-                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#06150F]/85 text-[#E2C585] backdrop-blur-sm border border-[#C8A45D]/30">
-                          {tr("Amenity", "Complemento")}
-                        </span>
-                      </div>
-                      <div className="p-4 space-y-2">
-                        <h4 className="font-bold text-sm text-[#06150F] group-hover:text-[#A6823C] transition-colors">
-                          {tr("Amenity: Sports & Nature", "Comp.: Recreación & Deportes")}
-                        </h4>
-                        <p className="text-xs text-[#0A1F17]/75 leading-relaxed font-light">
-                          {tr("5,000 m² of gardens, soccer, volleyball, and basketball courts as recreational complements for groups and teams.", "5.000 m² de jardines, canchas de fútbol, vóley y básquetbol como complemento recreativo para delegaciones, ONGs y empresas.")}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="p-4 pt-2 border-t border-[#0A1F17]/5 flex items-center justify-between text-[11px] font-semibold text-[#A6823C] group-hover:text-[#06150F] transition-colors">
-                      <span>{tr("Quote for group", "Cotizar grupo")}</span>
-                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </ScrollReveal>
+                    </ScrollReveal>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1342,37 +1362,38 @@ export const LodgingPageDesktop: React.FC = () => {
               </button>
             </div>
 
-            {/* Simulación y bienvenida al recorrido */}
+            {/* Reproductor de Video de la Tarjeta Principal */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-black flex items-center justify-center">
-              <img
-                src="/images/hacienda/lodging-hero-hacienda.jpg"
-                alt="Vista Hacienda Le Plus"
-                className="w-full h-full object-cover opacity-85"
-              />
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 space-y-3">
-                <div className="w-16 h-16 rounded-full bg-[#C8A45D] text-[#06150F] flex items-center justify-center shadow-2xl animate-pulse">
-                  <Play className="w-7 h-7 fill-current ml-1" />
-                </div>
-                <h4 className="font-serif-luxury text-2xl sm:text-3xl text-white font-semibold">
-                  {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
-                </h4>
-                <p className="text-xs text-[#FAF7F2]/80 max-w-md">
-                  {tr("14 rooms (28 to 80 guests), 3-meal catering, fiber optic WiFi, private bus parking, and heated pool, dining, and sports area access.", "14 habitaciones (28 a 80 personas), alimentación 3 tiempos, internet por fibra óptica, parqueaderos privados y complementos de piscina, restaurante y áreas deportivas.")}
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowVideoModal(false);
-                    openQuoteModal({
-                      serviceType: 'hospedaje',
-                      itemName: tr("Corporate & Group Extended Stay Lodging", "Hospedaje Larga Estadía Empresas y Grupos"),
-                    });
-                  }}
-                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-white text-[#06150F] hover:bg-[#E2C585] transition-colors cursor-pointer mt-2"
-                >
-                  {tr("Request Quote by Guests & Duration", "Solicitar Cotización según Personas y Duración")}
-                </button>
-              </div>
+              {lodgingHeroBanner.videoUrl ? (
+                <video
+                  key={lodgingHeroBanner.videoUrl}
+                  src={lodgingHeroBanner.videoUrl}
+                  poster={lodgingHeroBanner.image}
+                  controls
+                  autoPlay
+                  playsInline
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <>
+                  <img
+                    src={lodgingHeroBanner.image || '/images/hacienda/lodging-hero-hacienda.jpg'}
+                    alt="Vista Hacienda Le Plus"
+                    className="w-full h-full object-cover opacity-85"
+                  />
+                  <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 space-y-3">
+                    <div className="w-16 h-16 rounded-full bg-[#C8A45D] text-[#06150F] flex items-center justify-center shadow-2xl animate-pulse">
+                      <Play className="w-7 h-7 fill-current ml-1" />
+                    </div>
+                    <h4 className="font-serif-luxury text-2xl sm:text-3xl text-white font-semibold">
+                      {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
+                    </h4>
+                    <p className="text-xs text-[#FAF7F2]/80 max-w-md">
+                      {tr("14 rooms (28 to 80 guests), 3-meal catering, fiber optic WiFi, private bus parking, and heated pool, dining, and sports area access.", "14 habitaciones (28 a 80 personas), alimentación 3 tiempos, internet por fibra óptica, parqueaderos privados y complementos de piscina, restaurante y áreas deportivas.")}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

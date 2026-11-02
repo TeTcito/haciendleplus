@@ -226,3 +226,82 @@ export async function fetchSiteConfigFromSupabase(): Promise<SiteConfig | null> 
     return null;
   }
 }
+
+// ============================================================================
+// 5. CMS MODULES (CARRUSELES Y SECCIONES DEL PANEL ADMINISTRATIVO)
+// ============================================================================
+export async function saveModulesToSupabase(modulesData: any): Promise<boolean> {
+  try {
+    const { error } = await supabase.from('site_config').upsert([
+      {
+        id: 'cms_modules_v1',
+        updated_at: new Date().toISOString(),
+        data: modulesData,
+      },
+    ]);
+
+    if (error) {
+      console.warn('Error al guardar módulos en Supabase:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('Error de red al guardar módulos en Supabase:', err);
+    return false;
+  }
+}
+
+export async function fetchModulesFromSupabase(): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('site_config')
+      .select('data')
+      .eq('id', 'cms_modules_v1')
+      .maybeSingle();
+
+    if (error || !data?.data) return null;
+    return data.data;
+  } catch (err) {
+    console.warn('Error al cargar módulos desde Supabase:', err);
+    return null;
+  }
+}
+
+// ============================================================================
+// 6. MEDIA UPLOAD (IMÁGENES WEBP Y VIDEOS MP4/WEBM EN SUPABASE STORAGE)
+// ============================================================================
+export async function uploadMediaToSupabase(
+  file: File,
+  prefix = 'media'
+): Promise<string | null> {
+  try {
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'webp';
+    const safeName = file.name
+      .replace(/\.[^/.]+$/, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, '-');
+    const fileName = `${prefix}-${safeName}-${Date.now()}.${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('hacienda-media')
+      .upload(fileName, file, {
+        contentType: file.type || (ext === 'webp' ? 'image/webp' : 'video/mp4'),
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.warn('Aviso al subir archivo a Supabase Storage:', uploadError.message);
+      return null;
+    }
+
+    const { data: publicUrlData } = supabase.storage
+      .from('hacienda-media')
+      .getPublicUrl(fileName);
+
+    return publicUrlData?.publicUrl || null;
+  } catch (err) {
+    console.warn('Error subiendo archivo a Supabase Storage:', err);
+    return null;
+  }
+}
+

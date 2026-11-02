@@ -357,12 +357,30 @@ const SectionDividerTitle: React.FC<SectionDividerTitleProps> = ({
 };
 
 export const WeddingsPageMobile: React.FC = () => {
-  const { siteConfig, packages, photos, openQuoteModal } = useCMS();
+  const { siteConfig, packages, photos, weddingProposals, openQuoteModal } = useCMS();
   const { language, isEn, tr } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const weddingServices = getWeddingServices(language);
-  const weddingCarouselServices = getWeddingPresets(language);
+  const defaultWeddingPresets = getWeddingPresets(language);
+  const weddingCarouselServices =
+    weddingProposals && weddingProposals.length > 0
+      ? weddingProposals.map((prop) => {
+          if (language !== 'es') {
+            const matched = defaultWeddingPresets.find((p) => p.id === prop.id);
+            if (matched) {
+              return {
+                ...matched,
+                price: prop.price,
+                image: prop.image,
+                videoUrl: prop.videoUrl,
+                mediaType: prop.mediaType,
+              };
+            }
+          }
+          return prop;
+        })
+      : defaultWeddingPresets;
 
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (carouselRef.current) {

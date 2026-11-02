@@ -3,6 +3,10 @@ import {
   SiteConfig,
   ServicePackage,
   CabinRoom,
+  LodgingFeaturedBanner,
+  LodgingServiceCard,
+  WeddingProposalCard,
+  CorporateHighlightItem,
   EventPhoto,
   CaseStudy,
   FAQItem,
@@ -16,9 +20,11 @@ import {
   deleteLeadFromSupabase,
   saveSiteConfigToSupabase,
   fetchSiteConfigFromSupabase,
+  saveModulesToSupabase,
+  fetchModulesFromSupabase,
 } from '../lib/supabase';
 
-const STORAGE_KEY = 'hacienda_leplus_cms_v3';
+const STORAGE_KEY = 'hacienda_leplus_cms_v4';
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   brandName: 'Hacienda Le Plus',
@@ -456,10 +462,301 @@ export const DEFAULT_LEADS: LeadSubmission[] = [
   },
 ];
 
+// ============================================================================
+// NUEVOS MÓDULOS POR DEFECTO (SINCRONIZADOS CON PANEL ADMINISTRATIVO)
+// ============================================================================
+export const DEFAULT_LODGING_BANNER: LodgingFeaturedBanner = {
+  id: 'banner-operacion-completa',
+  overline: 'EMPRESAS, DELEGACIONES, ONGS Y VOLUNTARIOS',
+  titleLine1: 'Operación Completa',
+  titleLine2: 'para Larga Estadía',
+  description:
+    'Alojamiento en 14 habitaciones con alimentación diaria, internet por fibra óptica y parqueaderos privados, fortalecido con nuestra piscina temperada, restaurante y actividades recreativas como complementos.',
+  locationBadge: 'Quito – Píntag · A 40 min de Quito y 30 min del Aeropuerto',
+  videoButtonText: 'Ver Instalaciones',
+  image: '/images/hacienda/piscina-nocturna.jpg',
+  videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxury-resort-in-the-mountains-41573-large.mp4',
+  mediaType: 'image',
+};
+
+export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
+  {
+    id: 'srv-alimentacion-restaurante',
+    title: 'Alimentación & Restaurante',
+    badge: 'Alimentación & Comp.',
+    badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
+    description:
+      'Desayunos, almuerzos, cenas y coffee breaks programados para empresas y grupos, con restaurante propio como complemento.',
+    ctaText: 'Cotizar con pensión',
+    image: '/images/hacienda/gastronomia-parrillada.jpg',
+    videoUrl: '',
+    mediaType: 'image',
+    serviceType: 'hospedaje',
+    itemName: 'Alimentación 3 Tiempos y Restaurante para Larga Estadía',
+  },
+  {
+    id: 'srv-internet-parqueaderos',
+    title: 'Internet & Parqueaderos',
+    badge: 'Internet & Parqueadero',
+    badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
+    description:
+      'Wi-Fi por fibra óptica de alta estabilidad, salones de trabajo y parqueaderos internos seguros para autos, camionetas y buses.',
+    ctaText: 'Consultar logística',
+    image: '/images/hacienda/grupos-hxp.jpg',
+    videoUrl: '',
+    mediaType: 'image',
+    serviceType: 'hospedaje',
+    itemName: 'Estadía Corporativa con Internet Fibra Óptica y Parqueaderos',
+  },
+  {
+    id: 'srv-piscina-bienestar',
+    title: 'Comp.: Piscina & Bienestar',
+    badge: 'Complemento',
+    badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
+    description:
+      'Piscina temperada de 14×6 m, dos hidromasajes, sauna y turco como complemento que fortalece el descanso del personal y grupos.',
+    ctaText: 'Ver inclusiones',
+    image: '/images/hacienda/area-humeda.jpg',
+    videoUrl: '',
+    mediaType: 'image',
+    serviceType: 'hospedaje',
+    itemName: 'Complemento Piscina Temperada y Zona Húmeda',
+  },
+  {
+    id: 'srv-recreacion-deportes',
+    title: 'Comp.: Recreación & Deportes',
+    badge: 'Complemento',
+    badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
+    description:
+      '5.000 m² de jardines, canchas de fútbol, vóley y básquetbol como complemento recreativo para delegaciones, ONGs y empresas.',
+    ctaText: 'Cotizar grupo',
+    image: '/images/hacienda/jardines-teambuilding.jpg',
+    videoUrl: '',
+    mediaType: 'image',
+    serviceType: 'grupos',
+    itemName: 'Hospedaje Grupal con Actividades Recreativas y Canchas',
+  },
+];
+
+export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
+  {
+    id: 'boda-clasica-integral',
+    title: 'Boda Integral & Recepción en Jardines',
+    subtitle: 'Quito–Píntag · 50 a 300 Invitados',
+    badge: 'Boda Popular',
+    badgeClass: 'bg-[#C8A45D] text-[#0A1F17]',
+    image: '/images/hacienda/boda-carpa-gala.jpg',
+    specs: [
+      { label: '50 a 300 Pax', icon: 'users' },
+      { label: 'Carpa de Gala', icon: 'sparkles' },
+      { label: 'Catering 3 Tiempos', icon: 'utensils' },
+    ],
+    price: '$42',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+  {
+    id: 'boda-destino-14-suites',
+    title: 'Boda + Hospedaje para Invitados',
+    subtitle: 'Quito–Píntag · 14 Habitaciones (28 a 80 Pax)',
+    badge: 'Hospedaje Invitados',
+    badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
+    image: '/images/hacienda/bodas-exteriores.jpg',
+    specs: [
+      { label: '28 a 80 Pax', icon: 'users' },
+      { label: '14 Habitaciones', icon: 'bed' },
+      { label: 'Comp. Piscina 14×6m', icon: 'sparkles' },
+    ],
+    price: '$95',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+  {
+    id: 'banquete-autor-coctel',
+    title: 'Catering Nupcial & Decoración',
+    subtitle: 'Quito–Píntag · Gastronomía & Montaje',
+    badge: 'Catering & Decoración',
+    badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
+    image: '/images/hacienda/boda-mesa-imperial.jpg',
+    specs: [
+      { label: 'Descorche Libre', icon: 'glass' },
+      { label: 'Catering Propio', icon: 'utensils' },
+      { label: 'Decoración Floral', icon: 'sparkles' },
+    ],
+    price: '$70',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+  {
+    id: 'ceremonia-jardin-palmeras',
+    title: 'Ceremonia en Jardines de la Hacienda',
+    subtitle: 'Quito–Píntag · Altares & Decoración Natural',
+    badge: 'Ceremonias',
+    badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
+    image: '/images/hacienda/boda-ceremonia-arco.jpg',
+    specs: [
+      { label: '50 a 300 Pax', icon: 'users' },
+      { label: 'Arco & Decoración', icon: 'sparkles' },
+      { label: 'Sillas Tiffany', icon: 'sparkles' },
+    ],
+    price: '$35',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+  {
+    id: 'experiencia-zona-humeda',
+    title: 'Complemento: Piscina, Restaurante & Recreación',
+    subtitle: 'Quito–Píntag · Fortalece la Estadía de Invitados',
+    badge: 'Complemento Nupcial',
+    badgeClass: 'bg-[#7A6A58]/90 text-[#FAF7F2]',
+    image: '/images/hacienda/area-humeda.jpg',
+    specs: [
+      { label: 'Piscina 14×6m', icon: 'sparkles' },
+      { label: 'Restaurante', icon: 'utensils' },
+      { label: 'Áreas Recreativas', icon: 'sparkles' },
+    ],
+    price: '$55',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+  {
+    id: 'recepcion-salon-colonial',
+    title: 'Recepción & Eventos Sociales en Salón',
+    subtitle: 'Quito–Píntag · Bodas Civiles & Celebraciones',
+    badge: 'Recepción & Sociales',
+    badgeClass: 'bg-[#221D1A]/90 text-[#E2C585]',
+    image: '/images/hacienda/suite-1.jpg',
+    specs: [
+      { label: '30 a 90 Pax', icon: 'users' },
+      { label: 'Decoración & Menú', icon: 'utensils' },
+      { label: 'Hospedaje Opcional', icon: 'bed' },
+    ],
+    price: '$48',
+    unit: '/ invitado',
+    showPrice: true,
+    serviceType: 'bodas',
+  },
+];
+
+export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
+  {
+    id: 'pkg-corp-findeanio',
+    category: 'corporativo',
+    title: 'Fiestas de Fin de Año & Celebraciones de Gran Formato',
+    subtitle: 'Carpas, jardines, catering, tarima y pista de baile.',
+    priceLabel: 'Desde',
+    priceValue: 45,
+    unit: 'por participante',
+    capacity: '80 a 350+ participantes',
+    setupInfo: 'Carpas + Jardines + Tarima + Pista de Baile + Catering',
+    description:
+      'Macroeventos empresariales y fiestas de fin de año con montaje de carpas, tarima profesional, pista de baile, banquete o parrillada y hospedaje complementario.',
+    inclusions: [
+      'Carpas estructurales, jardines iluminados, tarima y pista de baile',
+      'Catering corporativo propio: menú de gala, buffet o parrillada campestre',
+      'Complemento de piscina temperada, actividades deportivas y parqueaderos para buses',
+      'Opción de hospedaje complementario en nuestras 14 habitaciones (28 a 80 pax)',
+    ],
+    highlightBadge: 'Fin de Año & Macroeventos',
+    image: '/images/hacienda/boda-carpa-gala.jpg',
+    showPrice: true,
+    whatsappIntent: 'Evento Corporativo de Fin de Año / Gran Formato',
+    featuredInHome: false,
+  },
+  {
+    id: 'pkg-corp-teambuilding',
+    category: 'corporativo',
+    title: 'Integración Empresarial, Deportes & Piscina',
+    subtitle: 'Actividades deportivas, piscina 14×6m, jardines y catering.',
+    priceLabel: 'Desde',
+    priceValue: 40,
+    unit: 'por participante',
+    capacity: 'Hasta 350 participantes',
+    setupInfo: 'Jardines + Canchas Deportivas + Piscina + Catering',
+    description:
+      'Jornadas de integración corporativa y team building fortalecidas con nuestras canchas deportivas, piscina temperada, restaurante propio y hospedaje complementario.',
+    inclusions: [
+      'Uso exclusivo de jardines (5.000 m²) y canchas deportivas (fútbol, vóley, básquet)',
+      'Catering y restaurante: desayuno, parrillada de integración y coffee breaks',
+      'Acceso a piscina temperada (14×6m), 2 hidromasajes, sauna y turco como complemento',
+      'Parqueaderos privados para autobuses y hospedaje complementario opcional',
+    ],
+    highlightBadge: 'Integración & Deportes',
+    image: '/images/hacienda/jardines-teambuilding.jpg',
+    showPrice: true,
+    whatsappIntent: 'Jornada de Integración y Deportes',
+    featuredInHome: false,
+  },
+  {
+    id: 'pkg-corp-retiro',
+    category: 'corporativo',
+    title: 'Convenciones y Encuentros Empresariales con Hospedaje Complementario',
+    subtitle: 'Sesiones estratégicas, plenarias y celebración con alojamiento in situ para equipos y directivos.',
+    priceLabel: 'Desde',
+    priceValue: 88,
+    unit: 'por persona / noche',
+    capacity: '28 a 80 participantes alojados (hasta 250 en plenaria)',
+    setupInfo: 'Salones + Tarima & AV + Catering 3 Tiempos + Piscina + 14 Habitaciones',
+    description:
+      'Combina convenciones, talleres o celebraciones empresariales con hospedaje complementario en nuestras 14 habitaciones, internet por fibra óptica, alimentación completa y áreas recreativas.',
+    inclusions: [
+      'Salones equipados con pantalla gigante, sonido profesional, tarima e internet fibra óptica',
+      'Hospedaje complementario en 14 habitaciones para directivos, ponentes o equipos',
+      'Tres comidas diarias en nuestro restaurante y coffee breaks continuos',
+      'Acceso complementario a piscina 14×6m, 2 hidromasajes, sauna, turco y parqueadero privado',
+    ],
+    highlightBadge: 'Convenciones + Hospedaje',
+    image: '/images/hacienda/reunion-corporativa.jpg',
+    showPrice: true,
+    whatsappIntent: 'Convención o Encuentro con Hospedaje',
+    featuredInHome: false,
+  },
+];
+
+export const DEFAULT_CORPORATE_HIGHLIGHTS: CorporateHighlightItem[] = [
+  {
+    id: 'corp-hl-findeanio',
+    title: 'Fin de Año & Gran Formato',
+    subtitle: 'Carpas, jardines, tarima, pista de baile y catering',
+    highlightMetric: 'Hasta 350+ pax',
+    image: '/images/hacienda/boda-carpa-gala.jpg',
+    mediaType: 'image',
+    whatsappItemName: 'Eventos de Fin de Año & Celebraciones de Gran Formato',
+  },
+  {
+    id: 'corp-hl-teambuilding',
+    title: 'Integración & Deportes',
+    subtitle: 'Canchas deportivas, piscina 14×6m & parrillada',
+    highlightMetric: 'Desde $40 / pax',
+    image: '/images/hacienda/jardines-teambuilding.jpg',
+    mediaType: 'image',
+    whatsappItemName: 'Integración Empresarial, Actividades Deportivas y Piscina',
+  },
+  {
+    id: 'corp-hl-convenciones',
+    title: 'Convenciones + Hospedaje',
+    subtitle: 'Salón AV pro, catering y 14 hab. complementarias',
+    highlightMetric: '28 a 80 huéspedes',
+    image: '/images/hacienda/reunion-corporativa.jpg',
+    mediaType: 'image',
+    whatsappItemName: 'Convenciones con Hospedaje Complementario (14 Habitaciones)',
+  },
+];
+
 interface CMSState {
   siteConfig: SiteConfig;
   packages: ServicePackage[];
   cabins: CabinRoom[];
+  lodgingHeroBanner: LodgingFeaturedBanner;
+  lodgingServices: LodgingServiceCard[];
+  weddingProposals: WeddingProposalCard[];
+  corporateExclusiveFormats: ServicePackage[];
+  corporateHighlights: CorporateHighlightItem[];
   photos: EventPhoto[];
   caseStudies: CaseStudy[];
   faqs: FAQItem[];
@@ -471,9 +768,28 @@ interface CMSContextValue extends CMSState {
   updatePackage: (pkg: ServicePackage) => void;
   addPackage: (pkg: Omit<ServicePackage, 'id'>) => void;
   deletePackage: (id: string) => void;
+  // Módulo 1: Habitaciones para Empresas y Grupos
   updateCabin: (cabin: CabinRoom) => void;
   addCabin: (cabin: Omit<CabinRoom, 'id'>) => void;
   deleteCabin: (id: string) => void;
+  // Módulo 2: Servicios de Estadía y Complementos (Tarjeta Principal Grande + 4 Tarjetas)
+  updateLodgingHeroBanner: (banner: Partial<LodgingFeaturedBanner>) => void;
+  updateLodgingService: (card: LodgingServiceCard) => void;
+  addLodgingService: (card: Omit<LodgingServiceCard, 'id'>) => void;
+  deleteLodgingService: (id: string) => void;
+  // Módulo 3: Bodas y Celebraciones — Propuestas Nupciales Destacadas
+  updateWeddingProposal: (card: WeddingProposalCard) => void;
+  addWeddingProposal: (card: Omit<WeddingProposalCard, 'id'>) => void;
+  deleteWeddingProposal: (id: string) => void;
+  // Módulo 4: Grandes Eventos — Formato Exclusivo
+  updateCorporateExclusiveFormat: (pkg: ServicePackage) => void;
+  addCorporateExclusiveFormat: (pkg: Omit<ServicePackage, 'id'>) => void;
+  deleteCorporateExclusiveFormat: (id: string) => void;
+  // Módulo 5: Grandes Eventos Corporativos — Macroeventos y Encuentros Empresariales
+  updateCorporateHighlight: (item: CorporateHighlightItem) => void;
+  addCorporateHighlight: (item: Omit<CorporateHighlightItem, 'id'>) => void;
+  deleteCorporateHighlight: (id: string) => void;
+  // Galería & Leads
   addPhoto: (photo: Omit<EventPhoto, 'id'>) => void;
   deletePhoto: (id: string) => void;
   togglePhotoFeatured: (id: string) => void;
@@ -502,6 +818,21 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           siteConfig: { ...DEFAULT_SITE_CONFIG, ...parsed.siteConfig },
           packages: parsed.packages?.length ? parsed.packages : DEFAULT_PACKAGES,
           cabins: parsed.cabins?.length ? parsed.cabins : DEFAULT_CABINS,
+          lodgingHeroBanner: parsed.lodgingHeroBanner
+            ? { ...DEFAULT_LODGING_BANNER, ...parsed.lodgingHeroBanner }
+            : DEFAULT_LODGING_BANNER,
+          lodgingServices: parsed.lodgingServices?.length
+            ? parsed.lodgingServices
+            : DEFAULT_LODGING_SERVICES,
+          weddingProposals: parsed.weddingProposals?.length
+            ? parsed.weddingProposals
+            : DEFAULT_WEDDING_PROPOSALS,
+          corporateExclusiveFormats: parsed.corporateExclusiveFormats?.length
+            ? parsed.corporateExclusiveFormats
+            : DEFAULT_CORPORATE_EXCLUSIVE_FORMATS,
+          corporateHighlights: parsed.corporateHighlights?.length
+            ? parsed.corporateHighlights
+            : DEFAULT_CORPORATE_HIGHLIGHTS,
           photos: parsed.photos?.length ? parsed.photos : DEFAULT_PHOTOS,
           caseStudies: parsed.caseStudies?.length ? parsed.caseStudies : DEFAULT_CASE_STUDIES,
           faqs: parsed.faqs?.length ? parsed.faqs : DEFAULT_FAQS,
@@ -515,6 +846,11 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       siteConfig: DEFAULT_SITE_CONFIG,
       packages: DEFAULT_PACKAGES,
       cabins: DEFAULT_CABINS,
+      lodgingHeroBanner: DEFAULT_LODGING_BANNER,
+      lodgingServices: DEFAULT_LODGING_SERVICES,
+      weddingProposals: DEFAULT_WEDDING_PROPOSALS,
+      corporateExclusiveFormats: DEFAULT_CORPORATE_EXCLUSIVE_FORMATS,
+      corporateHighlights: DEFAULT_CORPORATE_HIGHLIGHTS,
       photos: DEFAULT_PHOTOS,
       caseStudies: DEFAULT_CASE_STUDIES,
       faqs: DEFAULT_FAQS,
@@ -527,6 +863,17 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     serviceType?: LeadSubmission['serviceType'];
     itemName?: string;
   }>({});
+
+  const syncModulesWithCloud = (nextState: CMSState) => {
+    saveModulesToSupabase({
+      cabins: nextState.cabins,
+      lodgingHeroBanner: nextState.lodgingHeroBanner,
+      lodgingServices: nextState.lodgingServices,
+      weddingProposals: nextState.weddingProposals,
+      corporateExclusiveFormats: nextState.corporateExclusiveFormats,
+      corporateHighlights: nextState.corporateHighlights,
+    });
+  };
 
   useEffect(() => {
     try {
@@ -541,7 +888,6 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     fetchLeadsFromSupabase().then((remoteLeads) => {
       if (remoteLeads && remoteLeads.length > 0) {
         setState((prev) => {
-          // Unir leads remotos con locales evitando duplicados
           const existingIds = new Set(remoteLeads.map((l) => l.id));
           const uniqueLocal = prev.leads.filter((l) => !existingIds.has(l.id));
           return { ...prev, leads: [...remoteLeads, ...uniqueLocal] };
@@ -554,6 +900,30 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setState((prev) => ({
           ...prev,
           siteConfig: { ...prev.siteConfig, ...remoteConfig },
+        }));
+      }
+    });
+
+    fetchModulesFromSupabase().then((remoteModules) => {
+      if (remoteModules) {
+        setState((prev) => ({
+          ...prev,
+          cabins: remoteModules.cabins?.length ? remoteModules.cabins : prev.cabins,
+          lodgingHeroBanner: remoteModules.lodgingHeroBanner
+            ? { ...prev.lodgingHeroBanner, ...remoteModules.lodgingHeroBanner }
+            : prev.lodgingHeroBanner,
+          lodgingServices: remoteModules.lodgingServices?.length
+            ? remoteModules.lodgingServices
+            : prev.lodgingServices,
+          weddingProposals: remoteModules.weddingProposals?.length
+            ? remoteModules.weddingProposals
+            : prev.weddingProposals,
+          corporateExclusiveFormats: remoteModules.corporateExclusiveFormats?.length
+            ? remoteModules.corporateExclusiveFormats
+            : prev.corporateExclusiveFormats,
+          corporateHighlights: remoteModules.corporateHighlights?.length
+            ? remoteModules.corporateHighlights
+            : prev.corporateHighlights,
         }));
       }
     });
@@ -595,11 +965,16 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
   };
 
+  // MÓDULO 1: Habitaciones para Empresas y Grupos
   const updateCabin = (updated: CabinRoom) => {
-    setState((prev) => ({
-      ...prev,
-      cabins: prev.cabins.map((c) => (c.id === updated.id ? updated : c)),
-    }));
+    setState((prev) => {
+      const next = {
+        ...prev,
+        cabins: prev.cabins.map((c) => (c.id === updated.id ? updated : c)),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
   };
 
   const addCabin = (cabin: Omit<CabinRoom, 'id'>) => {
@@ -607,17 +982,192 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...cabin,
       id: `cabin-${Date.now()}`,
     };
-    setState((prev) => ({
-      ...prev,
-      cabins: [...prev.cabins, newCabin],
-    }));
+    setState((prev) => {
+      const next = {
+        ...prev,
+        cabins: [...prev.cabins, newCabin],
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
   };
 
   const deleteCabin = (id: string) => {
-    setState((prev) => ({
-      ...prev,
-      cabins: prev.cabins.filter((c) => c.id !== id),
-    }));
+    setState((prev) => {
+      const next = {
+        ...prev,
+        cabins: prev.cabins.filter((c) => c.id !== id),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  // MÓDULO 2: Servicios de Estadía y Complementos
+  const updateLodgingHeroBanner = (banner: Partial<LodgingFeaturedBanner>) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        lodgingHeroBanner: { ...prev.lodgingHeroBanner, ...banner },
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const updateLodgingService = (updated: LodgingServiceCard) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        lodgingServices: prev.lodgingServices.map((s) => (s.id === updated.id ? updated : s)),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const addLodgingService = (card: Omit<LodgingServiceCard, 'id'>) => {
+    const newCard: LodgingServiceCard = {
+      ...card,
+      id: `srv-${Date.now()}`,
+    };
+    setState((prev) => {
+      const next = {
+        ...prev,
+        lodgingServices: [...prev.lodgingServices, newCard],
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const deleteLodgingService = (id: string) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        lodgingServices: prev.lodgingServices.filter((s) => s.id !== id),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  // MÓDULO 3: Propuestas Nupciales Destacadas (Bodas)
+  const updateWeddingProposal = (updated: WeddingProposalCard) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        weddingProposals: prev.weddingProposals.map((w) => (w.id === updated.id ? updated : w)),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const addWeddingProposal = (card: Omit<WeddingProposalCard, 'id'>) => {
+    const newCard: WeddingProposalCard = {
+      ...card,
+      id: `boda-${Date.now()}`,
+    };
+    setState((prev) => {
+      const next = {
+        ...prev,
+        weddingProposals: [...prev.weddingProposals, newCard],
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const deleteWeddingProposal = (id: string) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        weddingProposals: prev.weddingProposals.filter((w) => w.id !== id),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  // MÓDULO 4: Formato Exclusivo (Corporativo)
+  const updateCorporateExclusiveFormat = (updated: ServicePackage) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateExclusiveFormats: prev.corporateExclusiveFormats.map((p) =>
+          p.id === updated.id ? updated : p
+        ),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const addCorporateExclusiveFormat = (pkg: Omit<ServicePackage, 'id'>) => {
+    const newPkg: ServicePackage = {
+      ...pkg,
+      id: `pkg-corp-${Date.now()}`,
+    };
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateExclusiveFormats: [...prev.corporateExclusiveFormats, newPkg],
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const deleteCorporateExclusiveFormat = (id: string) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateExclusiveFormats: prev.corporateExclusiveFormats.filter((p) => p.id !== id),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  // MÓDULO 5: Grandes Eventos Corporativos (Macroeventos y Encuentros Empresariales)
+  const updateCorporateHighlight = (updated: CorporateHighlightItem) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateHighlights: prev.corporateHighlights.map((h) =>
+          h.id === updated.id ? updated : h
+        ),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const addCorporateHighlight = (item: Omit<CorporateHighlightItem, 'id'>) => {
+    const newItem: CorporateHighlightItem = {
+      ...item,
+      id: `corp-hl-${Date.now()}`,
+    };
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateHighlights: [...prev.corporateHighlights, newItem],
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
+  };
+
+  const deleteCorporateHighlight = (id: string) => {
+    setState((prev) => {
+      const next = {
+        ...prev,
+        corporateHighlights: prev.corporateHighlights.filter((h) => h.id !== id),
+      };
+      syncModulesWithCloud(next);
+      return next;
+    });
   };
 
   const addPhoto = (photo: Omit<EventPhoto, 'id'>) => {
@@ -666,7 +1216,6 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       leads: [newLead, ...prev.leads],
     }));
 
-    // Persistir asíncronamente en Supabase
     saveLeadToSupabase(newLead);
 
     return newLead;
@@ -690,15 +1239,22 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const resetToDefaults = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setState({
+    const defaultState: CMSState = {
       siteConfig: DEFAULT_SITE_CONFIG,
       packages: DEFAULT_PACKAGES,
       cabins: DEFAULT_CABINS,
+      lodgingHeroBanner: DEFAULT_LODGING_BANNER,
+      lodgingServices: DEFAULT_LODGING_SERVICES,
+      weddingProposals: DEFAULT_WEDDING_PROPOSALS,
+      corporateExclusiveFormats: DEFAULT_CORPORATE_EXCLUSIVE_FORMATS,
+      corporateHighlights: DEFAULT_CORPORATE_HIGHLIGHTS,
       photos: DEFAULT_PHOTOS,
       caseStudies: DEFAULT_CASE_STUDIES,
       faqs: DEFAULT_FAQS,
       leads: DEFAULT_LEADS,
-    });
+    };
+    setState(defaultState);
+    syncModulesWithCloud(defaultState);
   };
 
   const openQuoteModal = (preset?: { serviceType?: LeadSubmission['serviceType']; itemName?: string }) => {
@@ -722,6 +1278,19 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateCabin,
         addCabin,
         deleteCabin,
+        updateLodgingHeroBanner,
+        updateLodgingService,
+        addLodgingService,
+        deleteLodgingService,
+        updateWeddingProposal,
+        addWeddingProposal,
+        deleteWeddingProposal,
+        updateCorporateExclusiveFormat,
+        addCorporateExclusiveFormat,
+        deleteCorporateExclusiveFormat,
+        updateCorporateHighlight,
+        addCorporateHighlight,
+        deleteCorporateHighlight,
         addPhoto,
         deletePhoto,
         togglePhotoFeatured,
