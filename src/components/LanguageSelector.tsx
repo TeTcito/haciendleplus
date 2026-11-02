@@ -69,13 +69,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
           <div
             role="listbox"
             aria-label={t.nav.langSelect}
-            className="absolute right-0 top-full mt-2 w-48 rounded-2xl bg-[#071912]/95 backdrop-blur-xl border border-[#C8A45D]/50 shadow-[0_14px_40px_rgba(0,0,0,0.7)] p-1.5 z-50 animate-in fade-in slide-in-from-top-2 zoom-in-95 duration-200 origin-top-right text-xs"
+            className="absolute right-0 top-full mt-2 w-44 rounded-2xl bg-[#071912]/95 backdrop-blur-xl border border-[#C8A45D]/50 shadow-[0_14px_40px_rgba(0,0,0,0.7)] p-1.5 z-50 animate-in fade-in slide-in-from-top-2 zoom-in-95 duration-200 origin-top-right text-xs"
           >
-            <div className="flex items-center justify-between px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[#C8A45D] border-b border-white/10 mb-1">
-              <span>{t.nav.langSelect}</span>
-              <span className="text-[9px] text-[#C8A45D]/75">6 {language === 'zh' ? '种语言' : 'Idiomas'}</span>
-            </div>
-
             <div className="space-y-0.5">
               {availableLanguages.map((langItem) => {
                 const isSelected = language === langItem.code;
@@ -196,13 +191,8 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <div
           role="listbox"
           aria-label={t.nav.langSelect}
-          className="absolute right-0 mt-2 w-52 rounded-2xl bg-[#071912] border border-[#C8A45D]/40 shadow-2xl p-1.5 z-50 animate-fadeIn text-xs"
+          className="absolute right-0 mt-2 w-48 rounded-2xl bg-[#071912] border border-[#C8A45D]/40 shadow-2xl p-1.5 z-50 animate-fadeIn text-xs"
         >
-          <div className="flex items-center justify-between px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#C8A45D]/80 border-b border-white/10 mb-1">
-            <span>{t.nav.langSelect}</span>
-            <span className="text-[9px] text-[#C8A45D]/60">6 {language === 'zh' ? '种语言' : 'Idiomas'}</span>
-          </div>
-
           <div className="space-y-0.5">
             {availableLanguages.map((langItem) => {
               const isSelected = language === langItem.code;
