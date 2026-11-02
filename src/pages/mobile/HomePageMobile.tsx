@@ -511,7 +511,7 @@ export const HomePageMobile: React.FC = () => {
             </div>
 
             {/* Logo Oficial de la Hacienda en el lado derecho (Aumentado en 50px de 64px a 114px) */}
-            <div className="shrink-0 pl-2">
+            <div className="shrink-0 pl-2 pt-8 sm:pt-6">
               <ScrollReveal direction="right" delay={100} distance={15}>
                 <Link
                   to="/"

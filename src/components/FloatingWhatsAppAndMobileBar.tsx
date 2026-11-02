@@ -40,9 +40,9 @@ export const FloatingWhatsAppAndMobileBar: React.FC = () => {
 
   return (
     <>
-      {/* Selector de idioma móvil flotante ergonómico a la izquierda */}
-      <div className="fixed bottom-[62px] left-3.5 z-40 md:hidden items-center flex">
-        <LanguageSelector variant="compact" />
+      {/* Etiqueta flotante de bandera móvil en la parte superior a 15px pegada al margen */}
+      <div className="fixed top-[15px] right-[15px] z-50 md:hidden items-center flex pointer-events-auto">
+        <LanguageSelector variant="mobile-top-tag" />
       </div>
 
       {/* Botón flotante contextual de WhatsApp (Desktop: bottom-6 right-6, Móvil: flotando ergonómicamente sobre la barra inferior) */}
