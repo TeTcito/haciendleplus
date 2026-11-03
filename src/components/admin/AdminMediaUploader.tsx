@@ -9,13 +9,15 @@ import {
   X,
   Image as ImageIcon,
   Video,
-  CheckCircle2,
   Loader2,
   Film,
   Link as LinkIcon,
   Hand,
   Check,
+  CheckCircle2,
   RotateCcw,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 
 interface AdminMediaUploaderProps {
@@ -32,15 +34,55 @@ interface AdminMediaUploaderProps {
   onProcessingChange?: (isProcessing: boolean) => void;
 }
 
-const parsePos = (str?: string): { x: number; y: number } => {
-  if (!str) return { x: 50, y: 50 };
-  const parts = str.trim().split(/\s+/);
-  if (parts.length >= 2) {
-    const x = parseFloat(parts[0]);
-    const y = parseFloat(parts[1]);
-    if (!isNaN(x) && !isNaN(y)) return { x, y };
-  }
-  return { x: 50, y: 50 };
+// Recorta la porción encuadrada con total fidelidad matemática a 1:1 WebP
+const cropImageToSquareBlob = async (
+  src: string,
+  naturalDim: { width: number; height: number },
+  pan: { x: number; y: number },
+  zoom: number,
+  containerSize: number
+): Promise<Blob | null> => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const Wnat = img.naturalWidth || naturalDim.width || 1000;
+      const Hnat = img.naturalHeight || naturalDim.height || 1000;
+      const S = containerSize > 0 ? containerSize : 320;
+      const isLandscape = Wnat >= Hnat;
+
+      const scaleFactor = isLandscape ? (S * zoom) / Hnat : (S * zoom) / Wnat;
+      const sw = Math.min(Wnat, Math.max(10, S / scaleFactor));
+      const sh = Math.min(Hnat, Math.max(10, S / scaleFactor));
+
+      const sx = Math.max(0, Math.min(Wnat - sw, Wnat / 2 + (-pan.x - S / 2) / scaleFactor));
+      const sy = Math.max(0, Math.min(Hnat - sh, Hnat / 2 + (-pan.y - S / 2) / scaleFactor));
+
+      const outputSize = Math.min(1280, Math.max(800, Math.round(sw)));
+      const canvas = document.createElement('canvas');
+      canvas.width = outputSize;
+      canvas.height = outputSize;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(null);
+        return;
+      }
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, outputSize, outputSize);
+
+      canvas.toBlob(
+        (blob) => {
+          resolve(blob);
+        },
+        'image/webp',
+        0.88
+      );
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
 };
 
 export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
@@ -59,34 +101,70 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [videoUploadNotice, setVideoUploadNotice] = useState<string | null>(null);
   const [displaySrc, setDisplaySrc] = useState<string>(imageUrl || '');
+  const [rawSourceUrl, setRawSourceUrl] = useState<string>(imageUrl || '');
   const lastUploadedUrlRef = useRef<string | null>(null);
 
-  // Estados de encuadre manual (arrastrar con la manito)
+  // Estados de encuadre libre 2D con la manito
   const [isPanMode, setIsPanMode] = useState(false);
+  const [isCropping, setIsCropping] = useState(false);
+  const [zoom, setZoom] = useState(1.15); // Zoom inicial elegante que da libertad horizontal y vertical
+  const [pan, setPan] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [naturalDimensions, setNaturalDimensions] = useState<{ width: number; height: number }>({
+    width: 1,
+    height: 1,
+  });
   const [isDragging, setIsDragging] = useState(false);
-  const [pos, setPos] = useState<{ x: number; y: number }>(() => parsePos(imagePosition));
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const dragStartRef = useRef<{ clientX: number; clientY: number; startX: number; startY: number }>({
+  const dragStartRef = useRef<{ clientX: number; clientY: number; startPanX: number; startPanY: number }>({
     clientX: 0,
     clientY: 0,
-    startX: 50,
-    startY: 50,
+    startPanX: 0,
+    startPanY: 0,
   });
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
-  // Sincronizar previsualización cuando cambie el item desde el exterior
+  // Sincronizar previsualización cuando cambie la URL exterior
   useEffect(() => {
     if (imageUrl !== lastUploadedUrlRef.current) {
       setDisplaySrc(imageUrl || '');
+      setRawSourceUrl(imageUrl || '');
     }
   }, [imageUrl]);
 
-  // Sincronizar posición cuando cambie el item exterior
+  // Cargar dimensiones naturales de la imagen para calcular límites de arrastre 2D
   useEffect(() => {
-    setPos(parsePos(imagePosition));
-  }, [imagePosition]);
+    const srcToMeasure = rawSourceUrl || displaySrc;
+    if (srcToMeasure) {
+      const img = new Image();
+      img.onload = () => {
+        if (img.naturalWidth && img.naturalHeight) {
+          setNaturalDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+        }
+      };
+      img.src = srcToMeasure;
+    }
+  }, [rawSourceUrl, displaySrc]);
+
+  // Límites dinámicos de movimiento para evitar que la imagen se salga del marco 1:1
+  const getPanLimits = (currentZoom: number = zoom) => {
+    if (!containerRef.current) return { maxX: 100, maxY: 100 };
+    const S = containerRef.current.clientWidth || 300;
+    const { width: Wnat, height: Hnat } = naturalDimensions;
+    if (Wnat <= 1 || Hnat <= 1) return { maxX: 100, maxY: 100 };
+
+    const isLandscape = Wnat >= Hnat;
+    const renderedWidth = isLandscape ? (S * (Wnat / Hnat)) * currentZoom : S * currentZoom;
+    const renderedHeight = isLandscape ? S * currentZoom : (S * (Hnat / Wnat)) * currentZoom;
+
+    // Margen libre de movimiento 2D según dimensiones y zoom
+    const maxX = Math.max(10, (renderedWidth - S) / 2);
+    const maxY = Math.max(10, (renderedHeight - S) / 2);
+
+    return { maxX, maxY };
+  };
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -94,9 +172,11 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
 
     e.target.value = '';
 
-    // 1. Previsualización instantánea sin salto blanco
     const instantLocalUrl = URL.createObjectURL(file);
     setDisplaySrc(instantLocalUrl);
+    setRawSourceUrl(instantLocalUrl);
+    setPan({ x: 0, y: 0 });
+    setZoom(1.15);
     if (onMediaTypeChange) {
       onMediaTypeChange('image');
     }
@@ -105,14 +185,10 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       setIsProcessing(true);
       if (onProcessingChange) onProcessingChange(true);
 
-      // 2. Compresión optimizada a WebP
-      const result = await compressAndConvertToWebP(file, 1280, 1280, 0.8);
-
-      // 3. Subida a Supabase Storage con respaldo en base64
+      const result = await compressAndConvertToWebP(file, 1600, 1600, 0.85);
       const uploadedUrl = await uploadMediaToSupabase(result.file, 'img');
       const finalUrl = uploadedUrl || result.base64DataUrl || instantLocalUrl;
 
-      // 4. Pre-cargar imagen en memoria antes de sustituir el src
       if (finalUrl.startsWith('http')) {
         await new Promise<void>((resolve) => {
           const preImg = new window.Image();
@@ -125,6 +201,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
 
       lastUploadedUrlRef.current = finalUrl;
       setDisplaySrc(finalUrl);
+      setRawSourceUrl(finalUrl);
       onImageChange(finalUrl);
     } catch (err) {
       console.error('Error al procesar imagen:', err);
@@ -167,7 +244,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   };
 
   // =========================================================================
-  // GESTIÓN DE ENCUADRE CON LA MANITO (DRAG & DROP DIRECTO SIN FLECHAS)
+  // GESTIÓN DE ARRASTRE LIBRE 2D CON LA MANITO (HORIZONTAL + VERTICAL FLUIDO)
   // =========================================================================
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isPanMode) return;
@@ -176,24 +253,24 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     dragStartRef.current = {
       clientX: e.clientX,
       clientY: e.clientY,
-      startX: pos.x,
-      startY: pos.y,
+      startPanX: pan.x,
+      startPanY: pan.y,
     };
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isPanMode || !isDragging || !containerRef.current) return;
+    if (!isPanMode || !isDragging) return;
     e.preventDefault();
-    const rect = containerRef.current.getBoundingClientRect();
     const deltaX = e.clientX - dragStartRef.current.clientX;
     const deltaY = e.clientY - dragStartRef.current.clientY;
 
-    // Arrastre natural de agarre: mover el cursor desplaza el visor de la imagen
-    const newX = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startX - (deltaX / rect.width) * 100) * 10) / 10));
-    const newY = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startY - (deltaY / rect.height) * 100) * 10) / 10));
+    const { maxX, maxY } = getPanLimits();
 
-    setPos({ x: newX, y: newY });
-    onImagePositionChange?.(`${newX}% ${newY}%`);
+    // Mueve directamente el elemento en 2D (X e Y con total fluidez)
+    const newX = Math.min(maxX, Math.max(-maxX, dragStartRef.current.startPanX + deltaX));
+    const newY = Math.min(maxY, Math.max(-maxY, dragStartRef.current.startPanY + deltaY));
+
+    setPan({ x: newX, y: newY });
   };
 
   const handleMouseUp = () => {
@@ -208,22 +285,21 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     dragStartRef.current = {
       clientX: e.touches[0].clientX,
       clientY: e.touches[0].clientY,
-      startX: pos.x,
-      startY: pos.y,
+      startPanX: pan.x,
+      startPanY: pan.y,
     };
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
-    if (!isPanMode || !isDragging || !containerRef.current || e.touches.length === 0) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    if (!isPanMode || !isDragging || e.touches.length === 0) return;
     const deltaX = e.touches[0].clientX - dragStartRef.current.clientX;
     const deltaY = e.touches[0].clientY - dragStartRef.current.clientY;
 
-    const newX = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startX - (deltaX / rect.width) * 100) * 10) / 10));
-    const newY = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startY - (deltaY / rect.height) * 100) * 10) / 10));
+    const { maxX, maxY } = getPanLimits();
+    const newX = Math.min(maxX, Math.max(-maxX, dragStartRef.current.startPanX + deltaX));
+    const newY = Math.min(maxY, Math.max(-maxY, dragStartRef.current.startPanY + deltaY));
 
-    setPos({ x: newX, y: newY });
-    onImagePositionChange?.(`${newX}% ${newY}%`);
+    setPan({ x: newX, y: newY });
   };
 
   const handleTouchEnd = () => {
@@ -232,9 +308,70 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     }
   };
 
+  // Zoom fluido mediante rueda del ratón (Wheel)
+  const handleWheel = (e: React.WheelEvent<HTMLDivElement>) => {
+    if (!isPanMode) return;
+    e.preventDefault();
+    const zoomStep = 0.08;
+    const newZoom = e.deltaY < 0 ? Math.min(2.8, zoom + zoomStep) : Math.max(1.0, zoom - zoomStep);
+    const rounded = parseFloat(newZoom.toFixed(2));
+    setZoom(rounded);
+
+    const { maxX, maxY } = getPanLimits(rounded);
+    setPan((prev) => ({
+      x: Math.min(maxX, Math.max(-maxX, prev.x)),
+      y: Math.min(maxY, Math.max(-maxY, prev.y)),
+    }));
+  };
+
   const handleResetPosition = () => {
-    setPos({ x: 50, y: 50 });
-    onImagePositionChange?.('50% 50%');
+    setPan({ x: 0, y: 0 });
+    setZoom(1.15);
+  };
+
+  // Aplicar el encuadre 1:1 mediante recorte de canvas y subir a la nube
+  const handleApplyCrop = async () => {
+    const srcToCrop = rawSourceUrl || displaySrc;
+    if (!srcToCrop) {
+      setIsPanMode(false);
+      return;
+    }
+
+    try {
+      setIsCropping(true);
+      if (onProcessingChange) onProcessingChange(true);
+
+      const S = containerRef.current?.clientWidth || 320;
+      const croppedBlob = await cropImageToSquareBlob(
+        srcToCrop,
+        naturalDimensions,
+        pan,
+        zoom,
+        S
+      );
+
+      if (croppedBlob) {
+        const croppedLocalUrl = URL.createObjectURL(croppedBlob);
+        setDisplaySrc(croppedLocalUrl);
+
+        // Subir la imagen ya recortada en formato 1:1 perfecto a Supabase
+        const uploaded = await uploadMediaToSupabase(
+          new File([croppedBlob], `crop-${Date.now()}.webp`, { type: 'image/webp' }),
+          'img'
+        );
+
+        const finalUrl = uploaded || croppedLocalUrl;
+        lastUploadedUrlRef.current = finalUrl;
+        setDisplaySrc(finalUrl);
+        onImageChange(finalUrl);
+      }
+    } catch (err) {
+      console.warn('Error al aplicar recorte canvas:', err);
+    } finally {
+      setIsCropping(false);
+      setIsPanMode(false);
+      if (onProcessingChange) onProcessingChange(false);
+    }
   };
 
   const activeImageSrc = displaySrc;
@@ -357,7 +494,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
               </div>
             )}
 
-            {/* Imagen de portada (Poster) opcional para el video */}
             <div className="pt-2 border-t border-slate-200/80">
               <label className="block text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1">
                 Imagen de Portada / Miniatura del Video
@@ -396,6 +532,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 onTouchStart={handleTouchStart}
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
+                onWheel={handleWheel}
                 className={`relative aspect-square rounded-2xl overflow-hidden border border-slate-300 bg-[#06150F] shadow-xs select-none transition-shadow ${
                   isPanMode
                     ? isDragging
@@ -404,15 +541,38 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                     : 'group'
                 }`}
               >
-                <img
-                  src={activeImageSrc}
-                  alt="Vista previa"
-                  draggable={false}
-                  style={{
-                    objectPosition: `${pos.x}% ${pos.y}%`,
-                  }}
-                  className="w-full h-full object-cover pointer-events-none select-none transition-[object-position] duration-75"
-                />
+                {/* VISTA PREVIA: MODO ENCUADRE LIBRE 2D (CON ZOOM Y ARRASTRE SIN BLOQUEOS) */}
+                {isPanMode ? (
+                  <div className="relative w-full h-full overflow-hidden flex items-center justify-center">
+                    <img
+                      src={rawSourceUrl || activeImageSrc}
+                      alt="Vista previa encuadre"
+                      draggable={false}
+                      style={{
+                        position: 'absolute',
+                        left: '50%',
+                        top: '50%',
+                        width: naturalDimensions.width >= naturalDimensions.height ? 'auto' : '100%',
+                        height: naturalDimensions.width >= naturalDimensions.height ? '100%' : 'auto',
+                        maxWidth: 'none',
+                        maxHeight: 'none',
+                        transform: `translate(-50%, -50%) translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+                        transformOrigin: 'center center',
+                        pointerEvents: 'none',
+                        userSelect: 'none',
+                      }}
+                      className="transition-[transform] duration-75"
+                    />
+                  </div>
+                ) : (
+                  /* VISTA PREVIA NORMAL 1:1 */
+                  <img
+                    src={activeImageSrc}
+                    alt="Vista previa"
+                    draggable={false}
+                    className="w-full h-full object-cover"
+                  />
+                )}
 
                 {/* ANIMACIÓN EXCLUSIVA EN EL CENTRO DE LA IMAGEN DURANTE LA SUBIDA */}
                 {isProcessing && (
@@ -435,50 +595,95 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                   <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 z-30 pointer-events-auto">
                     <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#06150F]/90 text-[#E2C585] text-[11px] font-bold shadow-md backdrop-blur-xs border border-[#C8A45D]/40">
                       <Hand className="w-3.5 h-3.5" />
-                      <span>{isDragging ? 'Moviendo posición...' : 'Arrastra con la manito'}</span>
+                      <span>{isDragging ? 'Moviendo con libertad...' : 'Arrastra con la manito (2D)'}</span>
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      {(pos.x !== 50 || pos.y !== 50) && (
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleResetPosition();
-                          }}
-                          className="px-2.5 py-1 rounded-lg bg-black/80 hover:bg-black text-white text-[10px] font-bold shadow cursor-pointer transition-colors flex items-center gap-1"
-                          title="Restablecer encuadre al centro"
-                        >
-                          <RotateCcw className="w-3 h-3" />
-                          <span>Centrar</span>
-                        </button>
-                      )}
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          setIsPanMode(false);
+                          handleResetPosition();
                         }}
-                        className="px-3 py-1 rounded-lg bg-[#C8A45D] hover:bg-[#E2C585] text-[#06150F] text-xs font-extrabold shadow cursor-pointer transition-colors flex items-center gap-1"
+                        className="px-2.5 py-1 rounded-lg bg-black/80 hover:bg-black text-white text-[10px] font-bold shadow cursor-pointer transition-colors flex items-center gap-1"
+                        title="Restablecer posición y zoom"
                       >
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                        <span>Listo</span>
+                        <RotateCcw className="w-3 h-3" />
+                        <span>Centrar</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleApplyCrop();
+                        }}
+                        disabled={isCropping}
+                        className="px-3 py-1 rounded-lg bg-[#C8A45D] hover:bg-[#E2C585] text-[#06150F] text-xs font-extrabold shadow cursor-pointer transition-colors flex items-center gap-1 disabled:opacity-50"
+                      >
+                        {isCropping ? (
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        ) : (
+                          <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        )}
+                        <span>{isCropping ? 'Aplicando...' : 'Listo'}</span>
                       </button>
                     </div>
                   </div>
                 )}
 
-                {/* ETIQUETA INFORMATIVA DE COORDENADAS DURANTE EL ACOMODO */}
+                {/* BARRA INFERIOR DE ZOOM FLUIDO Y RUEDA DE RATÓN */}
                 {isPanMode && !isProcessing && (
-                  <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#06150F]/85 text-white text-[10px] font-mono pointer-events-none z-30 border border-white/10">
-                    Encuadre: {Math.round(pos.x)}% {Math.round(pos.y)}%
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 bg-[#06150F]/90 backdrop-blur-xs border border-white/10 rounded-xl px-3 py-1.5 flex items-center justify-between gap-3 z-30 text-white text-xs">
+                    <div className="flex items-center gap-2 flex-1">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const nz = Math.max(1.0, parseFloat((zoom - 0.1).toFixed(2)));
+                          setZoom(nz);
+                        }}
+                        className="p-1 rounded-md hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+                        title="Alejar (Zoom -)"
+                      >
+                        <ZoomOut className="w-3.5 h-3.5" />
+                      </button>
+
+                      <input
+                        type="range"
+                        min={1.0}
+                        max={2.5}
+                        step={0.05}
+                        value={zoom}
+                        onChange={(e) => {
+                          const nz = parseFloat(e.target.value);
+                          setZoom(nz);
+                        }}
+                        className="flex-1 accent-[#C8A45D] cursor-pointer h-1 bg-white/20 rounded-lg"
+                      />
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const nz = Math.min(2.5, parseFloat((zoom + 0.1).toFixed(2)));
+                          setZoom(nz);
+                        }}
+                        className="p-1 rounded-md hover:bg-white/10 text-slate-300 hover:text-white cursor-pointer"
+                        title="Acercar (Zoom +)"
+                      >
+                        <ZoomIn className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    <span className="font-mono text-[10px] text-[#E2C585] shrink-0 font-bold">
+                      {Math.round(zoom * 100)}%
+                    </span>
                   </div>
                 )}
 
                 {/* BOTONES EN EL CENTRO DE LA IMAGEN AL PASAR EL CURSOR (HOVER) */}
                 {!isProcessing && !isPanMode && (
                   <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 p-2">
-                    {/* Botón 1: Cambiar Imagen */}
                     <button
                       type="button"
                       onClick={() => imageInputRef.current?.click()}
@@ -488,23 +693,26 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                       <span>Cambiar</span>
                     </button>
 
-                    {/* Botón 2: Mover / Acomodar Encuadre con la manito */}
                     <button
                       type="button"
-                      onClick={() => setIsPanMode(true)}
+                      onClick={() => {
+                        setPan({ x: 0, y: 0 });
+                        setZoom(1.15);
+                        setIsPanMode(true);
+                      }}
                       className="px-3 py-2 rounded-xl bg-[#06150F] text-[#E2C585] border border-[#C8A45D]/60 text-xs font-bold hover:bg-[#13281F] transition-colors shadow cursor-pointer flex items-center gap-1.5 shrink-0"
-                      title="Mover y acomodar encuadre de la imagen manteniendo clickeado con la manito"
+                      title="Mover y acomodar libremente en 2D con la manito"
                     >
                       <Hand className="w-3.5 h-3.5" />
                       <span>Acomodar</span>
                     </button>
 
-                    {/* Botón 3: Quitar Imagen */}
                     <button
                       type="button"
                       onClick={() => {
                         lastUploadedUrlRef.current = null;
                         setDisplaySrc('');
+                        setRawSourceUrl('');
                         onImageChange('');
                         handleResetPosition();
                       }}
@@ -560,6 +768,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 value={activeImageSrc}
                 onChange={(e) => {
                   setDisplaySrc(e.target.value);
+                  setRawSourceUrl(e.target.value);
                   onImageChange(e.target.value);
                 }}
                 placeholder="/images/hacienda/..."
