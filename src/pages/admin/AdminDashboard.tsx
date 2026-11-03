@@ -622,7 +622,7 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* COLUMNA 2: MULTIMEDIA WEBP / VIDEO CON AUTOGUARDADO EN LA BASE DE DATOS */}
+                      {/* COLUMNA 2: MULTIMEDIA WEBP / VIDEO (VISTA PREVIA LOCAL) */}
                       <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeCabin.image}
@@ -631,10 +631,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingCabin(updated);
-                            if (!isCreatingCabin && !url.startsWith('blob:')) {
-                              updateCabin(updated);
-                              showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
-                            }
                           }}
                           videoUrl={activeCabin.videoUrl || ''}
                           onVideoChange={(url) => {
@@ -642,10 +638,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingCabin(updated);
-                            if (!isCreatingCabin && !url.startsWith('blob:')) {
-                              updateCabin(updated);
-                              showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
-                            }
                           }}
                           mediaType={activeCabin.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
@@ -653,9 +645,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, mediaType: type };
                             setEditingCabin(updated);
-                            if (!isCreatingCabin) {
-                              updateCabin(updated);
-                            }
                           }}
                           allowVideo={true}
                           onProcessingChange={setIsMediaUploading}
@@ -1054,25 +1043,16 @@ export const AdminDashboard: React.FC = () => {
                           onImageChange={(url) => {
                             const updated = { ...activeHeroBanner, image: url };
                             setEditingHeroBanner(updated);
-                            if (!url.startsWith('blob:')) {
-                              updateLodgingHeroBanner(updated);
-                              showToast('✓ Portada guardada y sincronizada en la base de datos y la web.');
-                            }
                           }}
                           videoUrl={activeHeroBanner.videoUrl || ''}
                           onVideoChange={(url) => {
                             const updated = { ...activeHeroBanner, videoUrl: url, mediaType: 'video' as const };
                             setEditingHeroBanner(updated);
-                            if (!url.startsWith('blob:')) {
-                              updateLodgingHeroBanner(updated);
-                              showToast('✓ Video principal guardado y sincronizado en la base de datos y la web.');
-                            }
                           }}
                           mediaType={activeHeroBanner.mediaType}
                           onMediaTypeChange={(type) => {
                             const updated = { ...activeHeroBanner, mediaType: type };
                             setEditingHeroBanner(updated);
-                            updateLodgingHeroBanner(updated);
                           }}
                           allowVideo={true}
                           label="2. Video Principal o Portada"
@@ -1227,10 +1207,6 @@ export const AdminDashboard: React.FC = () => {
                               if (!current) return;
                               const updated = { ...current, image: url, mediaType: 'image' as const };
                               setEditingServiceCard(updated);
-                              if (!isCreatingServiceCard && !url.startsWith('blob:')) {
-                                updateLodgingService(updated);
-                                showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
-                              }
                             }}
                             videoUrl={activeServiceCard.videoUrl || ''}
                             onVideoChange={(url) => {
@@ -1238,10 +1214,6 @@ export const AdminDashboard: React.FC = () => {
                               if (!current) return;
                               const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                               setEditingServiceCard(updated);
-                              if (!isCreatingServiceCard && !url.startsWith('blob:')) {
-                                updateLodgingService(updated);
-                                showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
-                              }
                             }}
                             mediaType={activeServiceCard.mediaType}
                             onMediaTypeChange={(type) => {
@@ -1249,9 +1221,6 @@ export const AdminDashboard: React.FC = () => {
                               if (!current) return;
                               const updated = { ...current, mediaType: type };
                               setEditingServiceCard(updated);
-                              if (!isCreatingServiceCard) {
-                                updateLodgingService(updated);
-                              }
                             }}
                             allowVideo={true}
                             label="2. Video o Imagen de la Tarjeta"
@@ -1646,10 +1615,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingWedding(updated);
-                            if (!isCreatingWedding && !url.startsWith('blob:')) {
-                              updateWeddingProposal(updated);
-                              showToast('✓ Imagen nupcial guardada y sincronizada en la base de datos y la web.');
-                            }
                           }}
                           videoUrl={activeWedding.videoUrl || ''}
                           onVideoChange={(url) => {
@@ -1657,10 +1622,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingWedding(updated);
-                            if (!isCreatingWedding && !url.startsWith('blob:')) {
-                              updateWeddingProposal(updated);
-                              showToast('✓ Video nupcial guardado y sincronizado en la base de datos y la web.');
-                            }
                           }}
                           mediaType={activeWedding.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
@@ -1668,9 +1629,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, mediaType: type };
                             setEditingWedding(updated);
-                            if (!isCreatingWedding) {
-                              updateWeddingProposal(updated);
-                            }
                           }}
                           allowVideo={true}
                           onProcessingChange={setIsMediaUploading}
@@ -2036,10 +1994,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingExclusive(updated);
-                            if (!isCreatingExclusive && !url.startsWith('blob:')) {
-                              updateCorporateExclusiveFormat(updated);
-                              showToast('✓ Imagen de formato corporativo guardada y sincronizada.');
-                            }
                           }}
                           videoUrl={activeExclusive.videoUrl || ''}
                           onVideoChange={(url) => {
@@ -2047,10 +2001,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingExclusive(updated);
-                            if (!isCreatingExclusive && !url.startsWith('blob:')) {
-                              updateCorporateExclusiveFormat(updated);
-                              showToast('✓ Video de formato corporativo guardado y sincronizado.');
-                            }
                           }}
                           mediaType={activeExclusive.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
@@ -2058,9 +2008,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, mediaType: type };
                             setEditingExclusive(updated);
-                            if (!isCreatingExclusive) {
-                              updateCorporateExclusiveFormat(updated);
-                            }
                           }}
                           allowVideo={true}
                           onProcessingChange={setIsMediaUploading}
@@ -2383,10 +2330,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingCorpHighlight(updated);
-                            if (!isCreatingCorpHighlight && !url.startsWith('blob:')) {
-                              updateCorporateHighlight(updated);
-                              showToast('✓ Imagen de macroevento guardada y sincronizada.');
-                            }
                           }}
                           videoUrl={activeCorpHighlight.videoUrl || ''}
                           onVideoChange={(url) => {
@@ -2394,10 +2337,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingCorpHighlight(updated);
-                            if (!isCreatingCorpHighlight && !url.startsWith('blob:')) {
-                              updateCorporateHighlight(updated);
-                              showToast('✓ Video de macroevento guardado y sincronizado.');
-                            }
                           }}
                           mediaType={activeCorpHighlight.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
@@ -2405,9 +2344,6 @@ export const AdminDashboard: React.FC = () => {
                             if (!current) return;
                             const updated = { ...current, mediaType: type };
                             setEditingCorpHighlight(updated);
-                            if (!isCreatingCorpHighlight) {
-                              updateCorporateHighlight(updated);
-                            }
                           }}
                           allowVideo={true}
                           onProcessingChange={setIsMediaUploading}

@@ -363,7 +363,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
               <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1 text-xs">
                 <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>¡Convertida a WebP Optimizado!</span>
+                  <span>¡Imagen Optimizada (WebP) lista para guardar!</span>
                 </div>
                 <div className="text-[11px] text-emerald-700 flex justify-between pt-1 border-t border-emerald-200/60">
                   <span>Original: {formatFileSize(compressionResult.originalSize)}</span>
@@ -373,6 +373,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                     {compressionResult.savingsPercentage}%)
                   </span>
                 </div>
+                <p className="text-[10px] text-slate-500 italic pt-0.5">
+                  Previsualización local activa. Presione el botón "Guardar" para sincronizar los cambios.
+                </p>
               </div>
             )}
           </div>
