@@ -42,15 +42,18 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
   const [videoUploadNotice, setVideoUploadNotice] = useState<string | null>(null);
-  const [previewOverride, setPreviewOverride] = useState<string | null>(null);
+  const [displaySrc, setDisplaySrc] = useState<string>(imageUrl || '');
+  const lastUploadedUrlRef = useRef<string | null>(null);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
   // Sincronizar previsualización cuando cambie el item desde el exterior
   useEffect(() => {
-    setPreviewOverride(null);
-    setCompressionResult(null);
+    if (imageUrl !== lastUploadedUrlRef.current) {
+      setDisplaySrc(imageUrl || '');
+      setCompressionResult(null);
+    }
   }, [imageUrl]);
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,10 +63,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     // Resetear valor para permitir volver a seleccionar el mismo archivo si se desea
     e.target.value = '';
 
-    // 1. PREVISUALIZACIÓN LOCAL INSTANTÁNEA EN 0 MILISEGUNDOS
+    // 1. Previsualización instantánea con el archivo seleccionado sin parpadeo blanco
     const instantLocalUrl = URL.createObjectURL(file);
-    setPreviewOverride(instantLocalUrl);
-    onImageChange(instantLocalUrl);
+    setDisplaySrc(instantLocalUrl);
     if (onMediaTypeChange) {
       onMediaTypeChange('image');
     }
@@ -80,8 +82,19 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       const uploadedUrl = await uploadMediaToSupabase(result.file, 'img');
       const finalUrl = uploadedUrl || result.base64DataUrl || instantLocalUrl;
 
-      // 4. Actualizar con la URL definitiva permanente en la nube
-      setPreviewOverride(finalUrl);
+      // 4. Pre-cargar la imagen en memoria antes de cambiar el src para evitar pantalla en blanco
+      if (finalUrl.startsWith('http')) {
+        await new Promise<void>((resolve) => {
+          const preImg = new window.Image();
+          preImg.onload = () => resolve();
+          preImg.onerror = () => resolve();
+          preImg.src = finalUrl;
+          if (preImg.complete) resolve();
+        });
+      }
+
+      lastUploadedUrlRef.current = finalUrl;
+      setDisplaySrc(finalUrl);
       onImageChange(finalUrl);
     } catch (err) {
       console.error('Error al procesar imagen:', err);
@@ -125,12 +138,12 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     }
   };
 
-  const activeImageSrc = previewOverride || imageUrl;
+  const activeImageSrc = displaySrc;
 
   return (
-    <div className="space-y-4 bg-slate-50/70 p-5 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+    <div className="space-y-4 flex flex-col justify-between">
       <div className="space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-200">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-300/80">
           <div className="flex items-center gap-2">
             {mediaType === 'video' ? (
               <Video className="w-4 h-4 text-[#A6823C]" />
@@ -144,7 +157,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
           {isProcessing && (
             <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 text-[10px] font-bold">
               <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
-              <span>Sincronizando nube...</span>
+              <span>Subiendo a la nube...</span>
             </div>
           )}
         </div>
@@ -261,7 +274,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                   type="text"
                   value={activeImageSrc}
                   onChange={(e) => {
-                    setPreviewOverride(e.target.value);
+                    setDisplaySrc(e.target.value);
                     onImageChange(e.target.value);
                   }}
                   placeholder="/images/hacienda/..."
@@ -281,23 +294,25 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
           /* MODO IMAGEN WEBP */
           <div className="space-y-3">
             {activeImageSrc ? (
-              <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-slate-200 bg-white shadow-inner group">
+              <div className="relative aspect-square rounded-2xl overflow-hidden border border-slate-300 bg-slate-900/10 shadow-xs group">
                 <img
-                  key={activeImageSrc}
                   src={activeImageSrc}
                   alt="Vista previa"
                   className="w-full h-full object-cover transition-transform duration-300"
                 />
 
-                {/* Overlay de carga mientras sube a la nube (pero ya con vista previa visible) */}
+                {/* Overlay de carga con icono de subiendo */}
                 {isProcessing && (
-                  <div className="absolute inset-0 bg-black/50 backdrop-blur-2xs flex flex-col items-center justify-center text-white gap-2 z-10 p-4 text-center">
-                    <Loader2 className="w-7 h-7 animate-spin text-[#E2C585]" />
+                  <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-2xs flex flex-col items-center justify-center text-white gap-2.5 z-20 p-4 text-center">
+                    <div className="relative flex items-center justify-center">
+                      <UploadCloud className="w-10 h-10 text-[#E2C585] animate-bounce" />
+                      <Loader2 className="w-4 h-4 text-[#E2C585] animate-spin absolute -bottom-1 -right-1" />
+                    </div>
                     <span className="text-xs font-bold uppercase tracking-wider text-[#FAF7F2]">
-                      Optimizando y subiendo a la nube...
+                      Subiendo a la nube...
                     </span>
-                    <span className="text-[11px] text-white/80">
-                      Vista previa en vivo activa
+                    <span className="text-[10px] text-[#E2C585] bg-black/50 px-2.5 py-0.5 rounded-full font-mono">
+                      Optimizando a formato WebP
                     </span>
                   </div>
                 )}
@@ -307,14 +322,16 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                     <button
                       type="button"
                       onClick={() => imageInputRef.current?.click()}
-                      className="px-3 py-1.5 rounded-xl bg-white text-[#06150F] text-xs font-bold hover:bg-[#E2C585] transition-colors shadow cursor-pointer"
+                      className="px-3 py-1.5 rounded-xl bg-white text-[#06150F] text-xs font-bold hover:bg-[#E2C585] transition-colors shadow cursor-pointer flex items-center gap-1.5"
                     >
-                      Cambiar Imagen
+                      <UploadCloud className="w-3.5 h-3.5" />
+                      <span>Cambiar Imagen</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => {
-                        setPreviewOverride(null);
+                        lastUploadedUrlRef.current = null;
+                        setDisplaySrc('');
                         setCompressionResult(null);
                         onImageChange('');
                       }}
@@ -329,17 +346,34 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
             ) : (
               <div
                 onClick={() => imageInputRef.current?.click()}
-                className="aspect-square rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#C8A45D] bg-white flex flex-col items-center justify-center p-5 text-center cursor-pointer transition-colors group"
+                className="aspect-square rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#C8A45D] bg-white flex flex-col items-center justify-center p-5 text-center cursor-pointer transition-colors group relative overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-2xl bg-[#C8A45D]/15 text-[#A6823C] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
-                  <UploadCloud className="w-6 h-6" />
-                </div>
-                <span className="font-sans-ui font-bold text-xs sm:text-sm text-[#06150F]">
-                  Haga clic para subir la imagen (1:1)
-                </span>
-                <span className="text-[11px] text-slate-400 mt-1 max-w-[210px]">
-                  JPG, PNG o WEBP. Formato 1:1 cuadrado recomendado. Se convertirá automáticamente a WebP optimizado.
-                </span>
+                {isProcessing ? (
+                  <div className="flex flex-col items-center justify-center gap-2 text-center">
+                    <div className="relative flex items-center justify-center">
+                      <UploadCloud className="w-10 h-10 text-[#A6823C] animate-bounce" />
+                      <Loader2 className="w-4 h-4 text-[#A6823C] animate-spin absolute -bottom-1 -right-1" />
+                    </div>
+                    <span className="font-sans-ui font-bold text-xs text-[#06150F]">
+                      Subiendo a la nube...
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      Optimizando a WebP
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    <div className="w-12 h-12 rounded-2xl bg-[#C8A45D]/15 text-[#A6823C] flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform">
+                      <UploadCloud className="w-6 h-6" />
+                    </div>
+                    <span className="font-sans-ui font-bold text-xs sm:text-sm text-[#06150F]">
+                      Haga clic para subir la imagen (1:1)
+                    </span>
+                    <span className="text-[11px] text-slate-400 mt-1 max-w-[210px]">
+                      JPG, PNG o WEBP. Formato 1:1 cuadrado recomendado. Se convertirá automáticamente a WebP optimizado.
+                    </span>
+                  </>
+                )}
               </div>
             )}
 
@@ -351,7 +385,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 type="text"
                 value={activeImageSrc}
                 onChange={(e) => {
-                  setPreviewOverride(e.target.value);
+                  setDisplaySrc(e.target.value);
                   onImageChange(e.target.value);
                 }}
                 placeholder="/images/hacienda/..."
@@ -374,7 +408,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                   </span>
                 </div>
                 <p className="text-[10px] text-slate-500 italic pt-0.5">
-                  Previsualización local activa. Presione el botón "Guardar" para sincronizar los cambios.
+                  Previsualización lista. Presione el botón "Guardar" para sincronizar los cambios.
                 </p>
               </div>
             )}

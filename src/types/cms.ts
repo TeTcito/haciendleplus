@@ -120,6 +120,7 @@ export interface WeddingProposalCard {
   id: string;
   title: string;
   subtitle: string;
+  description?: string;
   badge: string;
   badgeClass: string;
   image: string;
