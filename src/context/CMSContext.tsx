@@ -545,7 +545,7 @@ export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
     subtitle: 'Quito–Píntag · 50 a 300 Invitados',
     badge: 'Boda Popular',
     badgeClass: 'bg-[#C8A45D] text-[#0A1F17]',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793738382768.webp',
     specs: [
       { label: '50 a 300 Pax', icon: 'users' },
       { label: 'Carpa de Gala', icon: 'sparkles' },

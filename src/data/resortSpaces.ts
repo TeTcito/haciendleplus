@@ -748,7 +748,7 @@ export const getWeddingPresets = (langOrIsEn?: SupportedLanguage | boolean): Wed
     subtitle: tr("Quito–Píntag · 50 to 300 Guests", "Quito–Píntag · 50 a 300 Invitados", langOrIsEn),
     badge: tr("Popular Wedding", "Boda Popular", langOrIsEn),
     badgeClass: 'bg-[#C8A45D] text-[#0A1F17]',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793738382768.webp',
     specs: [
       { label: tr("50 to 300 Pax", "50 a 300 Pax", langOrIsEn), icon: 'users' },
       { label: tr("Gala Marquee Tent", "Carpa de Gala", langOrIsEn), icon: 'sparkles' },

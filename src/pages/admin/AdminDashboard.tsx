@@ -36,6 +36,7 @@ import {
   RotateCcw,
   Play,
   FileText,
+  Loader2,
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -76,6 +77,9 @@ export const AdminDashboard: React.FC = () => {
   // ESTADOS DE EDICIÓN POR MÓDULO (INICIALIZADOS POR DEFECTO PARA QUE LOS
   // 3 BLOQUES DE EDICIÓN ESTÉN SIEMPRE VISIBLES DE INMEDIATO A 15PX)
   // =========================================================================
+
+  // ESTADO GLOBAL DE SUBIDA MULTIMEDIA (DESACTIVA BOTONES MIENTRAS SUBE A LA NUBE)
+  const [isMediaUploading, setIsMediaUploading] = useState(false);
 
   // MÓDULO 2: HABITACIONES EMPRESAS Y GRUPOS
   const [editingCabin, setEditingCabin] = useState<CabinRoom | null>(null);
@@ -156,6 +160,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveCabin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCabin || !activeCabin.name.trim()) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     if (isCreatingCabin) {
       const { id: _unusedId, ...rest } = activeCabin;
       void _unusedId;
@@ -174,6 +182,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveHeroBanner = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeHeroBanner) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     updateLodgingHeroBanner(activeHeroBanner);
     showToast('Tarjeta Principal "Operación Completa para Larga Estadía" actualizada.');
   };
@@ -199,6 +211,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveServiceCard = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeServiceCard || !activeServiceCard.title.trim()) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     if (isCreatingServiceCard) {
       const { id: _unusedId, ...rest } = activeServiceCard;
       void _unusedId;
@@ -240,6 +256,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveWedding = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeWedding || !activeWedding.title.trim()) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     if (isCreatingWedding) {
       const { id: _unusedId, ...rest } = activeWedding;
       void _unusedId;
@@ -247,7 +267,7 @@ export const AdminDashboard: React.FC = () => {
       showToast('Nueva propuesta agregada al carrusel de Bodas y Celebraciones.');
     } else {
       updateWeddingProposal(activeWedding);
-      showToast('Propuesta nupcial actualizada correctamente.');
+      showToast('✓ Propuesta nupcial guardada y sincronizada en la base de datos y la web.');
     }
     setIsCreatingWedding(false);
   };
@@ -287,6 +307,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveExclusive = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeExclusive || !activeExclusive.title.trim()) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     const updated: ServicePackage = {
       ...activeExclusive,
       priceLabel: `Desde $${activeExclusive.priceValue} USD`,
@@ -323,6 +347,10 @@ export const AdminDashboard: React.FC = () => {
   const handleSaveCorpHighlight = (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCorpHighlight || !activeCorpHighlight.title.trim()) return;
+    if (isMediaUploading) {
+      showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
+      return;
+    }
     if (isCreatingCorpHighlight) {
       const { id: _unusedId, ...rest } = activeCorpHighlight;
       void _unusedId;
@@ -599,38 +627,55 @@ export const AdminDashboard: React.FC = () => {
                         <AdminMediaUploader
                           imageUrl={activeCabin.image}
                           onImageChange={(url) => {
-                            const updated = { ...activeCabin, image: url, mediaType: 'image' as const };
+                            const current = editingCabin || activeCabin;
+                            if (!current) return;
+                            const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingCabin(updated);
-                            if (!isCreatingCabin) {
+                            if (!isCreatingCabin && !url.startsWith('blob:')) {
                               updateCabin(updated);
                               showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
                             }
                           }}
                           videoUrl={activeCabin.videoUrl || ''}
                           onVideoChange={(url) => {
-                            const updated = { ...activeCabin, videoUrl: url, mediaType: 'video' as const };
+                            const current = editingCabin || activeCabin;
+                            if (!current) return;
+                            const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingCabin(updated);
-                            if (!isCreatingCabin) {
+                            if (!isCreatingCabin && !url.startsWith('blob:')) {
                               updateCabin(updated);
                               showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
                             }
                           }}
                           mediaType={activeCabin.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
-                            const updated = { ...activeCabin, mediaType: type };
+                            const current = editingCabin || activeCabin;
+                            if (!current) return;
+                            const updated = { ...current, mediaType: type };
                             setEditingCabin(updated);
                             if (!isCreatingCabin) {
                               updateCabin(updated);
                             }
                           }}
                           allowVideo={true}
+                          onProcessingChange={setIsMediaUploading}
                         />
                         <button
                           type="submit"
-                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          disabled={isMediaUploading}
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>Guardar y Sincronizar Tarjeta</span>
+                          {isMediaUploading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Subiendo multimedia...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-3.5 h-3.5" />
+                              <span>Guardar y Sincronizar Tarjeta</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
@@ -708,12 +753,22 @@ export const AdminDashboard: React.FC = () => {
                         <div className="pt-4 border-t border-slate-200 space-y-2">
                           <button
                             type="submit"
-                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-sans-ui font-bold text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
+                            disabled={isMediaUploading}
+                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-sans-ui font-bold text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-4 h-4" />
-                            <span>
-                              {isCreatingCabin ? 'Crear Tarjeta en Carrusel' : 'Guardar Cambios'}
-                            </span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Subiendo multimedia a la nube...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" />
+                                <span>
+                                  {isCreatingCabin ? 'Crear Tarjeta en Carrusel' : 'Guardar Cambios'}
+                                </span>
+                              </>
+                            )}
                           </button>
                           {isCreatingCabin && (
                             <button
@@ -999,15 +1054,19 @@ export const AdminDashboard: React.FC = () => {
                           onImageChange={(url) => {
                             const updated = { ...activeHeroBanner, image: url };
                             setEditingHeroBanner(updated);
-                            updateLodgingHeroBanner(updated);
-                            showToast('✓ Portada guardada y sincronizada en la base de datos y la web.');
+                            if (!url.startsWith('blob:')) {
+                              updateLodgingHeroBanner(updated);
+                              showToast('✓ Portada guardada y sincronizada en la base de datos y la web.');
+                            }
                           }}
                           videoUrl={activeHeroBanner.videoUrl || ''}
                           onVideoChange={(url) => {
                             const updated = { ...activeHeroBanner, videoUrl: url, mediaType: 'video' as const };
                             setEditingHeroBanner(updated);
-                            updateLodgingHeroBanner(updated);
-                            showToast('✓ Video principal guardado y sincronizado en la base de datos y la web.');
+                            if (!url.startsWith('blob:')) {
+                              updateLodgingHeroBanner(updated);
+                              showToast('✓ Video principal guardado y sincronizado en la base de datos y la web.');
+                            }
                           }}
                           mediaType={activeHeroBanner.mediaType}
                           onMediaTypeChange={(type) => {
@@ -1017,13 +1076,24 @@ export const AdminDashboard: React.FC = () => {
                           }}
                           allowVideo={true}
                           label="2. Video Principal o Portada"
+                          onProcessingChange={setIsMediaUploading}
                         />
                         <button
                           type="submit"
-                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          disabled={isMediaUploading}
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>Guardar Tarjeta Principal</span>
+                          {isMediaUploading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Subiendo multimedia...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-3.5 h-3.5" />
+                              <span>Guardar Tarjeta Principal</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
@@ -1069,10 +1139,20 @@ export const AdminDashboard: React.FC = () => {
                         <div className="pt-4 border-t border-slate-200">
                           <button
                             type="submit"
-                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                            disabled={isMediaUploading}
+                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-4 h-4" />
-                            <span>Guardar Tarjeta Principal</span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Subiendo multimedia a la nube...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" />
+                                <span>Guardar Tarjeta Principal</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1143,25 +1223,31 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={activeServiceCard.image}
                             onImageChange={(url) => {
-                              const updated = { ...activeServiceCard, image: url, mediaType: 'image' as const };
+                              const current = editingServiceCard || activeServiceCard;
+                              if (!current) return;
+                              const updated = { ...current, image: url, mediaType: 'image' as const };
                               setEditingServiceCard(updated);
-                              if (!isCreatingServiceCard) {
+                              if (!isCreatingServiceCard && !url.startsWith('blob:')) {
                                 updateLodgingService(updated);
                                 showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
                               }
                             }}
                             videoUrl={activeServiceCard.videoUrl || ''}
                             onVideoChange={(url) => {
-                              const updated = { ...activeServiceCard, videoUrl: url, mediaType: 'video' as const };
+                              const current = editingServiceCard || activeServiceCard;
+                              if (!current) return;
+                              const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                               setEditingServiceCard(updated);
-                              if (!isCreatingServiceCard) {
+                              if (!isCreatingServiceCard && !url.startsWith('blob:')) {
                                 updateLodgingService(updated);
                                 showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
                               }
                             }}
                             mediaType={activeServiceCard.mediaType}
                             onMediaTypeChange={(type) => {
-                              const updated = { ...activeServiceCard, mediaType: type };
+                              const current = editingServiceCard || activeServiceCard;
+                              if (!current) return;
+                              const updated = { ...current, mediaType: type };
                               setEditingServiceCard(updated);
                               if (!isCreatingServiceCard) {
                                 updateLodgingService(updated);
@@ -1169,13 +1255,24 @@ export const AdminDashboard: React.FC = () => {
                             }}
                             allowVideo={true}
                             label="2. Video o Imagen de la Tarjeta"
+                            onProcessingChange={setIsMediaUploading}
                           />
                           <button
                             type="submit"
-                            className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                            disabled={isMediaUploading}
+                            className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-3.5 h-3.5" />
-                            <span>Guardar y Sincronizar Tarjeta</span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                <span>Subiendo multimedia...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-3.5 h-3.5" />
+                                <span>Guardar y Sincronizar Tarjeta</span>
+                              </>
+                            )}
                           </button>
                         </div>
 
@@ -1221,14 +1318,24 @@ export const AdminDashboard: React.FC = () => {
                           <div className="pt-4 border-t border-slate-200 space-y-2">
                             <button
                               type="submit"
-                              className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                              disabled={isMediaUploading}
+                              className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                              <Save className="w-4 h-4" />
-                              <span>
-                                {isCreatingServiceCard
-                                  ? 'Crear Tarjeta de Servicio'
-                                  : 'Guardar Tarjeta'}
-                              </span>
+                              {isMediaUploading ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                  <span>Subiendo multimedia a la nube...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Save className="w-4 h-4" />
+                                  <span>
+                                    {isCreatingServiceCard
+                                      ? 'Crear Tarjeta de Servicio'
+                                      : 'Guardar Tarjeta'}
+                                  </span>
+                                </>
+                              )}
                             </button>
                             {isCreatingServiceCard && (
                               <button
@@ -1535,38 +1642,55 @@ export const AdminDashboard: React.FC = () => {
                         <AdminMediaUploader
                           imageUrl={activeWedding.image}
                           onImageChange={(url) => {
-                            const updated = { ...activeWedding, image: url, mediaType: 'image' as const };
+                            const current = editingWedding || activeWedding;
+                            if (!current) return;
+                            const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingWedding(updated);
-                            if (!isCreatingWedding) {
+                            if (!isCreatingWedding && !url.startsWith('blob:')) {
                               updateWeddingProposal(updated);
                               showToast('✓ Imagen nupcial guardada y sincronizada en la base de datos y la web.');
                             }
                           }}
                           videoUrl={activeWedding.videoUrl || ''}
                           onVideoChange={(url) => {
-                            const updated = { ...activeWedding, videoUrl: url, mediaType: 'video' as const };
+                            const current = editingWedding || activeWedding;
+                            if (!current) return;
+                            const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingWedding(updated);
-                            if (!isCreatingWedding) {
+                            if (!isCreatingWedding && !url.startsWith('blob:')) {
                               updateWeddingProposal(updated);
                               showToast('✓ Video nupcial guardado y sincronizado en la base de datos y la web.');
                             }
                           }}
                           mediaType={activeWedding.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
-                            const updated = { ...activeWedding, mediaType: type };
+                            const current = editingWedding || activeWedding;
+                            if (!current) return;
+                            const updated = { ...current, mediaType: type };
                             setEditingWedding(updated);
                             if (!isCreatingWedding) {
                               updateWeddingProposal(updated);
                             }
                           }}
                           allowVideo={true}
+                          onProcessingChange={setIsMediaUploading}
                         />
                         <button
                           type="submit"
-                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          disabled={isMediaUploading}
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>Guardar y Sincronizar Propuesta</span>
+                          {isMediaUploading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Subiendo multimedia...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-3.5 h-3.5" />
+                              <span>Guardar y Sincronizar Propuesta</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
@@ -1610,14 +1734,24 @@ export const AdminDashboard: React.FC = () => {
                         <div className="pt-4 border-t border-slate-200 space-y-2">
                           <button
                             type="submit"
-                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                            disabled={isMediaUploading}
+                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-4 h-4" />
-                            <span>
-                              {isCreatingWedding
-                                ? 'Crear Propuesta Nupcial'
-                                : 'Guardar Propuesta Nupcial'}
-                            </span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Subiendo multimedia a la nube...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" />
+                                <span>
+                                  {isCreatingWedding
+                                    ? 'Crear Propuesta Nupcial'
+                                    : 'Guardar Propuesta Nupcial'}
+                                </span>
+                              </>
+                            )}
                           </button>
                           {isCreatingWedding && (
                             <button
@@ -1898,38 +2032,55 @@ export const AdminDashboard: React.FC = () => {
                         <AdminMediaUploader
                           imageUrl={activeExclusive.image}
                           onImageChange={(url) => {
-                            const updated = { ...activeExclusive, image: url, mediaType: 'image' as const };
+                            const current = editingExclusive || activeExclusive;
+                            if (!current) return;
+                            const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingExclusive(updated);
-                            if (!isCreatingExclusive) {
+                            if (!isCreatingExclusive && !url.startsWith('blob:')) {
                               updateCorporateExclusiveFormat(updated);
                               showToast('✓ Imagen de formato corporativo guardada y sincronizada.');
                             }
                           }}
                           videoUrl={activeExclusive.videoUrl || ''}
                           onVideoChange={(url) => {
-                            const updated = { ...activeExclusive, videoUrl: url, mediaType: 'video' as const };
+                            const current = editingExclusive || activeExclusive;
+                            if (!current) return;
+                            const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingExclusive(updated);
-                            if (!isCreatingExclusive) {
+                            if (!isCreatingExclusive && !url.startsWith('blob:')) {
                               updateCorporateExclusiveFormat(updated);
                               showToast('✓ Video de formato corporativo guardado y sincronizado.');
                             }
                           }}
                           mediaType={activeExclusive.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
-                            const updated = { ...activeExclusive, mediaType: type };
+                            const current = editingExclusive || activeExclusive;
+                            if (!current) return;
+                            const updated = { ...current, mediaType: type };
                             setEditingExclusive(updated);
                             if (!isCreatingExclusive) {
                               updateCorporateExclusiveFormat(updated);
                             }
                           }}
                           allowVideo={true}
+                          onProcessingChange={setIsMediaUploading}
                         />
                         <button
                           type="submit"
-                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          disabled={isMediaUploading}
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>Guardar y Sincronizar Formato</span>
+                          {isMediaUploading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Subiendo multimedia...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-3.5 h-3.5" />
+                              <span>Guardar y Sincronizar Formato</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
@@ -1978,14 +2129,24 @@ export const AdminDashboard: React.FC = () => {
                         <div className="pt-4 border-t border-slate-200 space-y-2">
                           <button
                             type="submit"
-                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                            disabled={isMediaUploading}
+                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-4 h-4" />
-                            <span>
-                              {isCreatingExclusive
-                                ? 'Crear Formato Exclusivo'
-                                : 'Guardar Apartado'}
-                            </span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Subiendo multimedia a la nube...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" />
+                                <span>
+                                  {isCreatingExclusive
+                                    ? 'Crear Formato Exclusivo'
+                                    : 'Guardar Apartado'}
+                                </span>
+                              </>
+                            )}
                           </button>
                           {isCreatingExclusive && (
                             <button
@@ -2218,38 +2379,55 @@ export const AdminDashboard: React.FC = () => {
                         <AdminMediaUploader
                           imageUrl={activeCorpHighlight.image}
                           onImageChange={(url) => {
-                            const updated = { ...activeCorpHighlight, image: url, mediaType: 'image' as const };
+                            const current = editingCorpHighlight || activeCorpHighlight;
+                            if (!current) return;
+                            const updated = { ...current, image: url, mediaType: 'image' as const };
                             setEditingCorpHighlight(updated);
-                            if (!isCreatingCorpHighlight) {
+                            if (!isCreatingCorpHighlight && !url.startsWith('blob:')) {
                               updateCorporateHighlight(updated);
                               showToast('✓ Imagen de macroevento guardada y sincronizada.');
                             }
                           }}
                           videoUrl={activeCorpHighlight.videoUrl || ''}
                           onVideoChange={(url) => {
-                            const updated = { ...activeCorpHighlight, videoUrl: url, mediaType: 'video' as const };
+                            const current = editingCorpHighlight || activeCorpHighlight;
+                            if (!current) return;
+                            const updated = { ...current, videoUrl: url, mediaType: 'video' as const };
                             setEditingCorpHighlight(updated);
-                            if (!isCreatingCorpHighlight) {
+                            if (!isCreatingCorpHighlight && !url.startsWith('blob:')) {
                               updateCorporateHighlight(updated);
                               showToast('✓ Video de macroevento guardado y sincronizado.');
                             }
                           }}
                           mediaType={activeCorpHighlight.mediaType || 'image'}
                           onMediaTypeChange={(type) => {
-                            const updated = { ...activeCorpHighlight, mediaType: type };
+                            const current = editingCorpHighlight || activeCorpHighlight;
+                            if (!current) return;
+                            const updated = { ...current, mediaType: type };
                             setEditingCorpHighlight(updated);
                             if (!isCreatingCorpHighlight) {
                               updateCorporateHighlight(updated);
                             }
                           }}
                           allowVideo={true}
+                          onProcessingChange={setIsMediaUploading}
                         />
                         <button
                           type="submit"
-                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          disabled={isMediaUploading}
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <Save className="w-3.5 h-3.5" />
-                          <span>Guardar y Sincronizar Evento</span>
+                          {isMediaUploading ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              <span>Subiendo multimedia...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-3.5 h-3.5" />
+                              <span>Guardar y Sincronizar Evento</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
@@ -2282,14 +2460,24 @@ export const AdminDashboard: React.FC = () => {
                         <div className="pt-4 border-t border-slate-200 space-y-2">
                           <button
                             type="submit"
-                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                            disabled={isMediaUploading}
+                            className="w-full py-3.5 px-5 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-md transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            <Save className="w-4 h-4" />
-                            <span>
-                              {isCreatingCorpHighlight
-                                ? 'Crear Evento en Carrusel'
-                                : 'Guardar en Carrusel'}
-                            </span>
+                            {isMediaUploading ? (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                <span>Subiendo multimedia a la nube...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4" />
+                                <span>
+                                  {isCreatingCorpHighlight
+                                    ? 'Crear Evento en Carrusel'
+                                    : 'Guardar en Carrusel'}
+                                </span>
+                              </>
+                            )}
                           </button>
                           {isCreatingCorpHighlight && (
                             <button
