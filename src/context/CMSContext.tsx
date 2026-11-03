@@ -77,7 +77,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
       'Complementos incluidos: piscina temperada 14×6m, sauna, turco, hidromasajes y canchas deportivas',
     ],
     highlightBadge: 'Prioridad Comercial · Larga Estadía',
-    image: '/images/hacienda/grupos-hxp.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
     whatsappIntent: 'Hospedaje Larga Estadía para Empresa / Grupo',
     featuredInHome: true,
   },
@@ -212,7 +212,7 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     description:
       'Capacidad total de la hacienda para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales, con alimentación en restaurante propio, internet por fibra óptica, parqueaderos privados y acceso complementario a piscina y canchas.',
     amenities: ['14 Habitaciones (28–80 Pax)', 'Alimentación 3 Tiempos', 'Internet Fibra Óptica', 'Parqueadero Buses/Flotas', 'Lavandería & Limpieza'],
-    image: '/images/hacienda/grupos-hxp.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
     available: true,
     featuredInHome: true,
   },
@@ -346,7 +346,7 @@ export const DEFAULT_CASE_STUDIES: CaseStudy[] = [
     quote:
       '“Privacidad, amplitud y atención directa para que nuestros grupos internacionales puedan concentrarse, descansar y convivir durante varias semanas en Ecuador.”',
     author: 'Coordinación de Delegaciones Internacionales (IMC · HXP)',
-    image: '/images/hacienda/grupos-hxp.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
     linkTo: '/hospedaje',
   },
   {
@@ -502,7 +502,7 @@ export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
     description:
       'Wi-Fi por fibra óptica de alta estabilidad, salones de trabajo y parqueaderos internos seguros para autos, camionetas y buses.',
     ctaText: 'Consultar logística',
-    image: '/images/hacienda/grupos-hxp.jpg',
+    image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
     videoUrl: '',
     mediaType: 'image',
     serviceType: 'hospedaje',

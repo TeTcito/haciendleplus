@@ -594,23 +594,44 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      {/* COLUMNA 2: MULTIMEDIA WEBP / VIDEO */}
-                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                      {/* COLUMNA 2: MULTIMEDIA WEBP / VIDEO CON AUTOGUARDADO EN LA BASE DE DATOS */}
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeCabin.image}
-                          onImageChange={(url) =>
-                            setEditingCabin({ ...activeCabin, image: url })
-                          }
+                          onImageChange={(url) => {
+                            const updated = { ...activeCabin, image: url, mediaType: 'image' as const };
+                            setEditingCabin(updated);
+                            if (!isCreatingCabin) {
+                              updateCabin(updated);
+                              showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
+                            }
+                          }}
                           videoUrl={activeCabin.videoUrl || ''}
-                          onVideoChange={(url) =>
-                            setEditingCabin({ ...activeCabin, videoUrl: url })
-                          }
+                          onVideoChange={(url) => {
+                            const updated = { ...activeCabin, videoUrl: url, mediaType: 'video' as const };
+                            setEditingCabin(updated);
+                            if (!isCreatingCabin) {
+                              updateCabin(updated);
+                              showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
+                            }
+                          }}
                           mediaType={activeCabin.mediaType || 'image'}
-                          onMediaTypeChange={(type) =>
-                            setEditingCabin({ ...activeCabin, mediaType: type })
-                          }
+                          onMediaTypeChange={(type) => {
+                            const updated = { ...activeCabin, mediaType: type };
+                            setEditingCabin(updated);
+                            if (!isCreatingCabin) {
+                              updateCabin(updated);
+                            }
+                          }}
                           allowVideo={true}
                         />
+                        <button
+                          type="submit"
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Guardar y Sincronizar Tarjeta</span>
+                        </button>
                       </div>
 
                       {/* COLUMNA 3: PRECIO Y PUBLICACIÓN */}
@@ -718,21 +739,25 @@ export const AdminDashboard: React.FC = () => {
                     Tarjetas en el Carrusel de Hospedaje ({cabins.length})
                   </span>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[15px]">
-                    {cabins.map((cabin, idx) => (
+                    {cabins.map((cabin, idx) => {
+                      const isEditingThis = activeCabin?.id === cabin.id && !isCreatingCabin;
+                      const itemToRender = isEditingThis ? activeCabin : cabin;
+                      return (
                       <div
                         key={cabin.id}
                         className={`bg-white rounded-2xl border overflow-hidden shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between group ${
-                          activeCabin?.id === cabin.id && !isCreatingCabin
+                          isEditingThis
                             ? 'ring-2 ring-[#C8A45D] border-transparent'
                             : 'border-slate-200/90'
                         }`}
                       >
                         <div>
                           <div className="relative aspect-square overflow-hidden bg-[#06150F]">
-                            {cabin.mediaType === 'video' && cabin.videoUrl ? (
+                            {itemToRender.mediaType === 'video' && itemToRender.videoUrl ? (
                               <video
-                                src={cabin.videoUrl}
-                                poster={cabin.image}
+                                key={itemToRender.videoUrl}
+                                src={itemToRender.videoUrl}
+                                poster={itemToRender.image}
                                 muted
                                 loop
                                 autoPlay
@@ -741,16 +766,22 @@ export const AdminDashboard: React.FC = () => {
                               />
                             ) : (
                               <img
-                                src={cabin.image}
-                                alt={cabin.name}
+                                key={itemToRender.image}
+                                src={itemToRender.image}
+                                alt={itemToRender.name}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             )}
                             <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                               <span className="px-2 py-0.5 rounded-full bg-[#06150F]/85 text-[#E2C585] text-[10px] font-bold">
-                                #{idx + 1} · {cabin.type}
+                                #{idx + 1} · {itemToRender.type}
                               </span>
-                              {cabin.mediaType === 'video' && (
+                              {isEditingThis && (
+                                <span className="px-2 py-0.5 rounded-full bg-[#C8A45D] text-[#06150F] text-[9px] font-black uppercase tracking-wider shadow-sm animate-pulse">
+                                  Editando ahora
+                                </span>
+                              )}
+                              {itemToRender.mediaType === 'video' && (
                                 <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center gap-1">
                                   <Video className="w-3 h-3" /> Video
                                 </span>
@@ -760,16 +791,16 @@ export const AdminDashboard: React.FC = () => {
 
                           <div className="p-4 space-y-2">
                             <h3 className="font-serif-luxury font-bold text-base text-[#06150F] leading-snug line-clamp-1">
-                              {cabin.name}
+                              {itemToRender.name}
                             </h3>
                             <div className="space-y-1 text-xs text-slate-600 border-t border-slate-100 pt-2">
                               <div className="flex items-center gap-1.5 truncate">
                                 <Users className="w-3.5 h-3.5 text-[#A6823C] shrink-0" />
-                                <span className="truncate">{cabin.capacity}</span>
+                                <span className="truncate">{itemToRender.capacity}</span>
                               </div>
                               <div className="flex items-center gap-1.5 truncate">
                                 <BedDouble className="w-3.5 h-3.5 text-[#A6823C] shrink-0" />
-                                <span className="truncate">{cabin.beds}</span>
+                                <span className="truncate">{itemToRender.beds}</span>
                               </div>
                             </div>
                           </div>
@@ -827,7 +858,8 @@ export const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
               </div>
@@ -961,23 +993,38 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeHeroBanner.image}
-                          onImageChange={(url) =>
-                            setEditingHeroBanner({ ...activeHeroBanner, image: url })
-                          }
+                          onImageChange={(url) => {
+                            const updated = { ...activeHeroBanner, image: url };
+                            setEditingHeroBanner(updated);
+                            updateLodgingHeroBanner(updated);
+                            showToast('✓ Portada guardada y sincronizada en la base de datos y la web.');
+                          }}
                           videoUrl={activeHeroBanner.videoUrl || ''}
-                          onVideoChange={(url) =>
-                            setEditingHeroBanner({ ...activeHeroBanner, videoUrl: url })
-                          }
+                          onVideoChange={(url) => {
+                            const updated = { ...activeHeroBanner, videoUrl: url, mediaType: 'video' as const };
+                            setEditingHeroBanner(updated);
+                            updateLodgingHeroBanner(updated);
+                            showToast('✓ Video principal guardado y sincronizado en la base de datos y la web.');
+                          }}
                           mediaType={activeHeroBanner.mediaType}
-                          onMediaTypeChange={(type) =>
-                            setEditingHeroBanner({ ...activeHeroBanner, mediaType: type })
-                          }
+                          onMediaTypeChange={(type) => {
+                            const updated = { ...activeHeroBanner, mediaType: type };
+                            setEditingHeroBanner(updated);
+                            updateLodgingHeroBanner(updated);
+                          }}
                           allowVideo={true}
                           label="2. Video Principal o Portada"
                         />
+                        <button
+                          type="submit"
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Guardar Tarjeta Principal</span>
+                        </button>
                       </div>
 
                       <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
@@ -1092,23 +1139,44 @@ export const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
 
-                        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                        <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={activeServiceCard.image}
-                            onImageChange={(url) =>
-                              setEditingServiceCard({ ...activeServiceCard, image: url })
-                            }
+                            onImageChange={(url) => {
+                              const updated = { ...activeServiceCard, image: url, mediaType: 'image' as const };
+                              setEditingServiceCard(updated);
+                              if (!isCreatingServiceCard) {
+                                updateLodgingService(updated);
+                                showToast('✓ Imagen guardada y sincronizada en la base de datos y la web.');
+                              }
+                            }}
                             videoUrl={activeServiceCard.videoUrl || ''}
-                            onVideoChange={(url) =>
-                              setEditingServiceCard({ ...activeServiceCard, videoUrl: url })
-                            }
+                            onVideoChange={(url) => {
+                              const updated = { ...activeServiceCard, videoUrl: url, mediaType: 'video' as const };
+                              setEditingServiceCard(updated);
+                              if (!isCreatingServiceCard) {
+                                updateLodgingService(updated);
+                                showToast('✓ Video guardado y sincronizado en la base de datos y la web.');
+                              }
+                            }}
                             mediaType={activeServiceCard.mediaType}
-                            onMediaTypeChange={(type) =>
-                              setEditingServiceCard({ ...activeServiceCard, mediaType: type })
-                            }
+                            onMediaTypeChange={(type) => {
+                              const updated = { ...activeServiceCard, mediaType: type };
+                              setEditingServiceCard(updated);
+                              if (!isCreatingServiceCard) {
+                                updateLodgingService(updated);
+                              }
+                            }}
                             allowVideo={true}
                             label="2. Video o Imagen de la Tarjeta"
                           />
+                          <button
+                            type="submit"
+                            className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                          >
+                            <Save className="w-3.5 h-3.5" />
+                            <span>Guardar y Sincronizar Tarjeta</span>
+                          </button>
                         </div>
 
                         <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
@@ -1246,20 +1314,23 @@ export const AdminDashboard: React.FC = () => {
 
                     {/* LAS 4+ TARJETAS AL LADO DERECHO */}
                     <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-[15px]">
-                      {lodgingServices.map((card, idx) => (
+                      {lodgingServices.map((card, idx) => {
+                        const isEditingThis = activeServiceCard?.id === card.id && serviciosTarget === 'servicios' && !isCreatingServiceCard;
+                        const itemToRender = isEditingThis ? activeServiceCard : card;
+                        return (
                         <div
                           key={card.id}
                           className={`relative rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-4 bg-[#06150F] border shadow-2xs group ${
-                            activeServiceCard?.id === card.id && serviciosTarget === 'servicios'
+                            isEditingThis
                               ? 'ring-2 ring-[#C8A45D] border-transparent'
                               : 'border-slate-200/60'
                           }`}
                         >
-                          {card.mediaType === 'video' && card.videoUrl ? (
+                          {itemToRender.mediaType === 'video' && itemToRender.videoUrl ? (
                             <video
-                              key={card.videoUrl}
-                              src={card.videoUrl}
-                              poster={card.image}
+                              key={itemToRender.videoUrl}
+                              src={itemToRender.videoUrl}
+                              poster={itemToRender.image}
                               autoPlay
                               muted
                               loop
@@ -1268,8 +1339,9 @@ export const AdminDashboard: React.FC = () => {
                             />
                           ) : (
                             <img
-                              src={card.image}
-                              alt={card.title}
+                              key={itemToRender.image}
+                              src={itemToRender.image}
+                              alt={itemToRender.title}
                               className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500"
                             />
                           )}
@@ -1329,7 +1401,8 @@ export const AdminDashboard: React.FC = () => {
                             </p>
                           </div>
                         </div>
-                      ))}
+                      );
+                    })}
                     </div>
                   </div>
                 </div>
@@ -1458,22 +1531,43 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeWedding.image}
-                          onImageChange={(url) =>
-                            setEditingWedding({ ...activeWedding, image: url })
-                          }
+                          onImageChange={(url) => {
+                            const updated = { ...activeWedding, image: url, mediaType: 'image' as const };
+                            setEditingWedding(updated);
+                            if (!isCreatingWedding) {
+                              updateWeddingProposal(updated);
+                              showToast('✓ Imagen nupcial guardada y sincronizada en la base de datos y la web.');
+                            }
+                          }}
                           videoUrl={activeWedding.videoUrl || ''}
-                          onVideoChange={(url) =>
-                            setEditingWedding({ ...activeWedding, videoUrl: url })
-                          }
+                          onVideoChange={(url) => {
+                            const updated = { ...activeWedding, videoUrl: url, mediaType: 'video' as const };
+                            setEditingWedding(updated);
+                            if (!isCreatingWedding) {
+                              updateWeddingProposal(updated);
+                              showToast('✓ Video nupcial guardado y sincronizado en la base de datos y la web.');
+                            }
+                          }}
                           mediaType={activeWedding.mediaType || 'image'}
-                          onMediaTypeChange={(type) =>
-                            setEditingWedding({ ...activeWedding, mediaType: type })
-                          }
+                          onMediaTypeChange={(type) => {
+                            const updated = { ...activeWedding, mediaType: type };
+                            setEditingWedding(updated);
+                            if (!isCreatingWedding) {
+                              updateWeddingProposal(updated);
+                            }
+                          }}
                           allowVideo={true}
                         />
+                        <button
+                          type="submit"
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Guardar y Sincronizar Propuesta</span>
+                        </button>
                       </div>
 
                       <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
@@ -1549,21 +1643,25 @@ export const AdminDashboard: React.FC = () => {
                     Propuestas en el Carrusel de Bodas ({weddingProposals.length})
                   </span>
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-[15px]">
-                    {weddingProposals.map((item, idx) => (
+                    {weddingProposals.map((item, idx) => {
+                      const isEditingThis = activeWedding?.id === item.id && !isCreatingWedding;
+                      const itemToRender = isEditingThis ? activeWedding : item;
+                      return (
                       <div
                         key={item.id}
                         className={`bg-white rounded-2xl border overflow-hidden shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between group ${
-                          activeWedding?.id === item.id && !isCreatingWedding
+                          isEditingThis
                             ? 'ring-2 ring-[#C8A45D] border-transparent'
                             : 'border-slate-200/90'
                         }`}
                       >
                         <div>
                           <div className="relative aspect-square overflow-hidden bg-[#06150F]">
-                            {item.mediaType === 'video' && item.videoUrl ? (
+                            {itemToRender.mediaType === 'video' && itemToRender.videoUrl ? (
                               <video
-                                src={item.videoUrl}
-                                poster={item.image}
+                                key={itemToRender.videoUrl}
+                                src={itemToRender.videoUrl}
+                                poster={itemToRender.image}
                                 muted
                                 loop
                                 autoPlay
@@ -1572,8 +1670,9 @@ export const AdminDashboard: React.FC = () => {
                               />
                             ) : (
                               <img
-                                src={item.image}
-                                alt={item.title}
+                                key={itemToRender.image}
+                                src={itemToRender.image}
+                                alt={itemToRender.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             )}
@@ -1638,7 +1737,8 @@ export const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
               </div>
@@ -1794,22 +1894,43 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeExclusive.image}
-                          onImageChange={(url) =>
-                            setEditingExclusive({ ...activeExclusive, image: url })
-                          }
+                          onImageChange={(url) => {
+                            const updated = { ...activeExclusive, image: url, mediaType: 'image' as const };
+                            setEditingExclusive(updated);
+                            if (!isCreatingExclusive) {
+                              updateCorporateExclusiveFormat(updated);
+                              showToast('✓ Imagen de formato corporativo guardada y sincronizada.');
+                            }
+                          }}
                           videoUrl={activeExclusive.videoUrl || ''}
-                          onVideoChange={(url) =>
-                            setEditingExclusive({ ...activeExclusive, videoUrl: url })
-                          }
+                          onVideoChange={(url) => {
+                            const updated = { ...activeExclusive, videoUrl: url, mediaType: 'video' as const };
+                            setEditingExclusive(updated);
+                            if (!isCreatingExclusive) {
+                              updateCorporateExclusiveFormat(updated);
+                              showToast('✓ Video de formato corporativo guardado y sincronizado.');
+                            }
+                          }}
                           mediaType={activeExclusive.mediaType || 'image'}
-                          onMediaTypeChange={(type) =>
-                            setEditingExclusive({ ...activeExclusive, mediaType: type })
-                          }
+                          onMediaTypeChange={(type) => {
+                            const updated = { ...activeExclusive, mediaType: type };
+                            setEditingExclusive(updated);
+                            if (!isCreatingExclusive) {
+                              updateCorporateExclusiveFormat(updated);
+                            }
+                          }}
                           allowVideo={true}
                         />
+                        <button
+                          type="submit"
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Guardar y Sincronizar Formato</span>
+                        </button>
                       </div>
 
                       <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
@@ -1890,21 +2011,25 @@ export const AdminDashboard: React.FC = () => {
                     Apartados en el Carrusel Formato Exclusivo ({corporateExclusiveFormats.length})
                   </span>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-[15px]">
-                    {corporateExclusiveFormats.map((pkg, idx) => (
+                    {corporateExclusiveFormats.map((pkg, idx) => {
+                      const isEditingThis = activeExclusive?.id === pkg.id && !isCreatingExclusive;
+                      const itemToRender = isEditingThis ? activeExclusive : pkg;
+                      return (
                       <div
                         key={pkg.id}
                         className={`bg-white rounded-2xl border overflow-hidden shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between group ${
-                          activeExclusive?.id === pkg.id && !isCreatingExclusive
+                          isEditingThis
                             ? 'ring-2 ring-[#C8A45D] border-transparent'
                             : 'border-slate-200/90'
                         }`}
                       >
                         <div>
                           <div className="relative aspect-square overflow-hidden bg-[#06150F]">
-                            {pkg.mediaType === 'video' && pkg.videoUrl ? (
+                            {itemToRender.mediaType === 'video' && itemToRender.videoUrl ? (
                               <video
-                                src={pkg.videoUrl}
-                                poster={pkg.image}
+                                key={itemToRender.videoUrl}
+                                src={itemToRender.videoUrl}
+                                poster={itemToRender.image}
                                 muted
                                 loop
                                 autoPlay
@@ -1913,8 +2038,9 @@ export const AdminDashboard: React.FC = () => {
                               />
                             ) : (
                               <img
-                                src={pkg.image}
-                                alt={pkg.title}
+                                key={itemToRender.image}
+                                src={itemToRender.image}
+                                alt={itemToRender.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             )}
@@ -1978,7 +2104,8 @@ export const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
               </div>
@@ -2087,22 +2214,43 @@ export const AdminDashboard: React.FC = () => {
                         </div>
                       </div>
 
-                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={activeCorpHighlight.image}
-                          onImageChange={(url) =>
-                            setEditingCorpHighlight({ ...activeCorpHighlight, image: url })
-                          }
+                          onImageChange={(url) => {
+                            const updated = { ...activeCorpHighlight, image: url, mediaType: 'image' as const };
+                            setEditingCorpHighlight(updated);
+                            if (!isCreatingCorpHighlight) {
+                              updateCorporateHighlight(updated);
+                              showToast('✓ Imagen de macroevento guardada y sincronizada.');
+                            }
+                          }}
                           videoUrl={activeCorpHighlight.videoUrl || ''}
-                          onVideoChange={(url) =>
-                            setEditingCorpHighlight({ ...activeCorpHighlight, videoUrl: url })
-                          }
+                          onVideoChange={(url) => {
+                            const updated = { ...activeCorpHighlight, videoUrl: url, mediaType: 'video' as const };
+                            setEditingCorpHighlight(updated);
+                            if (!isCreatingCorpHighlight) {
+                              updateCorporateHighlight(updated);
+                              showToast('✓ Video de macroevento guardado y sincronizado.');
+                            }
+                          }}
                           mediaType={activeCorpHighlight.mediaType || 'image'}
-                          onMediaTypeChange={(type) =>
-                            setEditingCorpHighlight({ ...activeCorpHighlight, mediaType: type })
-                          }
+                          onMediaTypeChange={(type) => {
+                            const updated = { ...activeCorpHighlight, mediaType: type };
+                            setEditingCorpHighlight(updated);
+                            if (!isCreatingCorpHighlight) {
+                              updateCorporateHighlight(updated);
+                            }
+                          }}
                           allowVideo={true}
                         />
+                        <button
+                          type="submit"
+                          className="w-full mt-3.5 py-2.5 px-4 rounded-xl bg-[#06150F] hover:bg-[#13281F] text-[#E2C585] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-sm transition-all"
+                        >
+                          <Save className="w-3.5 h-3.5" />
+                          <span>Guardar y Sincronizar Evento</span>
+                        </button>
                       </div>
 
                       <div className="space-y-4 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col justify-between">
@@ -2167,21 +2315,25 @@ export const AdminDashboard: React.FC = () => {
                     Eventos en el Carrusel Horizontal ({corporateHighlights.length})
                   </span>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px]">
-                    {corporateHighlights.map((item, idx) => (
+                    {corporateHighlights.map((item, idx) => {
+                      const isEditingThis = activeCorpHighlight?.id === item.id && !isCreatingCorpHighlight;
+                      const itemToRender = isEditingThis ? activeCorpHighlight : item;
+                      return (
                       <div
                         key={item.id}
                         className={`bg-white rounded-2xl p-4 border shadow-2xs hover:shadow-lg transition-all flex flex-col justify-between gap-4 group ${
-                          activeCorpHighlight?.id === item.id && !isCreatingCorpHighlight
+                          isEditingThis
                             ? 'ring-2 ring-[#C8A45D] border-transparent'
                             : 'border-slate-200/90'
                         }`}
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-20 h-20 rounded-full overflow-hidden shrink-0 border-2 border-[#C8A45D]/50 shadow-xs bg-[#06150F]">
-                            {item.mediaType === 'video' && item.videoUrl ? (
+                            {itemToRender.mediaType === 'video' && itemToRender.videoUrl ? (
                               <video
-                                src={item.videoUrl}
-                                poster={item.image}
+                                key={itemToRender.videoUrl}
+                                src={itemToRender.videoUrl}
+                                poster={itemToRender.image}
                                 muted
                                 loop
                                 autoPlay
@@ -2190,8 +2342,9 @@ export const AdminDashboard: React.FC = () => {
                               />
                             ) : (
                               <img
-                                src={item.image}
-                                alt={item.title}
+                                key={itemToRender.image}
+                                src={itemToRender.image}
+                                alt={itemToRender.title}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               />
                             )}
@@ -2246,7 +2399,8 @@ export const AdminDashboard: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                    ))}
+                    );
+                  })}
                   </div>
                 </div>
               </div>
