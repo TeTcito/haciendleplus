@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { AdminSaveModal, SaveModalState } from './AdminSaveModal';
 import {
   User,
   Mail,
@@ -27,6 +28,15 @@ export const AdminProfileSection: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [saveModal, setSaveModal] = useState<{
+    isOpen: boolean;
+    state: SaveModalState;
+    errorMessage?: string;
+  }>({
+    isOpen: false,
+    state: 'idle',
+  });
+
   useEffect(() => {
     if (profile) {
       setFirstName(profile.first_name || '');
@@ -53,6 +63,11 @@ export const AdminProfileSection: React.FC = () => {
     setSuccessMessage(null);
     setErrorMessage(null);
 
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+    });
+
     try {
       await updateProfile({
         firstName: firstName.trim(),
@@ -64,13 +79,23 @@ export const AdminProfileSection: React.FC = () => {
       });
 
       setNewPassword('');
+      // Pausa fluida para apreciar la animación
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setSaveModal({
+        isOpen: true,
+        state: 'success',
+      });
       setSuccessMessage('¡Información de perfil y credenciales actualizadas exitosamente!');
       setTimeout(() => setSuccessMessage(null), 4000);
     } catch (err: any) {
       console.error('Error al guardar perfil:', err);
-      setErrorMessage(
-        err.message || 'No se pudieron guardar los cambios en el perfil. Intente nuevamente.'
-      );
+      const msg = err.message || 'No se pudieron guardar los cambios en el perfil. Intente nuevamente.';
+      setErrorMessage(msg);
+      setSaveModal({
+        isOpen: true,
+        state: 'error',
+        errorMessage: msg,
+      });
     } finally {
       setSaving(false);
     }
@@ -257,6 +282,18 @@ export const AdminProfileSection: React.FC = () => {
           </form>
         </div>
       </div>
+      {/* Ventana Emergente con Animación de Guardado y Confirmación OK */}
+      <AdminSaveModal
+        isOpen={saveModal.isOpen}
+        state={saveModal.state}
+        savingTitle="Actualizando Perfil y Credenciales..."
+        savingMessage="Sincronizando información de administrador en Supabase Auth..."
+        successTitle="¡Perfil Guardado con Éxito!"
+        successMessage="Los datos personales y credenciales de acceso se han actualizado correctamente."
+        errorMessage={saveModal.errorMessage}
+        onClose={() => setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }))}
+        onSuccessComplete={() => setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }))}
+      />
     </div>
   );
 };

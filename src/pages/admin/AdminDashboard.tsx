@@ -4,6 +4,7 @@ import { useCMS } from '../../context/CMSContext';
 import { AdminSidebar, AdminModuleTab } from '../../components/admin/AdminSidebar';
 import { AdminProfileSection } from '../../components/admin/AdminProfileSection';
 import { AdminMediaUploader } from '../../components/admin/AdminMediaUploader';
+import { AdminSaveModal, SaveModalState } from '../../components/admin/AdminSaveModal';
 import {
   CabinRoom,
   LodgingFeaturedBanner,
@@ -81,6 +82,21 @@ export const AdminDashboard: React.FC = () => {
   // ESTADO GLOBAL DE SUBIDA MULTIMEDIA (DESACTIVA BOTONES MIENTRAS SUBE A LA NUBE)
   const [isMediaUploading, setIsMediaUploading] = useState(false);
 
+  // Modal emergente de guardado con animación y confirmación OK
+  const [saveModal, setSaveModal] = useState<{
+    isOpen: boolean;
+    state: SaveModalState;
+    savingTitle?: string;
+    savingMessage?: string;
+    successTitle?: string;
+    successMessage?: string;
+    errorMessage?: string;
+    onComplete?: () => void;
+  }>({
+    isOpen: false,
+    state: 'idle',
+  });
+
   // MÓDULO 2: HABITACIONES EMPRESAS Y GRUPOS
   const [editingCabin, setEditingCabin] = useState<CabinRoom | null>(null);
   const [isCreatingCabin, setIsCreatingCabin] = useState(false);
@@ -157,37 +173,83 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleSaveCabin = (e: React.FormEvent) => {
+  const handleSaveCabin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCabin || !activeCabin.name.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
-    if (isCreatingCabin) {
-      const { id: _unusedId, ...rest } = activeCabin;
-      void _unusedId;
-      addCabin(rest);
-      showToast('Nueva tarjeta agregada al carrusel de Habitaciones para Empresas y Grupos.');
-    } else {
-      updateCabin(activeCabin);
-      showToast('Tarjeta de habitación actualizada correctamente.');
+    const isCreating = isCreatingCabin;
+    const cabinName = activeCabin.name;
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: isCreating ? 'Guardando Nueva Habitación...' : 'Guardando Cambios...',
+      savingMessage: `Sincronizando "${cabinName}" con la base de datos de Hacienda Le Plus...`,
+      successTitle: '¡Habitación Guardada con Éxito!',
+      successMessage: `"${cabinName}" se guardó y sincronizó correctamente en la web.`,
+      onComplete: () => {
+        setIsCreatingCabin(false);
+        setEditingCabin(null);
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      if (isCreating) {
+        const { id: _unusedId, ...rest } = activeCabin;
+        void _unusedId;
+        addCabin(rest);
+      } else {
+        updateCabin(activeCabin);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar la habitación.',
+      }));
     }
-    setIsCreatingCabin(false);
   };
 
   // =========================================================================
   // HANDLERS MÓDULO 3: SERVICIO DE ESTADÍA Y COMPLEMENTOS
   // =========================================================================
-  const handleSaveHeroBanner = (e: React.FormEvent) => {
+  const handleSaveHeroBanner = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeHeroBanner) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
-    updateLodgingHeroBanner(activeHeroBanner);
-    showToast('Tarjeta Principal "Operación Completa para Larga Estadía" actualizada.');
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: 'Guardando Operación Completa...',
+      savingMessage: 'Sincronizando la tarjeta principal de larga estadía en la nube...',
+      successTitle: '¡Tarjeta Principal Guardada con Éxito!',
+      successMessage: 'La tarjeta de Operación Completa se sincronizó y ya está visible en la web.',
+      onComplete: () => {
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      updateLodgingHeroBanner(activeHeroBanner);
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar la tarjeta principal.',
+      }));
+    }
   };
 
   const handleStartNewServiceCard = () => {
@@ -208,23 +270,47 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleSaveServiceCard = (e: React.FormEvent) => {
+  const handleSaveServiceCard = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeServiceCard || !activeServiceCard.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
-    if (isCreatingServiceCard) {
-      const { id: _unusedId, ...rest } = activeServiceCard;
-      void _unusedId;
-      addLodgingService(rest);
-      showToast('Nueva tarjeta agregada a Servicio de Estadía y Complementos.');
-    } else {
-      updateLodgingService(activeServiceCard);
-      showToast('Tarjeta de Servicio de Estadía actualizada.');
+    const isCreating = isCreatingServiceCard;
+    const srvTitle = activeServiceCard.title;
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: isCreating ? 'Guardando Nuevo Servicio...' : 'Guardando Servicio de Estadía...',
+      savingMessage: `Sincronizando "${srvTitle}" con la base de datos...`,
+      successTitle: '¡Servicio Guardado con Éxito!',
+      successMessage: `"${srvTitle}" se guardó y sincronizó correctamente en la web.`,
+      onComplete: () => {
+        setIsCreatingServiceCard(false);
+        setEditingServiceCard(null);
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      if (isCreating) {
+        const { id: _unusedId, ...rest } = activeServiceCard;
+        void _unusedId;
+        addLodgingService(rest);
+      } else {
+        updateLodgingService(activeServiceCard);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar el servicio.',
+      }));
     }
-    setIsCreatingServiceCard(false);
   };
 
   // =========================================================================
@@ -253,23 +339,47 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleSaveWedding = (e: React.FormEvent) => {
+  const handleSaveWedding = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeWedding || !activeWedding.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
-    if (isCreatingWedding) {
-      const { id: _unusedId, ...rest } = activeWedding;
-      void _unusedId;
-      addWeddingProposal(rest);
-      showToast('Nueva propuesta agregada al carrusel de Bodas y Celebraciones.');
-    } else {
-      updateWeddingProposal(activeWedding);
-      showToast('✓ Propuesta nupcial guardada y sincronizada en la base de datos y la web.');
+    const isCreating = isCreatingWedding;
+    const wedTitle = activeWedding.title;
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: isCreating ? 'Guardando Nueva Propuesta Nupcial...' : 'Guardando Propuesta Nupcial...',
+      savingMessage: `Sincronizando "${wedTitle}" con la base de datos de Bodas...`,
+      successTitle: '¡Propuesta Nupcial Guardada con Éxito!',
+      successMessage: `"${wedTitle}" se guardó y sincronizó correctamente en la web.`,
+      onComplete: () => {
+        setIsCreatingWedding(false);
+        setEditingWedding(null);
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      if (isCreating) {
+        const { id: _unusedId, ...rest } = activeWedding;
+        void _unusedId;
+        addWeddingProposal(rest);
+      } else {
+        updateWeddingProposal(activeWedding);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar la propuesta nupcial.',
+      }));
     }
-    setIsCreatingWedding(false);
   };
 
   // =========================================================================
@@ -304,7 +414,7 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleSaveExclusive = (e: React.FormEvent) => {
+  const handleSaveExclusive = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeExclusive || !activeExclusive.title.trim()) return;
     if (isMediaUploading) {
@@ -315,16 +425,40 @@ export const AdminDashboard: React.FC = () => {
       ...activeExclusive,
       priceLabel: `Desde $${activeExclusive.priceValue} USD`,
     };
-    if (isCreatingExclusive) {
-      const { id: _unusedId, ...rest } = updated;
-      void _unusedId;
-      addCorporateExclusiveFormat(rest);
-      showToast('Nuevo apartado agregado al carrusel de Formato Exclusivo.');
-    } else {
-      updateCorporateExclusiveFormat(updated);
-      showToast('Apartado de Formato Exclusivo actualizado.');
+    const isCreating = isCreatingExclusive;
+    const exclTitle = updated.title;
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: isCreating ? 'Guardando Nuevo Formato Exclusivo...' : 'Guardando Formato Exclusivo...',
+      savingMessage: `Sincronizando "${exclTitle}" en la base de datos corporativa...`,
+      successTitle: '¡Formato Exclusivo Guardado con Éxito!',
+      successMessage: `"${exclTitle}" se guardó y sincronizó correctamente en la web.`,
+      onComplete: () => {
+        setIsCreatingExclusive(false);
+        setEditingExclusive(null);
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      if (isCreating) {
+        const { id: _unusedId, ...rest } = updated;
+        void _unusedId;
+        addCorporateExclusiveFormat(rest);
+      } else {
+        updateCorporateExclusiveFormat(updated);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar el formato corporativo.',
+      }));
     }
-    setIsCreatingExclusive(false);
   };
 
   // =========================================================================
@@ -344,26 +478,49 @@ export const AdminDashboard: React.FC = () => {
     });
   };
 
-  const handleSaveCorpHighlight = (e: React.FormEvent) => {
+  const handleSaveCorpHighlight = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeCorpHighlight || !activeCorpHighlight.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
-    if (isCreatingCorpHighlight) {
-      const { id: _unusedId, ...rest } = activeCorpHighlight;
-      void _unusedId;
-      addCorporateHighlight(rest);
-      showToast('Nueva tarjeta agregada al carrusel de Grandes Eventos Corporativos.');
-    } else {
-      updateCorporateHighlight(activeCorpHighlight);
-      showToast('Tarjeta de Grandes Eventos Corporativos actualizada.');
+    const isCreating = isCreatingCorpHighlight;
+    const macroTitle = activeCorpHighlight.title;
+
+    setSaveModal({
+      isOpen: true,
+      state: 'saving',
+      savingTitle: isCreating ? 'Guardando Macroevento...' : 'Guardando Cambios de Macroevento...',
+      savingMessage: `Sincronizando "${macroTitle}" en la base de datos...`,
+      successTitle: '¡Macroevento Guardado con Éxito!',
+      successMessage: `"${macroTitle}" se guardó y sincronizó correctamente en la web.`,
+      onComplete: () => {
+        setIsCreatingCorpHighlight(false);
+        setEditingCorpHighlight(null);
+        setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+      },
+    });
+
+    try {
+      if (isCreating) {
+        const { id: _unusedId, ...rest } = activeCorpHighlight;
+        void _unusedId;
+        addCorporateHighlight(rest);
+      } else {
+        updateCorporateHighlight(activeCorpHighlight);
+      }
+      await new Promise((resolve) => setTimeout(resolve, 850));
+      setSaveModal((prev) => ({ ...prev, state: 'success' }));
+    } catch (err: any) {
+      setSaveModal((prev) => ({
+        ...prev,
+        state: 'error',
+        errorMessage: err?.message || 'No se pudo guardar el evento corporativo.',
+      }));
     }
-    setIsCreatingCorpHighlight(false);
   };
 
-  // Helper para enlace directo de vista previa según el módulo activo
   const getModulePreviewRoute = (): { path: string; label: string } => {
     switch (activeTab) {
       case 'habitaciones':
@@ -460,6 +617,25 @@ export const AdminDashboard: React.FC = () => {
             </button>
           </div>
         )}
+
+        {/* VENTANA EMERGENTE CON ANIMACIÓN DE GUARDADO Y CONFIRMACIÓN OK */}
+        <AdminSaveModal
+          isOpen={saveModal.isOpen}
+          state={saveModal.state}
+          savingTitle={saveModal.savingTitle}
+          savingMessage={saveModal.savingMessage}
+          successTitle={saveModal.successTitle}
+          successMessage={saveModal.successMessage}
+          errorMessage={saveModal.errorMessage}
+          onClose={() => setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }))}
+          onSuccessComplete={() => {
+            if (saveModal.onComplete) {
+              saveModal.onComplete();
+            } else {
+              setSaveModal((prev) => ({ ...prev, isOpen: false, state: 'idle' }));
+            }
+          }}
+        />
 
         {/* CONTENIDO DE ABAJO SCROLLABLE (SOLO ESTE CONTENEDOR SE MUEVE AL HACER SCROLL) */}
         <main className="flex-1 overflow-y-auto min-w-0 flex flex-col justify-between">
