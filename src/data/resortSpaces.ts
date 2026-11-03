@@ -24,6 +24,7 @@ export interface ResortSpaceItem {
   description_en: string;
   mediaType: 'image' | 'video';
   image: string;
+  imagePosition?: string;
   videoUrl?: string;
   capacities: {
     auditorium: string;
@@ -735,6 +736,7 @@ export interface WeddingPresetItem {
   badge: string;
   badgeClass: string;
   image: string;
+  imagePosition?: string;
   specs: { label: string; icon: string }[];
   price: string;
   unit: string;

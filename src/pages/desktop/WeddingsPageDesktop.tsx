@@ -174,6 +174,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                 ...matched,
                 price: prop.price,
                 image: prop.image,
+                imagePosition: prop.imagePosition,
                 videoUrl: prop.videoUrl,
                 mediaType: prop.mediaType,
               };
@@ -1089,6 +1090,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <img
                         src={card.image}
                         alt={card.title}
+                        style={{ objectPosition: card.imagePosition || '50% 50%' }}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />

@@ -264,6 +264,7 @@ export const LodgingPageMobile: React.FC = () => {
                 pricePerNight: cmsCabin.pricePerNight,
                 showPrice: cmsCabin.showPrice,
                 image: cmsCabin.image,
+                imagePosition: cmsCabin.imagePosition,
                 videoUrl: cmsCabin.videoUrl,
                 mediaType: cmsCabin.mediaType,
               };

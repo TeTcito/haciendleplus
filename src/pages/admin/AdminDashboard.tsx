@@ -704,6 +704,7 @@ export const AdminDashboard: React.FC = () => {
                                 <img
                                   src={cabin.image}
                                   alt={cabin.name}
+                                  style={{ objectPosition: cabin.imagePosition || '50% 50%' }}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               )}
@@ -926,6 +927,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingCabin.image}
+                            imagePosition={editingCabin.imagePosition}
+                            onImagePositionChange={(pos) => setEditingCabin({ ...editingCabin, imagePosition: pos })}
                             onImageChange={(url) => {
                               setEditingCabin({ ...editingCabin, image: url, mediaType: 'image' });
                             }}
@@ -1167,6 +1170,7 @@ export const AdminDashboard: React.FC = () => {
                             <img
                               src={lodgingHeroBanner.image}
                               alt={lodgingHeroBanner.titleLine1}
+                              style={{ objectPosition: lodgingHeroBanner.imagePosition || '50% 50%' }}
                               className="w-full h-full object-cover"
                             />
                           )}
@@ -1225,6 +1229,7 @@ export const AdminDashboard: React.FC = () => {
                               <img
                                 src={card.image}
                                 alt={card.title}
+                                style={{ objectPosition: card.imagePosition || '50% 50%' }}
                                 className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-500"
                               />
                             )}
@@ -1601,6 +1606,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingServiceCard.image}
+                            imagePosition={editingServiceCard.imagePosition}
+                            onImagePositionChange={(pos) => setEditingServiceCard({ ...editingServiceCard, imagePosition: pos })}
                             onImageChange={(url) =>
                               setEditingServiceCard({
                                 ...editingServiceCard,
@@ -1735,6 +1742,7 @@ export const AdminDashboard: React.FC = () => {
                                 <img
                                   src={item.image}
                                   alt={item.title}
+                                  style={{ objectPosition: item.imagePosition || '50% 50%' }}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               )}
@@ -1935,6 +1943,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingWedding.image}
+                            imagePosition={editingWedding.imagePosition}
+                            onImagePositionChange={(pos) => setEditingWedding({ ...editingWedding, imagePosition: pos })}
                             onImageChange={(url) =>
                               setEditingWedding({ ...editingWedding, image: url, mediaType: 'image' })
                             }
@@ -2082,6 +2092,7 @@ export const AdminDashboard: React.FC = () => {
                                 <img
                                   src={pkg.image}
                                   alt={pkg.title}
+                                  style={{ objectPosition: pkg.imagePosition || '50% 50%' }}
                                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                 />
                               )}
@@ -2294,6 +2305,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingExclusive.image}
+                            imagePosition={editingExclusive.imagePosition}
+                            onImagePositionChange={(pos) => setEditingExclusive({ ...editingExclusive, imagePosition: pos })}
                             onImageChange={(url) =>
                               setEditingExclusive({
                                 ...editingExclusive,
@@ -2630,6 +2643,8 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingCorpHighlight.image}
+                            imagePosition={editingCorpHighlight.imagePosition}
+                            onImagePositionChange={(pos) => setEditingCorpHighlight({ ...editingCorpHighlight, imagePosition: pos })}
                             onImageChange={(url) =>
                               setEditingCorpHighlight({
                                 ...editingCorpHighlight,

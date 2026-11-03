@@ -197,6 +197,7 @@ export const LodgingPageDesktop: React.FC = () => {
                 pricePerNight: cmsCabin.pricePerNight,
                 showPrice: cmsCabin.showPrice,
                 image: cmsCabin.image,
+                imagePosition: cmsCabin.imagePosition,
                 videoUrl: cmsCabin.videoUrl,
                 mediaType: cmsCabin.mediaType,
               };
@@ -612,6 +613,7 @@ export const LodgingPageDesktop: React.FC = () => {
                             <img
                               src={cabin.image}
                               alt={cabin.name}
+                              style={{ objectPosition: cabin.imagePosition || '50% 50%' }}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                               loading="lazy"
                             />

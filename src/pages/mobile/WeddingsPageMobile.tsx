@@ -373,6 +373,7 @@ export const WeddingsPageMobile: React.FC = () => {
                 ...matched,
                 price: prop.price,
                 image: prop.image,
+                imagePosition: prop.imagePosition,
                 videoUrl: prop.videoUrl,
                 mediaType: prop.mediaType,
               };

@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
   compressAndConvertToWebP,
-  CompressionResult,
   formatFileSize,
 } from '../../utils/imageCompressor';
 import { uploadMediaToSupabase } from '../../lib/supabase';
@@ -14,11 +13,16 @@ import {
   Loader2,
   Film,
   Link as LinkIcon,
+  Hand,
+  Check,
+  RotateCcw,
 } from 'lucide-react';
 
 interface AdminMediaUploaderProps {
   imageUrl: string;
   onImageChange: (url: string) => void;
+  imagePosition?: string;
+  onImagePositionChange?: (pos: string) => void;
   videoUrl?: string;
   onVideoChange?: (url: string) => void;
   mediaType?: 'image' | 'video';
@@ -28,9 +32,22 @@ interface AdminMediaUploaderProps {
   onProcessingChange?: (isProcessing: boolean) => void;
 }
 
+const parsePos = (str?: string): { x: number; y: number } => {
+  if (!str) return { x: 50, y: 50 };
+  const parts = str.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    const x = parseFloat(parts[0]);
+    const y = parseFloat(parts[1]);
+    if (!isNaN(x) && !isNaN(y)) return { x, y };
+  }
+  return { x: 50, y: 50 };
+};
+
 export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   imageUrl,
   onImageChange,
+  imagePosition = '50% 50%',
+  onImagePositionChange,
   videoUrl = '',
   onVideoChange,
   mediaType = 'image',
@@ -40,10 +57,21 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   onProcessingChange,
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
   const [videoUploadNotice, setVideoUploadNotice] = useState<string | null>(null);
   const [displaySrc, setDisplaySrc] = useState<string>(imageUrl || '');
   const lastUploadedUrlRef = useRef<string | null>(null);
+
+  // Estados de encuadre manual (arrastrar con la manito)
+  const [isPanMode, setIsPanMode] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [pos, setPos] = useState<{ x: number; y: number }>(() => parsePos(imagePosition));
+  const containerRef = useRef<HTMLDivElement>(null);
+  const dragStartRef = useRef<{ clientX: number; clientY: number; startX: number; startY: number }>({
+    clientX: 0,
+    clientY: 0,
+    startX: 50,
+    startY: 50,
+  });
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -52,18 +80,21 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   useEffect(() => {
     if (imageUrl !== lastUploadedUrlRef.current) {
       setDisplaySrc(imageUrl || '');
-      setCompressionResult(null);
     }
   }, [imageUrl]);
+
+  // Sincronizar posición cuando cambie el item exterior
+  useEffect(() => {
+    setPos(parsePos(imagePosition));
+  }, [imagePosition]);
 
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Resetear valor para permitir volver a seleccionar el mismo archivo si se desea
     e.target.value = '';
 
-    // 1. Previsualización instantánea con el archivo seleccionado sin parpadeo blanco
+    // 1. Previsualización instantánea sin salto blanco
     const instantLocalUrl = URL.createObjectURL(file);
     setDisplaySrc(instantLocalUrl);
     if (onMediaTypeChange) {
@@ -76,13 +107,12 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
 
       // 2. Compresión optimizada a WebP
       const result = await compressAndConvertToWebP(file, 1280, 1280, 0.8);
-      setCompressionResult(result);
 
       // 3. Subida a Supabase Storage con respaldo en base64
       const uploadedUrl = await uploadMediaToSupabase(result.file, 'img');
       const finalUrl = uploadedUrl || result.base64DataUrl || instantLocalUrl;
 
-      // 4. Pre-cargar la imagen en memoria antes de cambiar el src para evitar pantalla en blanco
+      // 4. Pre-cargar imagen en memoria antes de sustituir el src
       if (finalUrl.startsWith('http')) {
         await new Promise<void>((resolve) => {
           const preImg = new window.Image();
@@ -110,7 +140,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
 
     e.target.value = '';
 
-    // 1. Previsualización instantánea de video
     const instantLocalUrl = URL.createObjectURL(file);
     onVideoChange(instantLocalUrl);
     if (onMediaTypeChange) {
@@ -122,7 +151,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       if (onProcessingChange) onProcessingChange(true);
       setVideoUploadNotice('Subiendo video a la nube...');
 
-      // 2. Subir video a Supabase Storage
       const uploadedUrl = await uploadMediaToSupabase(file, 'vid');
       if (uploadedUrl) {
         onVideoChange(uploadedUrl);
@@ -136,6 +164,77 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       setIsProcessing(false);
       if (onProcessingChange) onProcessingChange(false);
     }
+  };
+
+  // =========================================================================
+  // GESTIÓN DE ENCUADRE CON LA MANITO (DRAG & DROP DIRECTO SIN FLECHAS)
+  // =========================================================================
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanMode) return;
+    e.preventDefault();
+    setIsDragging(true);
+    dragStartRef.current = {
+      clientX: e.clientX,
+      clientY: e.clientY,
+      startX: pos.x,
+      startY: pos.y,
+    };
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isPanMode || !isDragging || !containerRef.current) return;
+    e.preventDefault();
+    const rect = containerRef.current.getBoundingClientRect();
+    const deltaX = e.clientX - dragStartRef.current.clientX;
+    const deltaY = e.clientY - dragStartRef.current.clientY;
+
+    // Arrastre natural de agarre: mover el cursor desplaza el visor de la imagen
+    const newX = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startX - (deltaX / rect.width) * 100) * 10) / 10));
+    const newY = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startY - (deltaY / rect.height) * 100) * 10) / 10));
+
+    setPos({ x: newX, y: newY });
+    onImagePositionChange?.(`${newX}% ${newY}%`);
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isPanMode || e.touches.length === 0) return;
+    setIsDragging(true);
+    dragStartRef.current = {
+      clientX: e.touches[0].clientX,
+      clientY: e.touches[0].clientY,
+      startX: pos.x,
+      startY: pos.y,
+    };
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isPanMode || !isDragging || !containerRef.current || e.touches.length === 0) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const deltaX = e.touches[0].clientX - dragStartRef.current.clientX;
+    const deltaY = e.touches[0].clientY - dragStartRef.current.clientY;
+
+    const newX = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startX - (deltaX / rect.width) * 100) * 10) / 10));
+    const newY = Math.min(100, Math.max(0, Math.round((dragStartRef.current.startY - (deltaY / rect.height) * 100) * 10) / 10));
+
+    setPos({ x: newX, y: newY });
+    onImagePositionChange?.(`${newX}% ${newY}%`);
+  };
+
+  const handleTouchEnd = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleResetPosition = () => {
+    setPos({ x: 50, y: 50 });
+    onImagePositionChange?.('50% 50%');
   };
 
   const activeImageSrc = displaySrc;
@@ -154,12 +253,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
               {label}
             </h3>
           </div>
-          {isProcessing && (
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 text-[10px] font-bold">
-              <Loader2 className="w-3 h-3 animate-spin text-amber-600" />
-              <span>Subiendo a la nube...</span>
-            </div>
-          )}
         </div>
 
         {/* Selector de Tipo de Multimedia cuando allowVideo está activo */}
@@ -291,51 +384,131 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
             </div>
           </div>
         ) : (
-          /* MODO IMAGEN WEBP */
+          /* MODO IMAGEN WEBP (1:1 CUADRADO) */
           <div className="space-y-3">
             {activeImageSrc ? (
-              <div className="relative aspect-square rounded-2xl overflow-hidden border border-slate-300 bg-slate-900/10 shadow-xs group">
+              <div
+                ref={containerRef}
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                className={`relative aspect-square rounded-2xl overflow-hidden border border-slate-300 bg-[#06150F] shadow-xs select-none transition-shadow ${
+                  isPanMode
+                    ? isDragging
+                      ? 'cursor-grabbing ring-2 ring-[#C8A45D] shadow-lg'
+                      : 'cursor-grab ring-2 ring-[#C8A45D]'
+                    : 'group'
+                }`}
+              >
                 <img
                   src={activeImageSrc}
                   alt="Vista previa"
-                  className="w-full h-full object-cover transition-transform duration-300"
+                  draggable={false}
+                  style={{
+                    objectPosition: `${pos.x}% ${pos.y}%`,
+                  }}
+                  className="w-full h-full object-cover pointer-events-none select-none transition-[object-position] duration-75"
                 />
 
-                {/* Overlay de carga con icono de subiendo */}
+                {/* ANIMACIÓN EXCLUSIVA EN EL CENTRO DE LA IMAGEN DURANTE LA SUBIDA */}
                 {isProcessing && (
-                  <div className="absolute inset-0 bg-slate-950/70 backdrop-blur-2xs flex flex-col items-center justify-center text-white gap-2.5 z-20 p-4 text-center">
+                  <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-2xs flex flex-col items-center justify-center text-white gap-2.5 z-30 p-4 text-center">
                     <div className="relative flex items-center justify-center">
-                      <UploadCloud className="w-10 h-10 text-[#E2C585] animate-bounce" />
-                      <Loader2 className="w-4 h-4 text-[#E2C585] animate-spin absolute -bottom-1 -right-1" />
+                      <UploadCloud className="w-12 h-12 text-[#E2C585] animate-bounce" />
+                      <Loader2 className="w-5 h-5 text-[#E2C585] animate-spin absolute -bottom-1 -right-1" />
                     </div>
                     <span className="text-xs font-bold uppercase tracking-wider text-[#FAF7F2]">
                       Subiendo a la nube...
                     </span>
-                    <span className="text-[10px] text-[#E2C585] bg-black/50 px-2.5 py-0.5 rounded-full font-mono">
+                    <span className="text-[10px] text-[#E2C585] bg-black/60 px-2.5 py-0.5 rounded-full font-mono">
                       Optimizando a formato WebP
                     </span>
                   </div>
                 )}
 
-                {!isProcessing && (
-                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20">
+                {/* BARRA SUPERIOR FLOTANTE CUANDO ESTÁ ACTIVO EL MODO ACOMODAR (MANITO) */}
+                {isPanMode && !isProcessing && (
+                  <div className="absolute top-2.5 left-2.5 right-2.5 flex items-center justify-between gap-1.5 z-30 pointer-events-auto">
+                    <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#06150F]/90 text-[#E2C585] text-[11px] font-bold shadow-md backdrop-blur-xs border border-[#C8A45D]/40">
+                      <Hand className="w-3.5 h-3.5" />
+                      <span>{isDragging ? 'Moviendo posición...' : 'Arrastra con la manito'}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      {(pos.x !== 50 || pos.y !== 50) && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleResetPosition();
+                          }}
+                          className="px-2.5 py-1 rounded-lg bg-black/80 hover:bg-black text-white text-[10px] font-bold shadow cursor-pointer transition-colors flex items-center gap-1"
+                          title="Restablecer encuadre al centro"
+                        >
+                          <RotateCcw className="w-3 h-3" />
+                          <span>Centrar</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsPanMode(false);
+                        }}
+                        className="px-3 py-1 rounded-lg bg-[#C8A45D] hover:bg-[#E2C585] text-[#06150F] text-xs font-extrabold shadow cursor-pointer transition-colors flex items-center gap-1"
+                      >
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                        <span>Listo</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* ETIQUETA INFORMATIVA DE COORDENADAS DURANTE EL ACOMODO */}
+                {isPanMode && !isProcessing && (
+                  <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#06150F]/85 text-white text-[10px] font-mono pointer-events-none z-30 border border-white/10">
+                    Encuadre: {Math.round(pos.x)}% {Math.round(pos.y)}%
+                  </div>
+                )}
+
+                {/* BOTONES EN EL CENTRO DE LA IMAGEN AL PASAR EL CURSOR (HOVER) */}
+                {!isProcessing && !isPanMode && (
+                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 p-2">
+                    {/* Botón 1: Cambiar Imagen */}
                     <button
                       type="button"
                       onClick={() => imageInputRef.current?.click()}
-                      className="px-3 py-1.5 rounded-xl bg-white text-[#06150F] text-xs font-bold hover:bg-[#E2C585] transition-colors shadow cursor-pointer flex items-center gap-1.5"
+                      className="px-3 py-2 rounded-xl bg-white text-[#06150F] text-xs font-bold hover:bg-[#E2C585] transition-colors shadow cursor-pointer flex items-center gap-1.5 shrink-0"
                     >
                       <UploadCloud className="w-3.5 h-3.5" />
-                      <span>Cambiar Imagen</span>
+                      <span>Cambiar</span>
                     </button>
+
+                    {/* Botón 2: Mover / Acomodar Encuadre con la manito */}
+                    <button
+                      type="button"
+                      onClick={() => setIsPanMode(true)}
+                      className="px-3 py-2 rounded-xl bg-[#06150F] text-[#E2C585] border border-[#C8A45D]/60 text-xs font-bold hover:bg-[#13281F] transition-colors shadow cursor-pointer flex items-center gap-1.5 shrink-0"
+                      title="Mover y acomodar encuadre de la imagen manteniendo clickeado con la manito"
+                    >
+                      <Hand className="w-3.5 h-3.5" />
+                      <span>Acomodar</span>
+                    </button>
+
+                    {/* Botón 3: Quitar Imagen */}
                     <button
                       type="button"
                       onClick={() => {
                         lastUploadedUrlRef.current = null;
                         setDisplaySrc('');
-                        setCompressionResult(null);
                         onImageChange('');
+                        handleResetPosition();
                       }}
-                      className="p-1.5 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors shadow cursor-pointer"
+                      className="p-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors shadow cursor-pointer shrink-0"
                       title="Quitar imagen"
                     >
                       <X className="w-4 h-4" />
@@ -344,6 +517,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 )}
               </div>
             ) : (
+              /* ZONA DE SUBIDA VACÍA */
               <div
                 onClick={() => imageInputRef.current?.click()}
                 className="aspect-square rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#C8A45D] bg-white flex flex-col items-center justify-center p-5 text-center cursor-pointer transition-colors group relative overflow-hidden"
@@ -370,7 +544,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                       Haga clic para subir la imagen (1:1)
                     </span>
                     <span className="text-[11px] text-slate-400 mt-1 max-w-[210px]">
-                      JPG, PNG o WEBP. Formato 1:1 cuadrado recomendado. Se convertirá automáticamente a WebP optimizado.
+                      JPG, PNG o WEBP. Formato 1:1 cuadrado recomendado.
                     </span>
                   </>
                 )}
@@ -392,26 +566,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#C8A45D]"
               />
             </div>
-
-            {compressionResult && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl space-y-1 text-xs">
-                <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>¡Imagen Optimizada (WebP) lista para guardar!</span>
-                </div>
-                <div className="text-[11px] text-emerald-700 flex justify-between pt-1 border-t border-emerald-200/60">
-                  <span>Original: {formatFileSize(compressionResult.originalSize)}</span>
-                  <span>➔</span>
-                  <span className="font-bold">
-                    WebP: {formatFileSize(compressionResult.compressedSize)} (-
-                    {compressionResult.savingsPercentage}%)
-                  </span>
-                </div>
-                <p className="text-[10px] text-slate-500 italic pt-0.5">
-                  Previsualización lista. Presione el botón "Guardar" para sincronizar los cambios.
-                </p>
-              </div>
-            )}
           </div>
         )}
 
@@ -422,13 +576,6 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
           onChange={handleImageFileChange}
           className="hidden"
         />
-
-        {isProcessing && (
-          <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl flex items-center gap-2.5 text-xs text-amber-900 font-semibold">
-            <Loader2 className="w-4 h-4 animate-spin text-[#A6823C]" />
-            <span>Optimizando a WebP y subiendo a la nube de Supabase...</span>
-          </div>
-        )}
       </div>
     </div>
   );

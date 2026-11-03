@@ -84,6 +84,7 @@ export const CorporatePageMobile: React.FC = () => {
                 ...matched,
                 priceValue: cmsPkg.priceValue,
                 image: cmsPkg.image,
+                imagePosition: cmsPkg.imagePosition,
                 videoUrl: cmsPkg.videoUrl,
                 mediaType: cmsPkg.mediaType,
               };

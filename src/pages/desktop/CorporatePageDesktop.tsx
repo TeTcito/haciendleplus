@@ -62,6 +62,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 ...matched,
                 priceValue: cmsPkg.priceValue,
                 image: cmsPkg.image,
+                imagePosition: cmsPkg.imagePosition,
                 videoUrl: cmsPkg.videoUrl,
                 mediaType: cmsPkg.mediaType,
               };
@@ -527,6 +528,7 @@ export const CorporatePageDesktop: React.FC = () => {
                     src={currentPkg.image}
                     alt={currentPkg.title}
                     key={currentPkg.id}
+                    style={{ objectPosition: currentPkg.imagePosition || '50% 50%' }}
                     className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#06150F]/80 via-transparent to-transparent pointer-events-none" />
@@ -637,6 +639,7 @@ export const CorporatePageDesktop: React.FC = () => {
                           <img
                             src={card.image}
                             alt={title}
+                            style={{ objectPosition: card.imagePosition || '50% 50%' }}
                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
                           />
                         )}
