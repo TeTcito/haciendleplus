@@ -544,8 +544,8 @@ export const LodgingPageMobile: React.FC = () => {
                 key={cabin.id}
                 className="w-[38vw] min-w-[136px] max-w-[160px] shrink-0 snap-start rounded-xl bg-white border border-[#0A1F17]/10 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
               >
-                {/* Imagen que ocupa el ancho completo */}
-                <div className="relative w-full aspect-[4/3] bg-[#0A1F17] overflow-hidden">
+                {/* Imagen que ocupa el ancho completo (Formato 1:1) */}
+                <div className="relative w-full aspect-square bg-[#0A1F17] overflow-hidden">
                   <img
                     src={cabin.image}
                     alt={cabin.name}
@@ -660,8 +660,8 @@ export const LodgingPageMobile: React.FC = () => {
                 key={card.id}
                 className="w-[38vw] min-w-[136px] max-w-[160px] shrink-0 snap-start rounded-xl bg-white border border-[#0A1F17]/10 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
               >
-                {/* Imagen que ocupa el ancho completo */}
-                <div className="relative w-full aspect-[4/3] bg-[#06150F] overflow-hidden">
+                {/* Imagen que ocupa el ancho completo (Formato 1:1) */}
+                <div className="relative w-full aspect-square bg-[#06150F] overflow-hidden">
                   <img
                     src={card.image}
                     alt={card.title}

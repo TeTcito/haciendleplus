@@ -354,7 +354,7 @@ export const AdminDashboard: React.FC = () => {
   const previewLink = getModulePreviewRoute();
 
   return (
-    <div className="min-h-screen bg-[#F5F2EB] flex flex-col md:flex-row font-sans-ui text-[#06150F]">
+    <div className="h-screen bg-[#F5F2EB] flex flex-col md:flex-row font-sans-ui text-[#06150F] overflow-hidden">
       {/* =================================================================
           PANEL LATERAL IZQUIERDO (SIDEBAR)
          ================================================================= */}
@@ -378,62 +378,63 @@ export const AdminDashboard: React.FC = () => {
       />
 
       {/* =================================================================
-          PANEL DERECHO: BARRA SUPERIOR CON BOTÓN REGRESAR + MÓDULO ACTIVO
+          PANEL DERECHO: BARRA SUPERIOR FIJA + CONTENIDO SCROLLABLE INDEPENDIENTE
          ================================================================= */}
-      <main className="flex-1 min-w-0 flex flex-col justify-between min-h-screen overflow-y-auto">
-        <div>
-          {/* BARRA SUPERIOR ("ARRIBA EL FOOTER CON BOTONCITO DE REGRESAR") */}
-          <header className="sticky top-0 z-20 bg-[#06150F] text-[#FAF7F2] border-b border-[#C8A45D]/30 px-5 sm:px-8 py-3.5 shadow-md flex flex-wrap items-center justify-between gap-3">
+      <div className="flex-1 min-w-0 flex flex-col h-full overflow-hidden">
+        {/* BARRA SUPERIOR FIJA (NUNCA SE MUEVE AL HACER SCROLL) */}
+        <header className="shrink-0 z-20 bg-[#06150F] text-[#FAF7F2] border-b border-[#C8A45D]/30 px-5 sm:px-8 py-3.5 shadow-md flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-widest text-[#E2C585] block">
+                Administración Hacienda Le Plus · Sincronización Activa
+              </span>
+              <span className="text-xs text-[#FAF7F2]/70 hidden sm:block">
+                Todos los cambios se guardan inmediatamente en el sitio web y en la nube.
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <Link
+              to={previewLink.path}
+              className="px-3.5 py-2 rounded-xl bg-[#13281F] hover:bg-[#1C3A2D] text-[#E2C585] border border-[#C8A45D]/35 text-xs font-bold flex items-center gap-1.5 transition-all"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>{previewLink.label}</span>
+            </Link>
+
+            <Link
+              to="/"
+              className="px-4 py-2 rounded-xl bg-[#C8A45D] hover:bg-[#E2C585] text-[#06150F] font-sans-ui font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Regresar al Sitio Web</span>
+            </Link>
+          </div>
+        </header>
+
+        {/* NOTIFICACIÓN FLOTANTE DE ÉXITO (NO DESPLAZA EL CONTENIDO) */}
+        {toastMsg && (
+          <div className="fixed bottom-5 right-5 z-50 max-w-md p-4 rounded-2xl bg-[#06150F] text-white border border-[#C8A45D] shadow-xl flex items-center justify-between gap-3 animate-fadeIn">
             <div className="flex items-center gap-3">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <div>
-                <span className="text-[11px] font-bold uppercase tracking-widest text-[#E2C585] block">
-                  Administración Hacienda Le Plus · Sincronización Activa
-                </span>
-                <span className="text-xs text-[#FAF7F2]/70 hidden sm:block">
-                  Todos los cambios se guardan inmediatamente en el sitio web y en la nube.
-                </span>
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-5 h-5" />
               </div>
+              <span className="text-xs sm:text-sm font-semibold text-[#FAF7F2]">{toastMsg}</span>
             </div>
+            <button
+              type="button"
+              onClick={() => setToastMsg(null)}
+              className="text-slate-400 hover:text-white p-1 cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
-            <div className="flex items-center gap-2.5">
-              <Link
-                to={previewLink.path}
-                className="px-3.5 py-2 rounded-xl bg-[#13281F] hover:bg-[#1C3A2D] text-[#E2C585] border border-[#C8A45D]/35 text-xs font-bold flex items-center gap-1.5 transition-all"
-              >
-                <ExternalLink className="w-3.5 h-3.5" />
-                <span>{previewLink.label}</span>
-              </Link>
-
-              <Link
-                to="/"
-                className="px-4 py-2 rounded-xl bg-[#C8A45D] hover:bg-[#E2C585] text-[#06150F] font-sans-ui font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-sm transition-all"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                <span>Regresar al Sitio Web</span>
-              </Link>
-            </div>
-          </header>
-
-          {/* NOTIFICACIÓN FLOTANTE DE ÉXITO (NO DESPLAZA EL CONTENIDO) */}
-          {toastMsg && (
-            <div className="fixed bottom-5 right-5 z-50 max-w-md p-4 rounded-2xl bg-[#06150F] text-white border border-[#C8A45D] shadow-xl flex items-center justify-between gap-3 animate-fadeIn">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5" />
-                </div>
-                <span className="text-xs sm:text-sm font-semibold text-[#FAF7F2]">{toastMsg}</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => setToastMsg(null)}
-                className="text-slate-400 hover:text-white p-1 cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
-
+        {/* CONTENIDO DE ABAJO SCROLLABLE (SOLO ESTE CONTENEDOR SE MUEVE AL HACER SCROLL) */}
+        <main className="flex-1 overflow-y-auto min-w-0 flex flex-col justify-between">
           {/* ===============================================================
               CONTENEDOR DEL MÓDULO ACTIVO:
               COMIENZA EXACTAMENTE A 15PX DEL HEADER Y 15PX DEL PANEL IZQUIERDO
@@ -727,7 +728,7 @@ export const AdminDashboard: React.FC = () => {
                         }`}
                       >
                         <div>
-                          <div className="relative h-44 overflow-hidden bg-[#06150F]">
+                          <div className="relative aspect-square overflow-hidden bg-[#06150F]">
                             {cabin.mediaType === 'video' && cabin.videoUrl ? (
                               <video
                                 src={cabin.videoUrl}
@@ -1248,7 +1249,7 @@ export const AdminDashboard: React.FC = () => {
                       {lodgingServices.map((card, idx) => (
                         <div
                           key={card.id}
-                          className={`relative rounded-2xl overflow-hidden min-h-[200px] flex flex-col justify-between p-4 bg-[#06150F] border shadow-2xs group ${
+                          className={`relative rounded-2xl overflow-hidden aspect-square flex flex-col justify-between p-4 bg-[#06150F] border shadow-2xs group ${
                             activeServiceCard?.id === card.id && serviciosTarget === 'servicios'
                               ? 'ring-2 ring-[#C8A45D] border-transparent'
                               : 'border-slate-200/60'
@@ -1558,7 +1559,7 @@ export const AdminDashboard: React.FC = () => {
                         }`}
                       >
                         <div>
-                          <div className="relative h-44 overflow-hidden bg-[#06150F]">
+                          <div className="relative aspect-square overflow-hidden bg-[#06150F]">
                             {item.mediaType === 'video' && item.videoUrl ? (
                               <video
                                 src={item.videoUrl}
@@ -1899,7 +1900,7 @@ export const AdminDashboard: React.FC = () => {
                         }`}
                       >
                         <div>
-                          <div className="relative h-48 overflow-hidden bg-[#06150F]">
+                          <div className="relative aspect-square overflow-hidden bg-[#06150F]">
                             {pkg.mediaType === 'video' && pkg.videoUrl ? (
                               <video
                                 src={pkg.videoUrl}
@@ -2251,22 +2252,22 @@ export const AdminDashboard: React.FC = () => {
               </div>
             )}
           </div>
-        </div>
 
-        {/* PIE DEL PANEL DERECHO */}
-        <footer className="bg-white border-t border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
-          <span>
-            Panel Administrativo Hacienda Le Plus &copy; {new Date().getFullYear()} — Estructura Corporativa
-          </span>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 font-bold text-[#06150F] hover:text-[#A6823C] transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            <span>Regresar al Sitio Web Principal</span>
-          </Link>
-        </footer>
-      </main>
+          {/* PIE DEL PANEL DERECHO */}
+          <footer className="bg-white border-t border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 shrink-0">
+            <span>
+              Panel Administrativo Hacienda Le Plus &copy; {new Date().getFullYear()} — Estructura Corporativa
+            </span>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 font-bold text-[#06150F] hover:text-[#A6823C] transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Regresar al Sitio Web Principal</span>
+            </Link>
+          </footer>
+        </main>
+      </div>
     </div>
   );
 };

@@ -1084,8 +1084,8 @@ export const WeddingsPageDesktop: React.FC = () => {
                     key={card.id}
                     className="w-[305px] sm:w-[355px] lg:w-[375px] shrink-0 snap-start rounded-2xl bg-[#FAF7F2] border border-[#E6DDD0] shadow-sm hover:shadow-xl transition-all flex flex-col justify-between p-3.5 sm:p-4 group"
                   >
-                    {/* IMAGEN DE LA TARJETA + BADGE DE COLOR + BOTÓN DE FAVORITO */}
-                    <div className="relative w-full h-52 sm:h-56 rounded-xl overflow-hidden bg-[#EDE5D8]">
+                    {/* IMAGEN DE LA TARJETA + BADGE DE COLOR + BOTÓN DE FAVORITO (Formato 1:1) */}
+                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-[#EDE5D8]">
                       <img
                         src={card.image}
                         alt={card.title}

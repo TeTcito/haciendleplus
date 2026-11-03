@@ -12,7 +12,7 @@ export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   const { isEn, tr } = useLanguage();
   const location = useLocation();
 
-  if (location.pathname === '/admin') {
+  if (location.pathname.startsWith('/portal-admin') || location.pathname.startsWith('/admin')) {
     return null;
   }
 

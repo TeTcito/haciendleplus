@@ -241,7 +241,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
           /* MODO IMAGEN WEBP */
           <div className="space-y-3">
             {imageUrl ? (
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border-2 border-slate-200 bg-white shadow-inner group">
+              <div className="relative aspect-square rounded-2xl overflow-hidden border-2 border-slate-200 bg-white shadow-inner group">
                 <img
                   src={imageUrl}
                   alt="Vista previa"
@@ -271,16 +271,16 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
             ) : (
               <div
                 onClick={() => imageInputRef.current?.click()}
-                className="aspect-[4/3] rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#C8A45D] bg-white flex flex-col items-center justify-center p-5 text-center cursor-pointer transition-colors group"
+                className="aspect-square rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#C8A45D] bg-white flex flex-col items-center justify-center p-5 text-center cursor-pointer transition-colors group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-[#C8A45D]/15 text-[#A6823C] flex items-center justify-center mb-2.5">
                   <UploadCloud className="w-6 h-6" />
                 </div>
                 <span className="font-sans-ui font-bold text-xs sm:text-sm text-[#06150F]">
-                  Haga clic para subir la imagen
+                  Haga clic para subir la imagen (1:1)
                 </span>
                 <span className="text-[11px] text-slate-400 mt-1 max-w-[210px]">
-                  JPG, PNG o WEBP. Se convertirá automáticamente a WebP optimizado.
+                  JPG, PNG o WEBP. Formato 1:1 cuadrado recomendado. Se convertirá automáticamente a WebP optimizado.
                 </span>
               </div>
             )}

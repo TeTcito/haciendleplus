@@ -520,9 +520,9 @@ export const CorporatePageDesktop: React.FC = () => {
                 </div>
               </ScrollReveal>
 
-              {/* Lado derecho: Imagen del formato en carrusel */}
-              <ScrollReveal direction="right" duration={850} className="lg:col-span-7">
-                <div className="relative w-full h-64 sm:h-80 lg:h-[380px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
+              {/* Lado derecho: Imagen del formato en carrusel (Formato 1:1) */}
+              <ScrollReveal direction="right" duration={850} className="lg:col-span-7 flex flex-col justify-center">
+                <div className="relative w-full aspect-square max-w-[440px] mx-auto rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                   <img
                     src={currentPkg.image}
                     alt={currentPkg.title}

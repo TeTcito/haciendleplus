@@ -367,8 +367,8 @@ export const CorporatePageMobile: React.FC = () => {
                   key={pkg.id}
                   className="snap-start shrink-0 w-[38vw] min-w-[136px] max-w-[160px] rounded-2xl overflow-hidden bg-[#0A1F17] border border-[#C8A45D]/30 shadow-md flex flex-col justify-between"
                 >
-                  {/* Imagen */}
-                  <div className="relative h-24 sm:h-28 w-full overflow-hidden">
+                  {/* Imagen (Formato 1:1) */}
+                  <div className="relative aspect-square w-full overflow-hidden">
                     <img
                       src={pkg.image}
                       alt={pkg.title}

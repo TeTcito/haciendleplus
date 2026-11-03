@@ -596,8 +596,8 @@ export const LodgingPageDesktop: React.FC = () => {
                   >
                     <article className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 hover:border-[#C8A45D]/50 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between h-full">
                       <div>
-                        {/* Imagen o Video de la habitación */}
-                        <div className="relative h-48 overflow-hidden bg-[#0A1F17]">
+                        {/* Imagen o Video de la habitación (Formato 1:1) */}
+                        <div className="relative aspect-square w-full overflow-hidden bg-[#0A1F17]">
                           {cabin.mediaType === 'video' && cabin.videoUrl ? (
                             <video
                               src={cabin.videoUrl}
@@ -848,7 +848,7 @@ export const LodgingPageDesktop: React.FC = () => {
                         className="group bg-white rounded-3xl overflow-hidden border border-[#0A1F17]/10 flex flex-col justify-between cursor-pointer hover:border-[#C8A45D]/60 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 h-full"
                       >
                         <div>
-                          <div className="h-44 w-full overflow-hidden relative bg-[#06150F]">
+                          <div className="aspect-square w-full overflow-hidden relative bg-[#06150F]">
                             {card.mediaType === 'video' && card.videoUrl ? (
                               <video
                                 key={card.videoUrl}

@@ -818,8 +818,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   key={card.id}
                   className="w-[38vw] min-w-[136px] max-w-[160px] shrink-0 snap-start rounded-xl bg-[#FAF7F2] border border-[#E6DDD0] shadow-2xs hover:shadow-md transition-all flex flex-col justify-between overflow-hidden group"
                 >
-                  {/* IMAGEN DE LA TARJETA: OCUPA TODO EL ANCHO DEL CONTENEDOR SIN CORAZÓN */}
-                  <div className="relative w-full aspect-[4/3] bg-[#EDE5D8] overflow-hidden">
+                  {/* IMAGEN DE LA TARJETA: FORMATO 1:1 CUADRADO */}
+                  <div className="relative w-full aspect-square bg-[#EDE5D8] overflow-hidden">
                     <img
                       src={card.image}
                       alt={card.title}
