@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCMS } from '../../context/CMSContext';
+import { saveModulesToSupabase } from '../../lib/supabase';
 import { AdminSidebar, AdminModuleTab } from '../../components/admin/AdminSidebar';
 import { AdminProfileSection } from '../../components/admin/AdminProfileSection';
 import { AdminMediaUploader } from '../../components/admin/AdminMediaUploader';
@@ -175,13 +176,14 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveCabin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeCabin || !activeCabin.name.trim()) return;
+    const cabinToSave = editingCabin || activeCabin;
+    if (!cabinToSave || !cabinToSave.name.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
     const isCreating = isCreatingCabin;
-    const cabinName = activeCabin.name;
+    const cabinName = cabinToSave.name;
 
     setSaveModal({
       isOpen: true,
@@ -198,13 +200,25 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
+      let nextCabins = cabins;
       if (isCreating) {
-        const { id: _unusedId, ...rest } = activeCabin;
+        const { id: _unusedId, ...rest } = cabinToSave;
         void _unusedId;
+        const newCabin = { ...rest, id: `cabin-${Date.now()}` };
         addCabin(rest);
+        nextCabins = [...cabins, newCabin];
       } else {
-        updateCabin(activeCabin);
+        updateCabin(cabinToSave);
+        nextCabins = cabins.map((c) => (c.id === cabinToSave.id ? cabinToSave : c));
       }
+      await saveModulesToSupabase({
+        cabins: nextCabins,
+        lodgingHeroBanner,
+        lodgingServices,
+        weddingProposals,
+        corporateExclusiveFormats,
+        corporateHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -221,7 +235,8 @@ export const AdminDashboard: React.FC = () => {
   // =========================================================================
   const handleSaveHeroBanner = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeHeroBanner) return;
+    const bannerToSave = editingHeroBanner || activeHeroBanner;
+    if (!bannerToSave) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
@@ -240,7 +255,15 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
-      updateLodgingHeroBanner(activeHeroBanner);
+      updateLodgingHeroBanner(bannerToSave);
+      await saveModulesToSupabase({
+        cabins,
+        lodgingHeroBanner: bannerToSave,
+        lodgingServices,
+        weddingProposals,
+        corporateExclusiveFormats,
+        corporateHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -272,13 +295,14 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveServiceCard = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeServiceCard || !activeServiceCard.title.trim()) return;
+    const srvToSave = editingServiceCard || activeServiceCard;
+    if (!srvToSave || !srvToSave.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
     const isCreating = isCreatingServiceCard;
-    const srvTitle = activeServiceCard.title;
+    const srvTitle = srvToSave.title;
 
     setSaveModal({
       isOpen: true,
@@ -295,13 +319,25 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
+      let nextServices = lodgingServices;
       if (isCreating) {
-        const { id: _unusedId, ...rest } = activeServiceCard;
+        const { id: _unusedId, ...rest } = srvToSave;
         void _unusedId;
+        const newCard = { ...rest, id: `srv-${Date.now()}` };
         addLodgingService(rest);
+        nextServices = [...lodgingServices, newCard];
       } else {
-        updateLodgingService(activeServiceCard);
+        updateLodgingService(srvToSave);
+        nextServices = lodgingServices.map((s) => (s.id === srvToSave.id ? srvToSave : s));
       }
+      await saveModulesToSupabase({
+        cabins,
+        lodgingHeroBanner,
+        lodgingServices: nextServices,
+        weddingProposals,
+        corporateExclusiveFormats,
+        corporateHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -341,13 +377,14 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveWedding = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeWedding || !activeWedding.title.trim()) return;
+    const wedToSave = editingWedding || activeWedding;
+    if (!wedToSave || !wedToSave.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
     const isCreating = isCreatingWedding;
-    const wedTitle = activeWedding.title;
+    const wedTitle = wedToSave.title;
 
     setSaveModal({
       isOpen: true,
@@ -364,13 +401,25 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
+      let nextWeddings = weddingProposals;
       if (isCreating) {
-        const { id: _unusedId, ...rest } = activeWedding;
+        const { id: _unusedId, ...rest } = wedToSave;
         void _unusedId;
+        const newWedding = { ...rest, id: `boda-${Date.now()}` };
         addWeddingProposal(rest);
+        nextWeddings = [...weddingProposals, newWedding];
       } else {
-        updateWeddingProposal(activeWedding);
+        updateWeddingProposal(wedToSave);
+        nextWeddings = weddingProposals.map((w) => (w.id === wedToSave.id ? wedToSave : w));
       }
+      await saveModulesToSupabase({
+        cabins,
+        lodgingHeroBanner,
+        lodgingServices,
+        weddingProposals: nextWeddings,
+        corporateExclusiveFormats,
+        corporateHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -416,14 +465,15 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveExclusive = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeExclusive || !activeExclusive.title.trim()) return;
+    const exclToSave = editingExclusive || activeExclusive;
+    if (!exclToSave || !exclToSave.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
     const updated: ServicePackage = {
-      ...activeExclusive,
-      priceLabel: `Desde $${activeExclusive.priceValue} USD`,
+      ...exclToSave,
+      priceLabel: `Desde $${exclToSave.priceValue} USD`,
     };
     const isCreating = isCreatingExclusive;
     const exclTitle = updated.title;
@@ -443,13 +493,25 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
+      let nextExclusive = corporateExclusiveFormats;
       if (isCreating) {
         const { id: _unusedId, ...rest } = updated;
         void _unusedId;
+        const newPkg = { ...rest, id: `pkg-corp-${Date.now()}` };
         addCorporateExclusiveFormat(rest);
+        nextExclusive = [...corporateExclusiveFormats, newPkg];
       } else {
         updateCorporateExclusiveFormat(updated);
+        nextExclusive = corporateExclusiveFormats.map((p) => (p.id === updated.id ? updated : p));
       }
+      await saveModulesToSupabase({
+        cabins,
+        lodgingHeroBanner,
+        lodgingServices,
+        weddingProposals,
+        corporateExclusiveFormats: nextExclusive,
+        corporateHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -480,13 +542,14 @@ export const AdminDashboard: React.FC = () => {
 
   const handleSaveCorpHighlight = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeCorpHighlight || !activeCorpHighlight.title.trim()) return;
+    const macroToSave = editingCorpHighlight || activeCorpHighlight;
+    if (!macroToSave || !macroToSave.title.trim()) return;
     if (isMediaUploading) {
       showToast('⏳ Espere un momento mientras termina de subirse la multimedia a la nube.');
       return;
     }
     const isCreating = isCreatingCorpHighlight;
-    const macroTitle = activeCorpHighlight.title;
+    const macroTitle = macroToSave.title;
 
     setSaveModal({
       isOpen: true,
@@ -503,13 +566,25 @@ export const AdminDashboard: React.FC = () => {
     });
 
     try {
+      let nextHighlights = corporateHighlights;
       if (isCreating) {
-        const { id: _unusedId, ...rest } = activeCorpHighlight;
+        const { id: _unusedId, ...rest } = macroToSave;
         void _unusedId;
+        const newItem = { ...rest, id: `corp-hl-${Date.now()}` };
         addCorporateHighlight(rest);
+        nextHighlights = [...corporateHighlights, newItem];
       } else {
-        updateCorporateHighlight(activeCorpHighlight);
+        updateCorporateHighlight(macroToSave);
+        nextHighlights = corporateHighlights.map((h) => (h.id === macroToSave.id ? macroToSave : h));
       }
+      await saveModulesToSupabase({
+        cabins,
+        lodgingHeroBanner,
+        lodgingServices,
+        weddingProposals,
+        corporateExclusiveFormats,
+        corporateHighlights: nextHighlights,
+      });
       await new Promise((resolve) => setTimeout(resolve, 850));
       setSaveModal((prev) => ({ ...prev, state: 'success' }));
     } catch (err: any) {
@@ -834,7 +909,7 @@ export const AdminDashboard: React.FC = () => {
                             required
                             value={editingCabin?.name || ''}
                             onChange={(e) =>
-                              editingCabin && setEditingCabin({ ...editingCabin, name: e.target.value })
+                              setEditingCabin((prev) => prev ? { ...prev, name: e.target.value } : null)
                             }
                             placeholder="Ej: Suite Ejecutiva Le Plus No. 1"
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-[#06150F] focus:outline-none focus:border-[#06150F]"
@@ -850,7 +925,7 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingCabin?.type || ''}
                               onChange={(e) =>
-                                editingCabin && setEditingCabin({ ...editingCabin, type: e.target.value })
+                                setEditingCabin((prev) => prev ? { ...prev, type: e.target.value } : null)
                               }
                               placeholder="Suite Matrimonial"
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold text-[#06150F]"
@@ -865,10 +940,10 @@ export const AdminDashboard: React.FC = () => {
                               min={1}
                               value={editingCabin?.bathrooms || 1}
                               onChange={(e) =>
-                                editingCabin && setEditingCabin({
-                                  ...editingCabin,
+                                setEditingCabin((prev) => prev ? {
+                                  ...prev,
                                   bathrooms: Number(e.target.value) || 1,
-                                })
+                                } : null)
                               }
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold text-[#06150F]"
                             />
@@ -883,7 +958,7 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingCabin?.capacity || ''}
                             onChange={(e) =>
-                              editingCabin && setEditingCabin({ ...editingCabin, capacity: e.target.value })
+                              setEditingCabin((prev) => prev ? { ...prev, capacity: e.target.value } : null)
                             }
                             placeholder="Ej: Ejecutivos, Líderes o 1 a 3 Pax"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs text-[#06150F]"
@@ -898,7 +973,7 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingCabin?.beds || ''}
                             onChange={(e) =>
-                              editingCabin && setEditingCabin({ ...editingCabin, beds: e.target.value })
+                              setEditingCabin((prev) => prev ? { ...prev, beds: e.target.value } : null)
                             }
                             placeholder="Ej: 1 Cama Matrimonial + 1 Cama Adicional"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs text-[#06150F]"
@@ -914,7 +989,7 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingCabin?.description || ''}
                             onChange={(e) =>
-                              editingCabin && setEditingCabin({ ...editingCabin, description: e.target.value })
+                              setEditingCabin((prev) => prev ? { ...prev, description: e.target.value } : null)
                             }
                             placeholder="Describa los atributos, beneficios y confort de la habitación..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-[#06150F] leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -928,17 +1003,17 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={editingCabin.image}
                             imagePosition={editingCabin.imagePosition}
-                            onImagePositionChange={(pos) => setEditingCabin({ ...editingCabin, imagePosition: pos })}
+                            onImagePositionChange={(pos) => setEditingCabin((prev) => prev ? { ...prev, imagePosition: pos } : null)}
                             onImageChange={(url) => {
-                              setEditingCabin({ ...editingCabin, image: url, mediaType: 'image' });
+                              setEditingCabin((prev) => prev ? { ...prev, image: url, mediaType: 'image' } : null);
                             }}
                             videoUrl={editingCabin.videoUrl || ''}
                             onVideoChange={(url) => {
-                              setEditingCabin({ ...editingCabin, videoUrl: url, mediaType: 'video' });
+                              setEditingCabin((prev) => prev ? { ...prev, videoUrl: url, mediaType: 'video' } : null);
                             }}
                             mediaType={editingCabin.mediaType || 'image'}
                             onMediaTypeChange={(type) => {
-                              setEditingCabin({ ...editingCabin, mediaType: type });
+                              setEditingCabin((prev) => prev ? { ...prev, mediaType: type } : null);
                             }}
                             allowVideo={true}
                             onProcessingChange={setIsMediaUploading}
@@ -1326,10 +1401,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingHeroBanner.overline}
                             onChange={(e) =>
-                              setEditingHeroBanner({
-                                ...editingHeroBanner,
+                              setEditingHeroBanner((prev) => ({
+                                ...(prev || lodgingHeroBanner),
                                 overline: e.target.value,
-                              })
+                              }))
                             }
                             className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold"
                           />
@@ -1342,10 +1417,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingHeroBanner.titleLine1}
                             onChange={(e) =>
-                              setEditingHeroBanner({
-                                ...editingHeroBanner,
+                              setEditingHeroBanner((prev) => ({
+                                ...(prev || lodgingHeroBanner),
                                 titleLine1: e.target.value,
-                              })
+                              }))
                             }
                             className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold"
                           />
@@ -1358,10 +1433,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingHeroBanner.titleLine2}
                             onChange={(e) =>
-                              setEditingHeroBanner({
-                                ...editingHeroBanner,
+                              setEditingHeroBanner((prev) => ({
+                                ...(prev || lodgingHeroBanner),
                                 titleLine2: e.target.value,
-                              })
+                              }))
                             }
                             className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#A6823C]"
                           />
@@ -1375,10 +1450,10 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingHeroBanner.description}
                             onChange={(e) =>
-                              setEditingHeroBanner({
-                                ...editingHeroBanner,
+                              setEditingHeroBanner((prev) => ({
+                                ...(prev || lodgingHeroBanner),
                                 description: e.target.value,
-                              })
+                              }))
                             }
                             placeholder="Describa la operación de larga estadía..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -1393,10 +1468,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingHeroBanner.locationBadge}
                               onChange={(e) =>
-                                setEditingHeroBanner({
-                                  ...editingHeroBanner,
+                                setEditingHeroBanner((prev) => ({
+                                  ...(prev || lodgingHeroBanner),
                                   locationBadge: e.target.value,
-                                })
+                                }))
                               }
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                             />
@@ -1409,10 +1484,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingHeroBanner.videoButtonText}
                               onChange={(e) =>
-                                setEditingHeroBanner({
-                                  ...editingHeroBanner,
+                                setEditingHeroBanner((prev) => ({
+                                  ...(prev || lodgingHeroBanner),
                                   videoButtonText: e.target.value,
-                                })
+                                }))
                               }
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                             />
@@ -1425,25 +1500,25 @@ export const AdminDashboard: React.FC = () => {
                         <AdminMediaUploader
                           imageUrl={editingHeroBanner.image}
                           onImageChange={(url) =>
-                            setEditingHeroBanner({
-                              ...editingHeroBanner,
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
                               image: url,
-                            })
+                            }))
                           }
                           videoUrl={editingHeroBanner.videoUrl || ''}
                           onVideoChange={(url) =>
-                            setEditingHeroBanner({
-                              ...editingHeroBanner,
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
                               videoUrl: url,
                               mediaType: 'video',
-                            })
+                            }))
                           }
                           mediaType={editingHeroBanner.mediaType}
                           onMediaTypeChange={(t) =>
-                            setEditingHeroBanner({
-                              ...editingHeroBanner,
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
                               mediaType: t,
-                            })
+                            }))
                           }
                           allowVideo={true}
                           onProcessingChange={setIsMediaUploading}
@@ -1531,11 +1606,10 @@ export const AdminDashboard: React.FC = () => {
                             required
                             value={editingServiceCard?.title || ''}
                             onChange={(e) =>
-                              editingServiceCard &&
-                              setEditingServiceCard({
-                                ...editingServiceCard,
+                              setEditingServiceCard((prev) => prev ? {
+                                ...prev,
                                 title: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Ej: Piscina Cubierta Climatizada"
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-[#06150F]"
@@ -1550,11 +1624,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingServiceCard?.badge || ''}
                               onChange={(e) =>
-                                editingServiceCard &&
-                                setEditingServiceCard({
-                                  ...editingServiceCard,
+                                setEditingServiceCard((prev) => prev ? {
+                                  ...prev,
                                   badge: e.target.value,
-                                })
+                                } : null)
                               }
                               placeholder="Ej: Amenidad Clave"
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold"
@@ -1568,11 +1641,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingServiceCard?.ctaText || ''}
                               onChange={(e) =>
-                                editingServiceCard &&
-                                setEditingServiceCard({
-                                  ...editingServiceCard,
+                                setEditingServiceCard((prev) => prev ? {
+                                  ...prev,
                                   ctaText: e.target.value,
-                                })
+                                } : null)
                               }
                               placeholder="Ej: Solicitar Información →"
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
@@ -1589,11 +1661,10 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingServiceCard?.description || ''}
                             onChange={(e) =>
-                              editingServiceCard &&
-                              setEditingServiceCard({
-                                ...editingServiceCard,
+                              setEditingServiceCard((prev) => prev ? {
+                                ...prev,
                                 description: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Describa los atractivos, capacidad y disponibilidad del servicio..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -1607,28 +1678,28 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={editingServiceCard.image}
                             imagePosition={editingServiceCard.imagePosition}
-                            onImagePositionChange={(pos) => setEditingServiceCard({ ...editingServiceCard, imagePosition: pos })}
+                            onImagePositionChange={(pos) => setEditingServiceCard((prev) => prev ? { ...prev, imagePosition: pos } : null)}
                             onImageChange={(url) =>
-                              setEditingServiceCard({
-                                ...editingServiceCard,
+                              setEditingServiceCard((prev) => prev ? {
+                                ...prev,
                                 image: url,
                                 mediaType: 'image',
-                              })
+                              } : null)
                             }
                             videoUrl={editingServiceCard.videoUrl || ''}
                             onVideoChange={(url) =>
-                              setEditingServiceCard({
-                                ...editingServiceCard,
+                              setEditingServiceCard((prev) => prev ? {
+                                ...prev,
                                 videoUrl: url,
                                 mediaType: 'video',
-                              })
+                              } : null)
                             }
                             mediaType={editingServiceCard.mediaType || 'image'}
                             onMediaTypeChange={(t) =>
-                              setEditingServiceCard({
-                                ...editingServiceCard,
+                              setEditingServiceCard((prev) => prev ? {
+                                ...prev,
                                 mediaType: t,
-                              })
+                              } : null)
                             }
                             allowVideo={true}
                             onProcessingChange={setIsMediaUploading}
@@ -1850,8 +1921,7 @@ export const AdminDashboard: React.FC = () => {
                             required
                             value={editingWedding?.title || ''}
                             onChange={(e) =>
-                              editingWedding &&
-                              setEditingWedding({ ...editingWedding, title: e.target.value })
+                              setEditingWedding((prev) => prev ? { ...prev, title: e.target.value } : null)
                             }
                             placeholder="Ej: Todo Incluido Premium"
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold"
@@ -1865,8 +1935,7 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingWedding?.subtitle || ''}
                             onChange={(e) =>
-                              editingWedding &&
-                              setEditingWedding({ ...editingWedding, subtitle: e.target.value })
+                              setEditingWedding((prev) => prev ? { ...prev, subtitle: e.target.value } : null)
                             }
                             placeholder="Ej: De 60 a 350 invitados · Producción integral"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs"
@@ -1880,8 +1949,7 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingWedding?.badge || ''}
                             onChange={(e) =>
-                              editingWedding &&
-                              setEditingWedding({ ...editingWedding, badge: e.target.value })
+                              setEditingWedding((prev) => prev ? { ...prev, badge: e.target.value } : null)
                             }
                             placeholder="Ej: Más Solicitado"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-semibold"
@@ -1897,11 +1965,10 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingWedding?.description || editingWedding?.subtitle || ''}
                             onChange={(e) =>
-                              editingWedding &&
-                              setEditingWedding({
-                                ...editingWedding,
+                              setEditingWedding((prev) => prev ? {
+                                ...prev,
                                 description: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Describa la propuesta nupcial, ambiente y servicios incluidos..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -1918,18 +1985,20 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingWedding?.specs[specIdx]?.label || ''}
                               onChange={(e) => {
-                                if (!editingWedding) return;
-                                const nextSpecs = [...editingWedding.specs];
-                                const defaultIcons: ('users' | 'tent' | 'utensils')[] = [
-                                  'users',
-                                  'tent',
-                                  'utensils',
-                                ];
-                                nextSpecs[specIdx] = {
-                                  label: e.target.value,
-                                  icon: nextSpecs[specIdx]?.icon || defaultIcons[specIdx] || 'sparkles',
-                                };
-                                setEditingWedding({ ...editingWedding, specs: nextSpecs });
+                                setEditingWedding((prev) => {
+                                  if (!prev) return null;
+                                  const nextSpecs = [...prev.specs];
+                                  const defaultIcons: ('users' | 'tent' | 'utensils')[] = [
+                                    'users',
+                                    'tent',
+                                    'utensils',
+                                  ];
+                                  nextSpecs[specIdx] = {
+                                    label: e.target.value,
+                                    icon: nextSpecs[specIdx]?.icon || defaultIcons[specIdx] || 'sparkles',
+                                  };
+                                  return { ...prev, specs: nextSpecs };
+                                });
                               }}
                               placeholder={`Característica #${specIdx + 1}`}
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
@@ -1944,17 +2013,17 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={editingWedding.image}
                             imagePosition={editingWedding.imagePosition}
-                            onImagePositionChange={(pos) => setEditingWedding({ ...editingWedding, imagePosition: pos })}
+                            onImagePositionChange={(pos) => setEditingWedding((prev) => prev ? { ...prev, imagePosition: pos } : null)}
                             onImageChange={(url) =>
-                              setEditingWedding({ ...editingWedding, image: url, mediaType: 'image' })
+                              setEditingWedding((prev) => prev ? { ...prev, image: url, mediaType: 'image' } : null)
                             }
                             videoUrl={editingWedding.videoUrl}
                             onVideoChange={(url) =>
-                              setEditingWedding({ ...editingWedding, videoUrl: url, mediaType: 'video' })
+                              setEditingWedding((prev) => prev ? { ...prev, videoUrl: url, mediaType: 'video' } : null)
                             }
                             mediaType={editingWedding.mediaType}
                             onMediaTypeChange={(t) =>
-                              setEditingWedding({ ...editingWedding, mediaType: t })
+                              setEditingWedding((prev) => prev ? { ...prev, mediaType: t } : null)
                             }
                             allowVideo={true}
                             onProcessingChange={setIsMediaUploading}
@@ -1981,8 +2050,7 @@ export const AdminDashboard: React.FC = () => {
                                 type="text"
                                 value={editingWedding?.price || ''}
                                 onChange={(e) =>
-                                  editingWedding &&
-                                  setEditingWedding({ ...editingWedding, price: e.target.value })
+                                  setEditingWedding((prev) => prev ? { ...prev, price: e.target.value } : null)
                                 }
                                 placeholder="$70"
                                 className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-base font-bold text-[#06150F]"
@@ -1996,8 +2064,7 @@ export const AdminDashboard: React.FC = () => {
                                 type="text"
                                 value={editingWedding?.unit || ''}
                                 onChange={(e) =>
-                                  editingWedding &&
-                                  setEditingWedding({ ...editingWedding, unit: e.target.value })
+                                  setEditingWedding((prev) => prev ? { ...prev, unit: e.target.value } : null)
                                 }
                                 placeholder="/ persona · ref."
                                 className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
@@ -2194,8 +2261,7 @@ export const AdminDashboard: React.FC = () => {
                             required
                             value={editingExclusive?.title || ''}
                             onChange={(e) =>
-                              editingExclusive &&
-                              setEditingExclusive({ ...editingExclusive, title: e.target.value })
+                              setEditingExclusive((prev) => prev ? { ...prev, title: e.target.value } : null)
                             }
                             placeholder="Ej: Convenciones & Congresos Privados"
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold"
@@ -2210,11 +2276,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingExclusive?.capacity || ''}
                               onChange={(e) =>
-                                editingExclusive &&
-                                setEditingExclusive({
-                                  ...editingExclusive,
+                                setEditingExclusive((prev) => prev ? {
+                                  ...prev,
                                   capacity: e.target.value,
-                                })
+                                } : null)
                               }
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                             />
@@ -2227,11 +2292,10 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingExclusive?.highlightBadge || ''}
                               onChange={(e) =>
-                                editingExclusive &&
-                                setEditingExclusive({
-                                  ...editingExclusive,
+                                setEditingExclusive((prev) => prev ? {
+                                  ...prev,
                                   highlightBadge: e.target.value,
-                                })
+                                } : null)
                               }
                               className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                             />
@@ -2245,11 +2309,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingExclusive?.setupInfo || ''}
                             onChange={(e) =>
-                              editingExclusive &&
-                              setEditingExclusive({
-                                ...editingExclusive,
+                              setEditingExclusive((prev) => prev ? {
+                                ...prev,
                                 setupInfo: e.target.value,
-                              })
+                              } : null)
                             }
                             className="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                           />
@@ -2264,11 +2327,10 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingExclusive?.description || ''}
                             onChange={(e) =>
-                              editingExclusive &&
-                              setEditingExclusive({
-                                ...editingExclusive,
+                              setEditingExclusive((prev) => prev ? {
+                                ...prev,
                                 description: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Describa el formato exclusivo corporativo..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -2285,12 +2347,11 @@ export const AdminDashboard: React.FC = () => {
                               type="text"
                               value={editingExclusive?.inclusions[incIdx] || ''}
                               onChange={(e) => {
-                                if (!editingExclusive) return;
-                                const nextInc = [...editingExclusive.inclusions];
-                                nextInc[incIdx] = e.target.value;
-                                setEditingExclusive({
-                                  ...editingExclusive,
-                                  inclusions: nextInc,
+                                setEditingExclusive((prev) => {
+                                  if (!prev) return null;
+                                  const nextInc = [...prev.inclusions];
+                                  nextInc[incIdx] = e.target.value;
+                                  return { ...prev, inclusions: nextInc };
                                 });
                               }}
                               placeholder={`Inclusión #${incIdx + 1}`}
@@ -2306,25 +2367,25 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={editingExclusive.image}
                             imagePosition={editingExclusive.imagePosition}
-                            onImagePositionChange={(pos) => setEditingExclusive({ ...editingExclusive, imagePosition: pos })}
+                            onImagePositionChange={(pos) => setEditingExclusive((prev) => prev ? { ...prev, imagePosition: pos } : null)}
                             onImageChange={(url) =>
-                              setEditingExclusive({
-                                ...editingExclusive,
+                              setEditingExclusive((prev) => prev ? {
+                                ...prev,
                                 image: url,
                                 mediaType: 'image',
-                              })
+                              } : null)
                             }
                             videoUrl={editingExclusive.videoUrl}
                             onVideoChange={(url) =>
-                              setEditingExclusive({
-                                ...editingExclusive,
+                              setEditingExclusive((prev) => prev ? {
+                                ...prev,
                                 videoUrl: url,
                                 mediaType: 'video',
-                              })
+                              } : null)
                             }
                             mediaType={editingExclusive.mediaType}
                             onMediaTypeChange={(t) =>
-                              setEditingExclusive({ ...editingExclusive, mediaType: t })
+                              setEditingExclusive((prev) => prev ? { ...prev, mediaType: t } : null)
                             }
                             allowVideo={true}
                             onProcessingChange={setIsMediaUploading}
@@ -2570,11 +2631,10 @@ export const AdminDashboard: React.FC = () => {
                             required
                             value={editingCorpHighlight?.title || ''}
                             onChange={(e) =>
-                              editingCorpHighlight &&
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 title: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Ej: Integraciones & Fiestas de Fin de Año"
                             className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold"
@@ -2588,11 +2648,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingCorpHighlight?.highlightMetric || ''}
                             onChange={(e) =>
-                              editingCorpHighlight &&
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 highlightMetric: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Ej: Hasta 350+ pax / Desde $40 / pax"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#A6823C]"
@@ -2608,11 +2667,10 @@ export const AdminDashboard: React.FC = () => {
                             rows={10}
                             value={editingCorpHighlight?.subtitle || ''}
                             onChange={(e) =>
-                              editingCorpHighlight &&
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 subtitle: e.target.value,
-                              })
+                              } : null)
                             }
                             placeholder="Describa la escala, cena corporativa, producción y música en vivo..."
                             className="w-full px-3.5 py-3 rounded-xl border border-slate-300 bg-white text-xs text-slate-800 leading-relaxed min-h-[220px] max-h-[300px] overflow-y-auto focus:outline-none focus:border-[#C8A45D]"
@@ -2627,11 +2685,10 @@ export const AdminDashboard: React.FC = () => {
                             type="text"
                             value={editingCorpHighlight?.whatsappItemName || ''}
                             onChange={(e) =>
-                              editingCorpHighlight &&
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 whatsappItemName: e.target.value,
-                              })
+                              } : null)
                             }
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                           />
@@ -2644,28 +2701,28 @@ export const AdminDashboard: React.FC = () => {
                           <AdminMediaUploader
                             imageUrl={editingCorpHighlight.image}
                             imagePosition={editingCorpHighlight.imagePosition}
-                            onImagePositionChange={(pos) => setEditingCorpHighlight({ ...editingCorpHighlight, imagePosition: pos })}
+                            onImagePositionChange={(pos) => setEditingCorpHighlight((prev) => prev ? { ...prev, imagePosition: pos } : null)}
                             onImageChange={(url) =>
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 image: url,
                                 mediaType: 'image',
-                              })
+                              } : null)
                             }
                             videoUrl={editingCorpHighlight.videoUrl}
                             onVideoChange={(url) =>
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 videoUrl: url,
                                 mediaType: 'video',
-                              })
+                              } : null)
                             }
                             mediaType={editingCorpHighlight.mediaType}
                             onMediaTypeChange={(t) =>
-                              setEditingCorpHighlight({
-                                ...editingCorpHighlight,
+                              setEditingCorpHighlight((prev) => prev ? {
+                                ...prev,
                                 mediaType: t,
-                              })
+                              } : null)
                             }
                             allowVideo={true}
                             onProcessingChange={setIsMediaUploading}

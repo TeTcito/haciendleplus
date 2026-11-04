@@ -41,42 +41,93 @@ const MAX_ZOOM = 3;
 const CROP_BG = '#06150F';
 
 /**
+ * Calcula la posición CSS object-position (X% Y%) a partir del offset y dimensiones.
+ */
+const computePositionPercent = (
+  off: Offset,
+  w: number,
+  h: number,
+  boxSize: number
+): string => {
+  const maxOverflowX = w - boxSize;
+  const maxOverflowY = h - boxSize;
+  const px =
+    maxOverflowX > 0
+      ? Math.round(Math.max(0, Math.min(100, (-off.x / maxOverflowX) * 100)))
+      : 50;
+  const py =
+    maxOverflowY > 0
+      ? Math.round(Math.max(0, Math.min(100, (-off.y / maxOverflowY) * 100)))
+      : 50;
+  return `${px}% ${py}%`;
+};
+
+/**
  * Exporta EXACTAMENTE lo que se ve en el visor cuadrado (WYSIWYG) a un WebP 1:1.
  * offset/w/h están en píxeles de pantalla relativos al visor de tamaño S.
+ * Protegido contra tainted canvas por CORS mediante fetch de blob local.
  */
-const cropVisibleSquare = (
+const cropVisibleSquare = async (
   src: string,
   offset: Offset,
   renderW: number,
   renderH: number,
   S: number
-): Promise<Blob | null> =>
-  new Promise((resolve) => {
-    const img = new Image();
-    if (/^https?:\/\//.test(src)) img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      // Resolución de salida = píxeles reales de la imagen visibles en el visor (800–1600 px)
-      const nativePerScreenPx = img.naturalWidth / renderW;
-      const N = Math.round(Math.min(1600, Math.max(800, nativePerScreenPx * S)));
-      const r = N / S;
+): Promise<Blob | null> => {
+  try {
+    let cleanSrc = src;
+    // Si es una URL externa o de Supabase, obtener blob local para que canvas jamás se bloquee por CORS
+    if (/^https?:\/\//.test(src)) {
+      try {
+        const resp = await fetch(src, { mode: 'cors', cache: 'no-cache' });
+        if (resp.ok) {
+          const b = await resp.blob();
+          cleanSrc = URL.createObjectURL(b);
+        }
+      } catch (e) {
+        console.warn('Fetch fallback to direct src:', e);
+      }
+    }
 
-      const canvas = document.createElement('canvas');
-      canvas.width = N;
-      canvas.height = N;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return resolve(null);
+    return await new Promise<Blob | null>((resolve) => {
+      const img = new Image();
+      if (/^https?:\/\//.test(cleanSrc)) img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        try {
+          // Resolución de salida = píxeles reales de la imagen visibles en el visor (800–1600 px)
+          const nativePerScreenPx = img.naturalWidth / renderW;
+          const N = Math.round(Math.min(1600, Math.max(800, nativePerScreenPx * S)));
+          const r = N / S;
 
-      ctx.fillStyle = CROP_BG;
-      ctx.fillRect(0, 0, N, N);
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, offset.x * r, offset.y * r, renderW * r, renderH * r);
+          const canvas = document.createElement('canvas');
+          canvas.width = N;
+          canvas.height = N;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) return resolve(null);
 
-      canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.88);
-    };
-    img.onerror = () => resolve(null);
-    img.src = src;
-  });
+          ctx.fillStyle = CROP_BG;
+          ctx.fillRect(0, 0, N, N);
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, offset.x * r, offset.y * r, renderW * r, renderH * r);
+
+          canvas.toBlob((blob) => resolve(blob), 'image/webp', 0.88);
+        } catch (err) {
+          console.warn('Canvas export failed:', err);
+          resolve(null);
+        }
+      };
+      img.onerror = (e) => {
+        console.warn('Image load failed for crop:', cleanSrc, e);
+        resolve(null);
+      };
+      img.src = cleanSrc;
+    });
+  } catch (err) {
+    console.warn('cropVisibleSquare error:', err);
+    return null;
+  }
+};
 
 export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   imageUrl,
@@ -117,17 +168,30 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   const resetFraming = () => {
     setZoom(MIN_ZOOM);
     setOffset(null);
+    onImagePositionChange?.('50% 50%');
   };
 
-  // Sincronizar cuando cambia el item desde el exterior
+  // Sincronizar cuando cambia el item desde el exterior (al cambiar de tarjeta)
   useEffect(() => {
-    if (imageUrl !== lastUploadedUrlRef.current) {
-      setDisplaySrc(imageUrl || '');
-      setRawSourceUrl(imageUrl || '');
+    // Si estamos subiendo o procesando, jamás sobreescribir con valor viejo del padre
+    if (isProcessing || isCropping) return;
+
+    if (imageUrl) {
+      if (imageUrl !== lastUploadedUrlRef.current && imageUrl !== displaySrc) {
+        lastUploadedUrlRef.current = imageUrl;
+        setDisplaySrc(imageUrl);
+        setRawSourceUrl(imageUrl);
+        resetFraming();
+        setIsPanMode(false);
+      }
+    } else if (!imageUrl && displaySrc) {
+      lastUploadedUrlRef.current = '';
+      setDisplaySrc('');
+      setRawSourceUrl('');
       resetFraming();
       setIsPanMode(false);
     }
-  }, [imageUrl]);
+  }, [imageUrl, isProcessing, isCropping]);
 
   // Dimensiones naturales de la imagen original
   useEffect(() => {
@@ -237,6 +301,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
+    const finalOffset = pendingOffsetRef.current ?? effectiveOffset;
     if (pendingOffsetRef.current) setOffset(pendingOffsetRef.current);
     pendingOffsetRef.current = null;
     dragRef.current = null;
@@ -244,6 +309,12 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       e.currentTarget.releasePointerCapture(e.pointerId);
     }
     setIsDragging(false);
+
+    // Sincronizar inmediatamente la posición relativa en el padre
+    if (dimsReady && boxSize > 0) {
+      const pos = computePositionPercent(finalOffset, renderW, renderH, boxSize);
+      onImagePositionChange?.(pos);
+    }
   };
 
   // Rueda del ratón = zoom opcional (listener no pasivo para evitar scroll de la página)
@@ -291,11 +362,15 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     e.target.value = '';
 
     const instantLocalUrl = URL.createObjectURL(file);
+    lastUploadedUrlRef.current = instantLocalUrl;
     setDisplaySrc(instantLocalUrl);
     setRawSourceUrl(instantLocalUrl);
     resetFraming();
     setIsPanMode(false);
     if (onMediaTypeChange) onMediaTypeChange('image');
+    // Notificar al padre de inmediato para que la previsualización no se revierta
+    onImageChange(instantLocalUrl);
+    onImagePositionChange?.('50% 50%');
 
     try {
       setIsProcessing(true);
@@ -322,6 +397,10 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       onImagePositionChange?.('50% 50%');
     } catch (err) {
       console.error('Error al procesar imagen:', err);
+      // Mantener la URL local como respaldo si falló la subida remota
+      lastUploadedUrlRef.current = instantLocalUrl;
+      setDisplaySrc(instantLocalUrl);
+      onImageChange(instantLocalUrl);
     } finally {
       setIsProcessing(false);
       if (onProcessingChange) onProcessingChange(false);
@@ -368,22 +447,22 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       setIsCropping(true);
       if (onProcessingChange) onProcessingChange(true);
 
+      // Posición relativa guardada inmediatamente como respaldo
+      const posPercent = computePositionPercent(effectiveOffset, renderW, renderH, boxSize);
+      onImagePositionChange?.(posPercent);
+
       const blob = await cropVisibleSquare(src, effectiveOffset, renderW, renderH, boxSize);
       if (!blob) {
-        console.warn('No se pudo generar el recorte (posible restricción CORS de la imagen).');
+        console.warn('Canvas no pudo exportar el recorte, manteniendo posicionamiento CSS:', posPercent);
+        setIsPanMode(false);
         return;
       }
 
       const localUrl = URL.createObjectURL(blob);
-      // Pre-decodificar para que el cambio sea instantáneo y sin parpadeo
-      await new Promise<void>((resolve) => {
-        const pre = new window.Image();
-        pre.onload = () => resolve();
-        pre.onerror = () => resolve();
-        pre.src = localUrl;
-      });
       lastUploadedUrlRef.current = localUrl;
       setDisplaySrc(localUrl);
+      setRawSourceUrl(localUrl);
+      onImageChange(localUrl);
 
       const uploaded = await uploadMediaToSupabase(
         new File([blob], `crop-${Date.now()}.webp`, { type: 'image/webp' }),
@@ -391,6 +470,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       );
       const finalUrl = uploaded || localUrl;
       lastUploadedUrlRef.current = finalUrl;
+      setDisplaySrc(finalUrl);
+      setRawSourceUrl(finalUrl);
+      resetFraming();
       onImageChange(finalUrl);
       onImagePositionChange?.('50% 50%');
     } catch (err) {
@@ -762,9 +844,11 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                 type="text"
                 value={activeImageSrc}
                 onChange={(e) => {
-                  setDisplaySrc(e.target.value);
-                  setRawSourceUrl(e.target.value);
-                  onImageChange(e.target.value);
+                  const val = e.target.value;
+                  lastUploadedUrlRef.current = val;
+                  setDisplaySrc(val);
+                  setRawSourceUrl(val);
+                  onImageChange(val);
                 }}
                 placeholder="/images/hacienda/..."
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#C8A45D]"
