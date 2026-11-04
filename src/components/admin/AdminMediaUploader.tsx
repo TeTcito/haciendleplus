@@ -132,6 +132,7 @@ const cropVisibleSquare = async (
 export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   imageUrl,
   onImageChange,
+  imagePosition = '50% 50%',
   onImagePositionChange,
   videoUrl = '',
   onVideoChange,
@@ -459,10 +460,24 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       }
 
       const localUrl = URL.createObjectURL(blob);
+      // Pre-decodificar para que el reemplazo sea 100% fluido e instantáneo
+      await new Promise<void>((resolve) => {
+        const pre = new window.Image();
+        pre.onload = () => resolve();
+        pre.onerror = () => resolve();
+        pre.src = localUrl;
+        if (pre.complete) resolve();
+      });
+
+      // Salir INMEDIATAMENTE de pan mode y reiniciar el offset antes de la subida a la nube
+      // para evitar cualquier salto visual o doble desplazamiento durante la espera de red
       lastUploadedUrlRef.current = localUrl;
       setDisplaySrc(localUrl);
       setRawSourceUrl(localUrl);
+      resetFraming();
+      setIsPanMode(false);
       onImageChange(localUrl);
+      onImagePositionChange?.('50% 50%');
 
       const uploaded = await uploadMediaToSupabase(
         new File([blob], `crop-${Date.now()}.webp`, { type: 'image/webp' }),
@@ -472,11 +487,11 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       lastUploadedUrlRef.current = finalUrl;
       setDisplaySrc(finalUrl);
       setRawSourceUrl(finalUrl);
-      resetFraming();
       onImageChange(finalUrl);
       onImagePositionChange?.('50% 50%');
     } catch (err) {
       console.warn('Error al aplicar el encuadre:', err);
+      setIsPanMode(false);
     } finally {
       setIsCropping(false);
       setIsPanMode(false);
@@ -677,6 +692,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                     src={activeImageSrc}
                     alt="Vista previa"
                     draggable={false}
+                    style={{ objectPosition: imagePosition || '50% 50%' }}
                     className="w-full h-full object-cover"
                   />
                 )}
