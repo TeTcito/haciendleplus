@@ -625,7 +625,7 @@ export const CorporatePageDesktop: React.FC = () => {
                         }}
                         className="group relative h-80 sm:h-96 lg:h-[400px] rounded-[2rem] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col justify-end p-5 select-none h-full"
                       >
-                        {card.videoUrl ? (
+                        {card.mediaType === 'video' && card.videoUrl ? (
                           <video
                             src={card.videoUrl}
                             poster={card.image}
@@ -648,7 +648,7 @@ export const CorporatePageDesktop: React.FC = () => {
                         {/* Badge superior */}
                         <div className="relative z-10 self-start mb-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black/60 text-[#E2C585] backdrop-blur-sm border border-white/10">
-                            {card.videoUrl && <span className="text-[9px]">▶</span>}
+                            {card.mediaType === 'video' && card.videoUrl && <span className="text-[9px]">▶</span>}
                             <span>{badge}</span>
                           </span>
                         </div>

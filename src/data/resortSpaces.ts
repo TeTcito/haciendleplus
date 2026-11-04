@@ -53,9 +53,9 @@ export const RESORT_SPACES: ResortSpaceItem[] = [
       'Carpas de gala impermeables de alta gama instaladas sobre 5.000 m² de jardines andinos planos. Diseñadas para celebraciones masivas, con tarima modular para orquesta o presentaciones, pista de baile iluminada, generador eléctrico de respaldo y servicio de catering propio in situ.',
     description_en:
       'High-end waterproof gala tents erected over 5,000 m² of manicured flat Andean lawns. Purpose-built for massive celebrations, featuring a modular stage for live orchestras or keynotes, dance floor, backup power generator, and in-house gourmet catering.',
-    mediaType: 'video',
+    mediaType: 'image',
     image: '/images/hacienda/boda-carpa-gala.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxury-resort-in-the-mountains-41573-large.mp4',
+    videoUrl: '',
     capacities: {
       auditorium: '350+ pax',
       banquet: '300 pax',
