@@ -9,7 +9,6 @@ import {
   Utensils,
   BedDouble,
   MapPin,
-  Play,
   Building2,
   HeartHandshake,
   Search,
@@ -858,14 +857,6 @@ export const HomePageMobile: React.FC = () => {
               <span>{tr("Quote Service", "Cotizar Servicio")}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
-
-            <Link
-              to={activePortfolioService.route}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-[#141413]/10 text-xs font-bold text-[#141413] hover:text-[#C04D18] active:scale-95 transition-all"
-            >
-              <Play className="w-3 h-3 fill-current" />
-              <span>{tr("View Page", "Ver Página")}</span>
-            </Link>
           </div>
         </div>
       </section>

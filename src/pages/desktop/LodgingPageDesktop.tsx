@@ -54,13 +54,12 @@ export const LodgingPageDesktop: React.FC = () => {
 
   // Fechas dinámicas automáticas para el widget de agendamiento
   const todayStr = new Date().toISOString().split('T')[0];
-  const tomorrowStr = new Date(Date.now() + 86400000).toISOString().split('T')[0];
 
-  // Estado del widget funcional de cotización según número de personas y duración
-  const [destination, setDestination] = useState('Personal de Empresas / Equipos Técnicos');
-  const [checkInDate, setCheckInDate] = useState(tomorrowStr);
-  const [stayDuration, setStayDuration] = useState('7 a 14 Noches (Estadía Semanal / Quincenal)');
-  const [guestsSelection, setGuestsSelection] = useState('28 a 50 Personas (Delegación / ONG / Empresa)');
+  // Estado del widget funcional de cotización según número de personas y duración (inicia vacío)
+  const [destination, setDestination] = useState('');
+  const [checkInDate, setCheckInDate] = useState('');
+  const [stayDuration, setStayDuration] = useState('');
+  const [guestsSelection, setGuestsSelection] = useState('');
 
   // Referencias y manejadores para abrir el selector de fecha al hacer clic en cualquier parte del bloque
   const checkInInputRef = useRef<HTMLInputElement>(null);
@@ -119,13 +118,51 @@ export const LodgingPageDesktop: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Función al hacer clic en el botón "Cotizar Estadía" de la barra de cotización según personas y duración
+  // Función al hacer clic en el botón "Cotizar Estadía" de la barra de cotización: envía directamente a WhatsApp en formato formulario
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    openQuoteModal({
-      serviceType: 'hospedaje',
-      itemName: `${destination} | Ingreso: ${checkInDate} | Duración: ${stayDuration} | ${guestsSelection}`,
+
+    if (!destination || !guestsSelection || !stayDuration || !checkInDate) {
+      alert(
+        tr(
+          "Please fill in all fields (group type, number of guests, stay duration, and check-in date) to check availability.",
+          "Por favor completa todos los campos (tipo de grupo, número de personas, duración y fecha de ingreso) para consultar disponibilidad."
+        )
+      );
+      return;
+    }
+
+    const formattedDate = checkInDate.includes('-')
+      ? checkInDate.split('-').reverse().join('/')
+      : checkInDate;
+
+    const message = isEn
+      ? `Hello, Hacienda Le Plus! I would like to check availability and request a quote for our stay:
+
+📋 *BOOKING INQUIRY & QUOTE*
+• *Group Profile / Room:* ${destination}
+• *Number of Guests:* ${guestsSelection}
+• *Stay Duration:* ${stayDuration}
+• *Check-in Date:* ${formattedDate}
+
+Could you please confirm availability for these dates and provide the proposal? Thank you!`
+      : `¡Hola, Hacienda Le Plus! Deseo consultar disponibilidad y cotización para nuestra estadía:
+
+📋 *CONSULTA DE DISPONIBILIDAD Y COTIZACIÓN*
+• *Tipo de Grupo / Habitación:* ${destination}
+• *N.º de Personas:* ${guestsSelection}
+• *Duración de Estadía:* ${stayDuration}
+• *Fecha de Ingreso:* ${formattedDate}
+
+¿Me podrían confirmar la disponibilidad para estas fechas y remitir la cotización correspondiente? ¡Muchas gracias!`;
+
+    const waUrl = buildContextualWhatsAppUrl({
+      phone: siteConfig.whatsappNumber,
+      context: 'hospedaje',
+      customText: message,
     });
+
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Reseñas bilingües para el carrusel de testimonios (Larga Estadía, Empresas, ONGs y Grupos)
@@ -310,15 +347,31 @@ export const LodgingPageDesktop: React.FC = () => {
                       </label>
                       <select
                         id="booking-dest"
+                        required
                         value={destination}
                         onChange={(e) => setDestination(e.target.value)}
-                        className="w-full text-xs sm:text-sm font-bold text-[#06150F] bg-transparent outline-none cursor-pointer truncate"
+                        className={`w-full text-xs sm:text-sm font-bold ${
+                          destination ? 'text-[#06150F]' : 'text-[#0A1F17]/45'
+                        } bg-transparent outline-none cursor-pointer truncate`}
                       >
-                        <option value="Personal de Empresas / Equipos Técnicos">{tr("Corporate Staff", "Personal de Empresas")}</option>
-                        <option value="Delegaciones / ONG / Voluntarios (HXP / IMC)">{tr("Delegations & NGOs", "Delegaciones & ONGs")}</option>
-                        <option value="Grupos Internacionales y Misiones">{tr("International Groups", "Grupos Internacionales")}</option>
-                        <option value="Bloque Completo (14 Habitaciones · 28-80 Pax)">{tr("14 Rooms Block", "Bloque 14 Habitaciones")}</option>
-                        <option value="Suites Ejecutivas & Chalet (1-10 Pax)">{tr("Executive Suites & Chalet", "Suites Ejecutivas & Chalet")}</option>
+                        <option value="" disabled hidden>
+                          {tr("Select type...", "Seleccionar tipo...")}
+                        </option>
+                        <option value="Personal de Empresas / Equipos Técnicos" className="text-[#06150F]">
+                          {tr("Corporate Staff", "Personal de Empresas")}
+                        </option>
+                        <option value="Delegaciones / ONG / Voluntarios (HXP / IMC)" className="text-[#06150F]">
+                          {tr("Delegations & NGOs", "Delegaciones & ONGs")}
+                        </option>
+                        <option value="Grupos Internacionales y Misiones" className="text-[#06150F]">
+                          {tr("International Groups", "Grupos Internacionales")}
+                        </option>
+                        <option value="Bloque Completo (14 Habitaciones · 28-80 Pax)" className="text-[#06150F]">
+                          {tr("14 Rooms Block", "Bloque 14 Habitaciones")}
+                        </option>
+                        <option value="Suites Ejecutivas & Chalet (1-10 Pax)" className="text-[#06150F]">
+                          {tr("Executive Suites & Chalet", "Suites Ejecutivas & Chalet")}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -334,14 +387,28 @@ export const LodgingPageDesktop: React.FC = () => {
                       </label>
                       <select
                         id="booking-guests"
+                        required
                         value={guestsSelection}
                         onChange={(e) => setGuestsSelection(e.target.value)}
-                        className="w-full text-xs sm:text-sm font-bold text-[#06150F] bg-transparent outline-none cursor-pointer truncate"
+                        className={`w-full text-xs sm:text-sm font-bold ${
+                          guestsSelection ? 'text-[#06150F]' : 'text-[#0A1F17]/45'
+                        } bg-transparent outline-none cursor-pointer truncate`}
                       >
-                        <option value="1 a 10 Personas (Suites / Chalet)">{tr("1 to 10 Guests (Executive)", "1 a 10 Personas (Ejecutivo)")}</option>
-                        <option value="10 a 25 Personas (Equipo / Empresa)">{tr("10 to 25 Guests (Company)", "10 a 25 Personas (Empresa)")}</option>
-                        <option value="28 a 50 Personas (Delegación / ONG / Empresa)">{tr("28 to 50 Guests (Delegation/NGO)", "28 a 50 Personas (Delegación/ONG)")}</option>
-                        <option value="50 a 80 Personas (Bloque Completo 14 Hab.)">{tr("50 to 80 Guests (14 Rooms)", "50 a 80 Personas (14 Hab.)")}</option>
+                        <option value="" disabled hidden>
+                          {tr("Select guests...", "Seleccionar personas...")}
+                        </option>
+                        <option value="1 a 10 Personas (Suites / Chalet)" className="text-[#06150F]">
+                          {tr("1 to 10 Guests (Executive)", "1 a 10 Personas (Ejecutivo)")}
+                        </option>
+                        <option value="10 a 25 Personas (Equipo / Empresa)" className="text-[#06150F]">
+                          {tr("10 to 25 Guests (Company)", "10 a 25 Personas (Empresa)")}
+                        </option>
+                        <option value="28 a 50 Personas (Delegación / ONG / Empresa)" className="text-[#06150F]">
+                          {tr("28 to 50 Guests (Delegation/NGO)", "28 a 50 Personas (Delegación/ONG)")}
+                        </option>
+                        <option value="50 a 80 Personas (Bloque Completo 14 Hab.)" className="text-[#06150F]">
+                          {tr("50 to 80 Guests (14 Rooms)", "50 a 80 Personas (14 Hab.)")}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -357,14 +424,28 @@ export const LodgingPageDesktop: React.FC = () => {
                       </label>
                       <select
                         id="booking-duration"
+                        required
                         value={stayDuration}
                         onChange={(e) => setStayDuration(e.target.value)}
-                        className="w-full text-xs sm:text-sm font-bold text-[#06150F] bg-transparent outline-none cursor-pointer truncate"
+                        className={`w-full text-xs sm:text-sm font-bold ${
+                          stayDuration ? 'text-[#06150F]' : 'text-[#0A1F17]/45'
+                        } bg-transparent outline-none cursor-pointer truncate`}
                       >
-                        <option value="3 a 6 Noches (Estadía Semanal Corta)">{tr("3 to 6 Nights (Short / Weekly)", "3 a 6 Noches (Corta / Semanal)")}</option>
-                        <option value="7 a 14 Noches (Estadía Semanal / Quincenal)">{tr("7 to 14 Nights (1 to 2 Weeks)", "7 a 14 Noches (1 a 2 Semanas)")}</option>
-                        <option value="15 a 30+ Noches (Larga Estadía Mensual)">{tr("15 to 30+ Nights (Monthly / Long)", "15 a 30+ Noches (Mensual / Larga)")}</option>
-                        <option value="Convenio Corporativo Recurrente">{tr("Corporate Agreement / Months", "Convenio Corporativo / Meses")}</option>
+                        <option value="" disabled hidden>
+                          {tr("Select duration...", "Seleccionar duración...")}
+                        </option>
+                        <option value="3 a 6 Noches (Estadía Semanal Corta)" className="text-[#06150F]">
+                          {tr("3 to 6 Nights (Short / Weekly)", "3 a 6 Noches (Corta / Semanal)")}
+                        </option>
+                        <option value="7 a 14 Noches (Estadía Semanal / Quincenal)" className="text-[#06150F]">
+                          {tr("7 to 14 Nights (1 to 2 Weeks)", "7 a 14 Noches (1 a 2 Semanas)")}
+                        </option>
+                        <option value="15 a 30+ Noches (Larga Estadía Mensual)" className="text-[#06150F]">
+                          {tr("15 to 30+ Nights (Monthly / Long)", "15 a 30+ Noches (Mensual / Larga)")}
+                        </option>
+                        <option value="Convenio Corporativo Recurrente" className="text-[#06150F]">
+                          {tr("Corporate Agreement / Months", "Convenio Corporativo / Meses")}
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -391,12 +472,15 @@ export const LodgingPageDesktop: React.FC = () => {
                       <input
                         ref={checkInInputRef}
                         id="booking-in"
+                        required
                         type="date"
                         min={todayStr}
                         value={checkInDate}
                         onClick={(e) => handleOpenCheckInPicker(e)}
                         onChange={(e) => setCheckInDate(e.target.value)}
-                        className="w-full text-xs sm:text-sm font-bold text-[#06150F] bg-transparent outline-none cursor-pointer"
+                        className={`w-full text-xs sm:text-sm font-bold ${
+                          checkInDate ? 'text-[#06150F]' : 'text-[#0A1F17]/45'
+                        } bg-transparent outline-none cursor-pointer`}
                       />
                     </div>
                   </div>

@@ -8,7 +8,6 @@ import {
   ArrowRight,
   Clock,
   ShieldCheck,
-  Play,
   Heart,
   ChevronLeft,
   ChevronRight,
@@ -416,16 +415,6 @@ export const WeddingsPageDesktop: React.FC = () => {
                   >
                     <span>{tr("Quote Wedding or Celebration", "Cotizar Boda o Celebración")}</span>
                     <ArrowRight className="w-4 h-4 text-[#E2C585] group-hover:translate-x-1 transition-transform" />
-                  </a>
-
-                  <a
-                    href="#nuestros-servicios-bodas"
-                    className="group inline-flex items-center gap-2.5 px-4 py-3 rounded-[8px] bg-[#F8F3EB]/90 hover:bg-white text-[#1E1A17] border border-[#C4B49B] text-xs sm:text-[13px] font-semibold shadow-2xs transition-all"
-                  >
-                    <span>{tr("View Services", "Ver Servicios")}</span>
-                    <span className="w-6 h-6 rounded-full border border-[#8C6D3F] bg-[#EFE7DA] group-hover:bg-[#13281F] group-hover:border-[#13281F] text-[#13281F] group-hover:text-[#E2C585] flex items-center justify-center transition-colors">
-                      <Play className="w-2.5 h-2.5 fill-current ml-0.5" />
-                    </span>
                   </a>
                 </div>
               </ScrollReveal>

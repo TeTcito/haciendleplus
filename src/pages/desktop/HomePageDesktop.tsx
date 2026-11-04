@@ -9,7 +9,6 @@ import {
   Utensils,
   BedDouble,
   MapPin,
-  Play,
   Building2,
   HeartHandshake,
   Search,
@@ -521,19 +520,6 @@ export const HomePageDesktop: React.FC = () => {
                     >
                       <span>{tr("Explore 3 Pillars", "Ver 3 Servicios")}</span>
                     </a>
-
-                    <button
-                      type="button"
-                      onClick={() => setVideoEnabled(!videoEnabled)}
-                      className="inline-flex items-center gap-1.5 px-4 py-3 rounded-full bg-black/35 hover:bg-black/55 text-[#E2C585] border border-[#C8A45D]/35 text-xs font-semibold transition-all cursor-pointer"
-                    >
-                      <Play className="w-3.5 h-3.5 fill-current" />
-                      <span>
-                        {videoEnabled
-                          ? tr("View Real Photo", "Ver Foto Real")
-                          : tr("HD Video Tour", "Video HD")}
-                      </span>
-                    </button>
                   </div>
                 </ScrollReveal>
 
@@ -1075,18 +1061,6 @@ export const HomePageDesktop: React.FC = () => {
                     <span>{tr("Quote Service", "Cotizar Servicio")}</span>
                     <ArrowRight className="w-4 h-4" />
                   </a>
-                </ScrollReveal>
-
-                <ScrollReveal direction="right" delay={585} distance={60} className="inline-block">
-                  <Link
-                    to={activePortfolioService.route}
-                    className="group inline-flex items-center gap-2 text-xs sm:text-[13px] font-bold text-[#141413] hover:text-[#C04D18] transition-colors"
-                  >
-                    <span className="w-7 h-7 rounded-full border-[1.8px] border-[#141413] group-hover:border-[#C04D18] flex items-center justify-center transition-colors">
-                      <Play className="w-3 h-3 fill-current ml-0.5" />
-                    </span>
-                    <span>{tr("View Page", "Ver Página")}</span>
-                  </Link>
                 </ScrollReveal>
               </div>
             </div>

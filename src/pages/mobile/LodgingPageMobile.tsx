@@ -195,16 +195,43 @@ export const LodgingPageMobile: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Función al hacer clic en el botón "Cotizar Estadía" de la barra de cotización según personas y duración
+  // Función al hacer clic en el botón "Cotizar Estadía" de la barra de cotización: envía directamente a WhatsApp en formato formulario
   const handleBookingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const dest = destination || (tr("Group / Corporate Lodging", "Hospedaje Grupal / Empresas"));
-    const dur = stayDuration || (tr("Stay duration to arrange", "Estadía a convenir"));
-    const guests = guestsSelection || (tr("To be specified", "Por definir"));
-    openQuoteModal({
-      serviceType: 'hospedaje',
-      itemName: `${dest} | ${dur} | ${guests}`,
+    const dest = destination || tr("Corporate Staff / Groups", "Personal de Empresas / Grupos");
+    const dur = stayDuration || tr("To be arranged", "A convenir");
+    const guests = guestsSelection || tr("To be specified", "Por definir");
+    const formattedDate = checkInDate
+      ? checkInDate.includes('-')
+        ? checkInDate.split('-').reverse().join('/')
+        : checkInDate
+      : '';
+
+    const message = isEn
+      ? `Hello, Hacienda Le Plus! I would like to check availability and request a quote for our stay:
+
+📋 *BOOKING INQUIRY & QUOTE*
+• *Group Profile / Room:* ${dest}
+• *Number of Guests:* ${guests}
+• *Stay Duration:* ${dur}${formattedDate ? `\n• *Check-in Date:* ${formattedDate}` : ''}
+
+Could you please confirm availability for these dates and provide the proposal? Thank you!`
+      : `¡Hola, Hacienda Le Plus! Deseo consultar disponibilidad y cotización para nuestra estadía:
+
+📋 *CONSULTA DE DISPONIBILIDAD Y COTIZACIÓN*
+• *Tipo de Grupo / Habitación:* ${dest}
+• *N.º de Personas:* ${guests}
+• *Duración de Estadía:* ${dur}${formattedDate ? `\n• *Fecha de Ingreso:* ${formattedDate}` : ''}
+
+¿Me podrían confirmar la disponibilidad para estas fechas y remitir la cotización correspondiente? ¡Muchas gracias!`;
+
+    const waUrl = buildContextualWhatsAppUrl({
+      phone: siteConfig.whatsappNumber,
+      context: 'hospedaje',
+      customText: message,
     });
+
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Reseñas bilingües para el carrusel de testimonios (Larga Estadía, Empresas, ONGs y Grupos)
