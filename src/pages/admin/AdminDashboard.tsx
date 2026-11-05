@@ -167,6 +167,9 @@ export const AdminDashboard: React.FC = () => {
         'Acceso a piscina y restaurante',
       ],
       image: '/images/hacienda/suite-1-leplus.png',
+      rawImage: '/images/hacienda/suite-1-leplus.png',
+      imagePosition: '50% 50%',
+      imageZoom: 1,
       videoUrl: '',
       mediaType: 'image',
       available: true,
@@ -286,6 +289,9 @@ export const AdminDashboard: React.FC = () => {
       description: '',
       ctaText: 'Solicitar Información →',
       image: '/images/hacienda/piscina-cubierta-climatizada.png',
+      rawImage: '/images/hacienda/piscina-cubierta-climatizada.png',
+      imagePosition: '50% 50%',
+      imageZoom: 1,
       videoUrl: '',
       mediaType: 'image',
       serviceType: 'hospedaje',
@@ -361,6 +367,9 @@ export const AdminDashboard: React.FC = () => {
       badge: 'Paquete Nupcial',
       badgeClass: 'bg-[#0F1C15]/85 text-[#E2C585]',
       image: '/images/hacienda/boda-1.png',
+      rawImage: '/images/hacienda/boda-1.png',
+      imagePosition: '50% 50%',
+      imageZoom: 1,
       videoUrl: '',
       mediaType: 'image',
       specs: [
@@ -455,6 +464,9 @@ export const AdminDashboard: React.FC = () => {
       ],
       highlightBadge: 'Formato Exclusivo',
       image: '/images/hacienda/capacitaciones-2.png',
+      rawImage: '/images/hacienda/capacitaciones-2.png',
+      imagePosition: '50% 50%',
+      imageZoom: 1,
       videoUrl: '',
       mediaType: 'image',
       showPrice: true,
@@ -534,6 +546,9 @@ export const AdminDashboard: React.FC = () => {
       subtitle: '',
       highlightMetric: 'Hasta 350+ pax',
       image: '/images/hacienda/eventos-1.png',
+      rawImage: '/images/hacienda/eventos-1.png',
+      imagePosition: '50% 50%',
+      imageZoom: 1,
       videoUrl: '',
       mediaType: 'image',
       whatsappItemName: 'Evento Corporativo — Hacienda Le Plus',
@@ -1002,8 +1017,12 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingCabin.image}
+                            rawImageUrl={editingCabin.rawImage || editingCabin.image}
                             imagePosition={editingCabin.imagePosition}
+                            imageZoom={editingCabin.imageZoom}
                             onImagePositionChange={(pos) => setEditingCabin((prev) => prev ? { ...prev, imagePosition: pos } : null)}
+                            onImageZoomChange={(z) => setEditingCabin((prev) => prev ? { ...prev, imageZoom: z } : null)}
+                            onRawImageChange={(raw) => setEditingCabin((prev) => prev ? { ...prev, rawImage: raw } : null)}
                             onImageChange={(url) => {
                               setEditingCabin((prev) => prev ? { ...prev, image: url, mediaType: 'image' } : null);
                             }}
@@ -1499,6 +1518,27 @@ export const AdminDashboard: React.FC = () => {
                       <div className="flex flex-col justify-between">
                         <AdminMediaUploader
                           imageUrl={editingHeroBanner.image}
+                          rawImageUrl={editingHeroBanner.rawImage || editingHeroBanner.image}
+                          imagePosition={editingHeroBanner.imagePosition}
+                          imageZoom={editingHeroBanner.imageZoom}
+                          onImagePositionChange={(pos) =>
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
+                              imagePosition: pos,
+                            }))
+                          }
+                          onImageZoomChange={(z) =>
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
+                              imageZoom: z,
+                            }))
+                          }
+                          onRawImageChange={(raw) =>
+                            setEditingHeroBanner((prev) => ({
+                              ...(prev || lodgingHeroBanner),
+                              rawImage: raw,
+                            }))
+                          }
                           onImageChange={(url) =>
                             setEditingHeroBanner((prev) => ({
                               ...(prev || lodgingHeroBanner),
@@ -1677,8 +1717,12 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingServiceCard.image}
+                            rawImageUrl={editingServiceCard.rawImage || editingServiceCard.image}
                             imagePosition={editingServiceCard.imagePosition}
+                            imageZoom={editingServiceCard.imageZoom}
                             onImagePositionChange={(pos) => setEditingServiceCard((prev) => prev ? { ...prev, imagePosition: pos } : null)}
+                            onImageZoomChange={(z) => setEditingServiceCard((prev) => prev ? { ...prev, imageZoom: z } : null)}
+                            onRawImageChange={(raw) => setEditingServiceCard((prev) => prev ? { ...prev, rawImage: raw } : null)}
                             onImageChange={(url) =>
                               setEditingServiceCard((prev) => prev ? {
                                 ...prev,
@@ -2012,8 +2056,12 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingWedding.image}
+                            rawImageUrl={editingWedding.rawImage || editingWedding.image}
                             imagePosition={editingWedding.imagePosition}
+                            imageZoom={editingWedding.imageZoom}
                             onImagePositionChange={(pos) => setEditingWedding((prev) => prev ? { ...prev, imagePosition: pos } : null)}
+                            onImageZoomChange={(z) => setEditingWedding((prev) => prev ? { ...prev, imageZoom: z } : null)}
+                            onRawImageChange={(raw) => setEditingWedding((prev) => prev ? { ...prev, rawImage: raw } : null)}
                             onImageChange={(url) =>
                               setEditingWedding((prev) => prev ? { ...prev, image: url, mediaType: 'image' } : null)
                             }
@@ -2366,8 +2414,12 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingExclusive.image}
+                            rawImageUrl={editingExclusive.rawImage || editingExclusive.image}
                             imagePosition={editingExclusive.imagePosition}
+                            imageZoom={editingExclusive.imageZoom}
                             onImagePositionChange={(pos) => setEditingExclusive((prev) => prev ? { ...prev, imagePosition: pos } : null)}
+                            onImageZoomChange={(z) => setEditingExclusive((prev) => prev ? { ...prev, imageZoom: z } : null)}
+                            onRawImageChange={(raw) => setEditingExclusive((prev) => prev ? { ...prev, rawImage: raw } : null)}
                             onImageChange={(url) =>
                               setEditingExclusive((prev) => prev ? {
                                 ...prev,
@@ -2700,8 +2752,12 @@ export const AdminDashboard: React.FC = () => {
                         <div className="flex flex-col justify-between">
                           <AdminMediaUploader
                             imageUrl={editingCorpHighlight.image}
+                            rawImageUrl={editingCorpHighlight.rawImage || editingCorpHighlight.image}
                             imagePosition={editingCorpHighlight.imagePosition}
+                            imageZoom={editingCorpHighlight.imageZoom}
                             onImagePositionChange={(pos) => setEditingCorpHighlight((prev) => prev ? { ...prev, imagePosition: pos } : null)}
+                            onImageZoomChange={(z) => setEditingCorpHighlight((prev) => prev ? { ...prev, imageZoom: z } : null)}
+                            onRawImageChange={(raw) => setEditingCorpHighlight((prev) => prev ? { ...prev, rawImage: raw } : null)}
                             onImageChange={(url) =>
                               setEditingCorpHighlight((prev) => prev ? {
                                 ...prev,

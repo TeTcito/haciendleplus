@@ -23,8 +23,12 @@ import {
 interface AdminMediaUploaderProps {
   imageUrl: string;
   onImageChange: (url: string) => void;
+  rawImageUrl?: string;
+  onRawImageChange?: (url: string) => void;
   imagePosition?: string;
   onImagePositionChange?: (pos: string) => void;
+  imageZoom?: number;
+  onImageZoomChange?: (zoom: number) => void;
   videoUrl?: string;
   onVideoChange?: (url: string) => void;
   mediaType?: 'image' | 'video';
@@ -60,6 +64,26 @@ const computePositionPercent = (
       ? Math.round(Math.max(0, Math.min(100, (-off.y / maxOverflowY) * 100)))
       : 50;
   return `${px}% ${py}%`;
+};
+
+/**
+ * Calcula el offset (en píxeles) a partir de una posición percentual (X% Y%).
+ */
+const computeOffsetFromPercent = (
+  pos: string,
+  w: number,
+  h: number,
+  boxSize: number
+): Offset => {
+  const parts = pos.trim().split(/\s+/);
+  const px = parseFloat(parts[0]) || 50;
+  const py = parseFloat(parts[1]) || 50;
+  const maxOverflowX = Math.max(0, w - boxSize);
+  const maxOverflowY = Math.max(0, h - boxSize);
+  return {
+    x: -((px / 100) * maxOverflowX),
+    y: -((py / 100) * maxOverflowY),
+  };
 };
 
 /**
@@ -132,8 +156,12 @@ const cropVisibleSquare = async (
 export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   imageUrl,
   onImageChange,
+  rawImageUrl,
+  onRawImageChange,
   imagePosition = '50% 50%',
   onImagePositionChange,
+  imageZoom = 1,
+  onImageZoomChange,
   videoUrl = '',
   onVideoChange,
   mediaType = 'image',
@@ -146,14 +174,14 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   const [videoUploadNotice, setVideoUploadNotice] = useState<string | null>(null);
   const [displaySrc, setDisplaySrc] = useState<string>(imageUrl || '');
   // Imagen original (sin recortar) sobre la que se hace el encuadre
-  const [rawSourceUrl, setRawSourceUrl] = useState<string>(imageUrl || '');
+  const [rawSourceUrl, setRawSourceUrl] = useState<string>(rawImageUrl || imageUrl || '');
   const lastUploadedUrlRef = useRef<string | null>(null);
 
   // ======================= ESTADO DEL ENCUADRE =======================
   const [isPanMode, setIsPanMode] = useState(false);
   const [isCropping, setIsCropping] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [zoom, setZoom] = useState(MIN_ZOOM); // 100%: la imagen tal cual, sin zoom inicial
+  const [zoom, setZoom] = useState(imageZoom && imageZoom >= MIN_ZOOM ? imageZoom : MIN_ZOOM);
   const [offset, setOffset] = useState<Offset | null>(null); // null = centrada
   const [boxSize, setBoxSize] = useState(0);
   const [naturalDimensions, setNaturalDimensions] = useState({ width: 0, height: 0 });
@@ -170,6 +198,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     setZoom(MIN_ZOOM);
     setOffset(null);
     onImagePositionChange?.('50% 50%');
+    onImageZoomChange?.(1);
   };
 
   // Sincronizar cuando cambia el item desde el exterior (al cambiar de tarjeta)
@@ -177,12 +206,14 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     // Si estamos subiendo o procesando, jamás sobreescribir con valor viejo del padre
     if (isProcessing || isCropping) return;
 
+    const effectiveRaw = rawImageUrl || imageUrl || '';
     if (imageUrl) {
       if (imageUrl !== lastUploadedUrlRef.current && imageUrl !== displaySrc) {
         lastUploadedUrlRef.current = imageUrl;
         setDisplaySrc(imageUrl);
-        setRawSourceUrl(imageUrl);
-        resetFraming();
+        setRawSourceUrl(effectiveRaw);
+        setZoom(imageZoom && imageZoom >= MIN_ZOOM ? imageZoom : MIN_ZOOM);
+        setOffset(null);
         setIsPanMode(false);
       }
     } else if (!imageUrl && displaySrc) {
@@ -192,7 +223,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       resetFraming();
       setIsPanMode(false);
     }
-  }, [imageUrl, isProcessing, isCropping]);
+  }, [imageUrl, rawImageUrl, imageZoom, isProcessing, isCropping]);
 
   // Dimensiones naturales de la imagen original
   useEffect(() => {
@@ -259,6 +290,25 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     const py = (cy - cur.y) / h;
     setZoom(nextZoom);
     setOffset(clampOffset(cx - px * nw, cy - py * nh, nw, nh));
+  };
+
+  const handleStartPanMode = () => {
+    const master = rawImageUrl || rawSourceUrl || displaySrc;
+    setRawSourceUrl(master);
+    const initialZoom = imageZoom && imageZoom >= MIN_ZOOM ? imageZoom : MIN_ZOOM;
+    setZoom(initialZoom);
+    if (dimsReady && boxSize > 0) {
+      const { w, h } = getRenderSize(initialZoom);
+      if (imagePosition && imagePosition !== '50% 50%') {
+        const initOff = computeOffsetFromPercent(imagePosition, w, h, boxSize);
+        setOffset(clampOffset(initOff.x, initOff.y, w, h));
+      } else {
+        setOffset(null);
+      }
+    } else {
+      setOffset(null);
+    }
+    setIsPanMode(true);
   };
 
   // ======================= ARRASTRE PIXEL A PIXEL =======================
@@ -371,7 +421,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
     if (onMediaTypeChange) onMediaTypeChange('image');
     // Notificar al padre de inmediato para que la previsualización no se revierta
     onImageChange(instantLocalUrl);
+    onRawImageChange?.(instantLocalUrl);
     onImagePositionChange?.('50% 50%');
+    onImageZoomChange?.(1);
 
     try {
       setIsProcessing(true);
@@ -395,13 +447,17 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       setDisplaySrc(finalUrl);
       setRawSourceUrl(finalUrl);
       onImageChange(finalUrl);
+      onRawImageChange?.(finalUrl);
       onImagePositionChange?.('50% 50%');
+      onImageZoomChange?.(1);
     } catch (err) {
       console.error('Error al procesar imagen:', err);
       // Mantener la URL local como respaldo si falló la subida remota
       lastUploadedUrlRef.current = instantLocalUrl;
       setDisplaySrc(instantLocalUrl);
       onImageChange(instantLocalUrl);
+      onRawImageChange?.(instantLocalUrl);
+      onImageZoomChange?.(1);
     } finally {
       setIsProcessing(false);
       if (onProcessingChange) onProcessingChange(false);
@@ -438,29 +494,49 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
   };
 
   // Aplica el encuadre: exporta exactamente lo visible y lo sube como WebP 1:1
+  // conservando SIEMPRE la imagen original para poder quitar el zoom o re-encuadrar en el futuro
   const handleApplyCrop = async () => {
-    const src = rawSourceUrl || displaySrc;
-    if (!src || !dimsReady) {
+    const masterSrc = rawImageUrl || rawSourceUrl || displaySrc;
+    if (!masterSrc || !dimsReady) {
       setIsPanMode(false);
       return;
     }
+
+    const posPercent = computePositionPercent(effectiveOffset, renderW, renderH, boxSize);
+    const isAtBaseZoom = Math.abs(zoom - MIN_ZOOM) < 0.02;
+
+    // Si el zoom se redujo al 100% y está centrado, restaurar la imagen original sin recortar
+    if (isAtBaseZoom && posPercent === '50% 50%') {
+      lastUploadedUrlRef.current = masterSrc;
+      setDisplaySrc(masterSrc);
+      setRawSourceUrl(masterSrc);
+      onImageChange(masterSrc);
+      onRawImageChange?.(masterSrc);
+      onImagePositionChange?.('50% 50%');
+      onImageZoomChange?.(1);
+      setIsPanMode(false);
+      return;
+    }
+
     try {
       setIsCropping(true);
       if (onProcessingChange) onProcessingChange(true);
 
-      // Posición relativa guardada inmediatamente como respaldo
-      const posPercent = computePositionPercent(effectiveOffset, renderW, renderH, boxSize);
       onImagePositionChange?.(posPercent);
+      onImageZoomChange?.(zoom);
+      onRawImageChange?.(masterSrc);
 
-      const blob = await cropVisibleSquare(src, effectiveOffset, renderW, renderH, boxSize);
+      const blob = await cropVisibleSquare(masterSrc, effectiveOffset, renderW, renderH, boxSize);
       if (!blob) {
-        console.warn('Canvas no pudo exportar el recorte, manteniendo posicionamiento CSS:', posPercent);
+        console.warn('Canvas no pudo exportar el recorte, manteniendo posicionamiento CSS con la original:', posPercent);
+        setDisplaySrc(masterSrc);
+        onImageChange(masterSrc);
+        onRawImageChange?.(masterSrc);
         setIsPanMode(false);
         return;
       }
 
       const localUrl = URL.createObjectURL(blob);
-      // Pre-decodificar para que el reemplazo sea 100% fluido e instantáneo
       await new Promise<void>((resolve) => {
         const pre = new window.Image();
         pre.onload = () => resolve();
@@ -469,15 +545,13 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
         if (pre.complete) resolve();
       });
 
-      // Salir INMEDIATAMENTE de pan mode y reiniciar el offset antes de la subida a la nube
-      // para evitar cualquier salto visual o doble desplazamiento durante la espera de red
+      // Salir INMEDIATAMENTE de pan mode manteniendo la imagen original en rawSourceUrl
       lastUploadedUrlRef.current = localUrl;
       setDisplaySrc(localUrl);
-      setRawSourceUrl(localUrl);
-      resetFraming();
+      setRawSourceUrl(masterSrc);
       setIsPanMode(false);
       onImageChange(localUrl);
-      onImagePositionChange?.('50% 50%');
+      onRawImageChange?.(masterSrc);
 
       const uploaded = await uploadMediaToSupabase(
         new File([blob], `crop-${Date.now()}.webp`, { type: 'image/webp' }),
@@ -486,9 +560,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
       const finalUrl = uploaded || localUrl;
       lastUploadedUrlRef.current = finalUrl;
       setDisplaySrc(finalUrl);
-      setRawSourceUrl(finalUrl);
+      setRawSourceUrl(masterSrc);
       onImageChange(finalUrl);
-      onImagePositionChange?.('50% 50%');
+      onRawImageChange?.(masterSrc);
     } catch (err) {
       console.warn('Error al aplicar el encuadre:', err);
       setIsPanMode(false);
@@ -732,10 +806,10 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                         type="button"
                         onClick={resetFraming}
                         className="px-2.5 py-1 rounded-lg bg-black/80 hover:bg-black text-white text-[10px] font-bold shadow cursor-pointer transition-colors flex items-center gap-1"
-                        title="Volver a la posición original"
+                        title="Quitar el zoom y centrar la foto original"
                       >
                         <RotateCcw className="w-3 h-3" />
-                        <span>Centrar</span>
+                        <span>Quitar zoom / Centrar</span>
                       </button>
                       <button
                         type="button"
@@ -785,7 +859,7 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
 
                 {/* Botones centrales al pasar el cursor */}
                 {!showOverlayLoader && !isPanMode && (
-                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 p-2">
+                  <div className="absolute inset-0 bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 z-20 p-2 flex-wrap">
                     <button
                       type="button"
                       onClick={() => imageInputRef.current?.click()}
@@ -796,13 +870,35 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                     </button>
                     <button
                       type="button"
-                      onClick={() => setIsPanMode(true)}
+                      onClick={handleStartPanMode}
                       className="px-3 py-2 rounded-xl bg-[#06150F] text-[#E2C585] border border-[#C8A45D]/60 text-xs font-bold hover:bg-[#13281F] transition-colors shadow cursor-pointer flex items-center gap-1.5 shrink-0"
-                      title="Mover la imagen libremente con la manito"
+                      title="Mover o ajustar zoom de la imagen"
                     >
                       <Hand className="w-3.5 h-3.5" />
-                      <span>Acomodar</span>
+                      <span>Mover / Zoom</span>
                     </button>
+                    {((rawImageUrl && imageUrl && rawImageUrl !== imageUrl) || (imageZoom && imageZoom > 1.01)) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const master = rawImageUrl || rawSourceUrl || displaySrc;
+                          lastUploadedUrlRef.current = master;
+                          setDisplaySrc(master);
+                          setRawSourceUrl(master);
+                          onImageChange(master);
+                          onRawImageChange?.(master);
+                          onImagePositionChange?.('50% 50%');
+                          onImageZoomChange?.(1);
+                          setZoom(1);
+                          setOffset(null);
+                        }}
+                        className="px-3 py-2 rounded-xl bg-slate-900/90 text-[#E2C585] border border-[#C8A45D]/40 text-xs font-bold hover:bg-black transition-colors shadow cursor-pointer flex items-center gap-1.5 shrink-0"
+                        title="Quitar el zoom y restaurar la foto original completa"
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
+                        <span>Quitar zoom</span>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => {
@@ -810,6 +906,8 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                         setDisplaySrc('');
                         setRawSourceUrl('');
                         onImageChange('');
+                        onRawImageChange?.('');
+                        onImageZoomChange?.(1);
                         resetFraming();
                       }}
                       className="p-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition-colors shadow cursor-pointer shrink-0"
@@ -865,6 +963,9 @@ export const AdminMediaUploader: React.FC<AdminMediaUploaderProps> = ({
                   setDisplaySrc(val);
                   setRawSourceUrl(val);
                   onImageChange(val);
+                  onRawImageChange?.(val);
+                  onImageZoomChange?.(1);
+                  onImagePositionChange?.('50% 50%');
                 }}
                 placeholder="/images/hacienda/..."
                 className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#C8A45D]"

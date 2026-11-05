@@ -49,7 +49,9 @@ export interface ServicePackage {
   inclusions: string[];
   highlightBadge?: string;
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType?: 'image' | 'video';
   showPrice?: boolean;
@@ -71,7 +73,9 @@ export interface CabinRoom {
   description: string;
   amenities: string[];
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType?: 'image' | 'video';
   available: boolean;
@@ -92,7 +96,9 @@ export interface LodgingFeaturedBanner {
   locationBadge: string;
   videoButtonText: string;
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType: 'image' | 'video';
 }
@@ -105,7 +111,9 @@ export interface LodgingServiceCard {
   description: string;
   ctaText: string;
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType: 'image' | 'video';
   serviceType: 'hospedaje' | 'grupos';
@@ -128,7 +136,9 @@ export interface WeddingProposalCard {
   badge: string;
   badgeClass: string;
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType?: 'image' | 'video';
   specs: WeddingProposalSpec[];
@@ -147,7 +157,9 @@ export interface CorporateHighlightItem {
   subtitle: string;
   highlightMetric: string;
   image: string;
+  rawImage?: string;
   imagePosition?: string;
+  imageZoom?: number;
   videoUrl?: string;
   mediaType?: 'image' | 'video';
   whatsappItemName: string;
