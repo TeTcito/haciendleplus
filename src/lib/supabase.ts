@@ -89,6 +89,36 @@ export async function updateLeadStatusInSupabase(id: string, status: LeadStatus)
   }
 }
 
+export async function updateLeadInSupabase(lead: LeadSubmission): Promise<boolean> {
+  try {
+    const { error } = await supabase
+      .from('leads')
+      .update({
+        client_name: lead.clientName,
+        organization_or_couple: lead.organizationOrCouple,
+        email: lead.email,
+        phone: lead.phone,
+        service_type: lead.serviceType,
+        tentative_date: lead.tentativeDate,
+        estimated_volume: lead.estimatedVolume,
+        notes: lead.notes,
+        target_corporate_email: lead.targetCorporateEmail,
+        source_page: lead.sourcePage,
+        status: lead.status,
+      })
+      .eq('id', lead.id);
+
+    if (error) {
+      console.warn('Error al actualizar lead en Supabase:', error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn('Error al actualizar lead en Supabase:', err);
+    return false;
+  }
+}
+
 export async function deleteLeadFromSupabase(id: string): Promise<boolean> {
   try {
     const { error } = await supabase.from('leads').delete().eq('id', id);

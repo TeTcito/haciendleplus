@@ -93,7 +93,7 @@ const getLodgingServicesCards = (langOrIsEn?: any): LodgingServiceItem[] => [
 ];
 
 export const LodgingPageMobile: React.FC = () => {
-  const { siteConfig, cabins, lodgingServices: cmsLodgingServices, openQuoteModal } = useCMS();
+  const { siteConfig, cabins, lodgingServices: cmsLodgingServices, openQuoteModal, addLead } = useCMS();
   const { language, isEn, tr } = useLanguage();
 
   // SEO Meta
@@ -224,6 +224,19 @@ Could you please confirm availability for these dates and provide the proposal? 
 • *Duración de Estadía:* ${dur}${formattedDate ? `\n• *Fecha de Ingreso:* ${formattedDate}` : ''}
 
 ¿Me podrían confirmar la disponibilidad para estas fechas y remitir la cotización correspondiente? ¡Muchas gracias!`;
+
+    addLead({
+      clientName: dest,
+      organizationOrCouple: dest,
+      email: 'agendamiento-directo@haciendaleplus.com',
+      phone: 'WhatsApp Directo',
+      serviceType: 'hospedaje',
+      tentativeDate: formattedDate || 'Por definir',
+      estimatedVolume: `${guests} · ${dur}`,
+      notes: `Barra de cotización Móvil: ${dest}, ${guests}, ${dur}` + (formattedDate ? `, fecha: ${formattedDate}` : ''),
+      targetCorporateEmail: siteConfig.corporateEmails.reservas,
+      sourcePage: '/hospedaje',
+    });
 
     const waUrl = buildContextualWhatsAppUrl({
       phone: siteConfig.whatsappNumber,

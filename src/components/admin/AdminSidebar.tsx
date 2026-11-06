@@ -14,10 +14,12 @@ import {
   Menu,
   X,
   ChevronRight,
+  FileSpreadsheet,
 } from 'lucide-react';
 
 export type AdminModuleTab =
   | 'profile'
+  | 'leads-agendamientos'
   | 'habitaciones'
   | 'servicios-estadia'
   | 'bodas-propuestas'
@@ -28,6 +30,7 @@ interface AdminSidebarProps {
   activeTab: AdminModuleTab;
   setActiveTab: (tab: AdminModuleTab) => void;
   counts: {
+    leads: number;
     habitaciones: number;
     serviciosEstadia: number;
     bodasPropuestas: number;
@@ -61,6 +64,14 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       label: 'Mi Perfil',
       description: 'Datos personales y clave de acceso',
       icon: User,
+    },
+    {
+      id: 'leads-agendamientos',
+      label: 'Clientes y Agendamientos',
+      description: 'Formularios, solicitudes y exportación Excel',
+      icon: FileSpreadsheet,
+      badge: counts.leads,
+      badgeColor: 'bg-emerald-600 text-white font-black',
     },
     {
       id: 'habitaciones',

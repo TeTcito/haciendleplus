@@ -36,7 +36,7 @@ import { CabinRoom } from '../../types/cms';
 import { getCabinsData } from '../../data/resortSpaces';
 
 export const LodgingPageDesktop: React.FC = () => {
-  const { siteConfig, cabins, lodgingHeroBanner, lodgingServices, openQuoteModal } = useCMS();
+  const { siteConfig, cabins, lodgingHeroBanner, lodgingServices, openQuoteModal, addLead } = useCMS();
   const { language, isEn, t, tr } = useLanguage();
   const [cabinPageStart, setCabinPageStart] = useState(0);
 
@@ -155,6 +155,19 @@ Could you please confirm availability for these dates and provide the proposal? 
 • *Fecha de Ingreso:* ${formattedDate}
 
 ¿Me podrían confirmar la disponibilidad para estas fechas y remitir la cotización correspondiente? ¡Muchas gracias!`;
+
+    addLead({
+      clientName: destination,
+      organizationOrCouple: destination,
+      email: 'agendamiento-directo@haciendaleplus.com',
+      phone: 'WhatsApp Directo',
+      serviceType: 'hospedaje',
+      tentativeDate: formattedDate,
+      estimatedVolume: `${guestsSelection} · ${stayDuration}`,
+      notes: `Barra de cotización Hospedaje: ${destination}, ${guestsSelection}, ${stayDuration}, fecha: ${formattedDate}`,
+      targetCorporateEmail: siteConfig.corporateEmails.reservas,
+      sourcePage: '/hospedaje',
+    });
 
     const waUrl = buildContextualWhatsAppUrl({
       phone: siteConfig.whatsappNumber,

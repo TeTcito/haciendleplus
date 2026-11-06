@@ -17,6 +17,7 @@ import {
   saveLeadToSupabase,
   fetchLeadsFromSupabase,
   updateLeadStatusInSupabase,
+  updateLeadInSupabase,
   deleteLeadFromSupabase,
   saveSiteConfigToSupabase,
   fetchSiteConfigFromSupabase,
@@ -795,6 +796,7 @@ interface CMSContextValue extends CMSState {
   togglePhotoFeatured: (id: string) => void;
   addLead: (lead: Omit<LeadSubmission, 'id' | 'createdAt' | 'status'>) => LeadSubmission;
   updateLeadStatus: (id: string, status: LeadStatus) => void;
+  updateLead: (lead: LeadSubmission) => void;
   deleteLead: (id: string) => void;
   resetToDefaults: () => void;
   isQuoteModalOpen: boolean;
@@ -1229,6 +1231,14 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     updateLeadStatusInSupabase(id, status);
   };
 
+  const updateLead = (lead: LeadSubmission) => {
+    setState((prev) => ({
+      ...prev,
+      leads: prev.leads.map((l) => (l.id === lead.id ? lead : l)),
+    }));
+    updateLeadInSupabase(lead);
+  };
+
   const deleteLead = (id: string) => {
     setState((prev) => ({
       ...prev,
@@ -1296,6 +1306,7 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         togglePhotoFeatured,
         addLead,
         updateLeadStatus,
+        updateLead,
         deleteLead,
         resetToDefaults,
         isQuoteModalOpen,

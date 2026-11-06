@@ -4,6 +4,7 @@ import { useCMS } from '../../context/CMSContext';
 import { saveModulesToSupabase } from '../../lib/supabase';
 import { AdminSidebar, AdminModuleTab } from '../../components/admin/AdminSidebar';
 import { AdminProfileSection } from '../../components/admin/AdminProfileSection';
+import { AdminLeadsSection } from '../../components/admin/AdminLeadsSection';
 import { AdminMediaUploader } from '../../components/admin/AdminMediaUploader';
 import { AdminSaveModal, SaveModalState } from '../../components/admin/AdminSaveModal';
 import {
@@ -43,6 +44,7 @@ import {
 
 export const AdminDashboard: React.FC = () => {
   const {
+    leads,
     cabins,
     addCabin,
     updateCabin,
@@ -613,6 +615,8 @@ export const AdminDashboard: React.FC = () => {
 
   const getModulePreviewRoute = (): { path: string; label: string } => {
     switch (activeTab) {
+      case 'leads-agendamientos':
+        return { path: '/', label: 'Ver Sitio Web' };
       case 'habitaciones':
       case 'servicios-estadia':
         return { path: '/hospedaje', label: 'Ver Página de Hospedaje' };
@@ -644,6 +648,7 @@ export const AdminDashboard: React.FC = () => {
           setIsCreatingCorpHighlight(false);
         }}
         counts={{
+          leads: leads.length,
           habitaciones: cabins.length,
           serviciosEstadia: 1 + lodgingServices.length,
           bodasPropuestas: weddingProposals.length,
@@ -738,6 +743,9 @@ export const AdminDashboard: React.FC = () => {
                 MÓDULO 1: MI PERFIL
                =============================================================== */}
             {activeTab === 'profile' && <AdminProfileSection />}
+
+            {/* MÓDULO: LEADS Y AGENDAMIENTOS */}
+            {activeTab === 'leads-agendamientos' && <AdminLeadsSection />}
 
             {/* ===============================================================
                 MÓDULO 2: CARRUSEL HABITACIONES PARA EMPRESAS Y GRUPOS
