@@ -12,9 +12,7 @@ import {
   ArrowRight,
   AlertCircle,
   Loader2,
-  CheckCircle2,
   KeyRound,
-  Sparkles,
 } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
@@ -220,80 +218,26 @@ export const AdminLogin: React.FC = () => {
       </div>
 
       {/* =================================================================
-          PANEL DERECHO (3/4 DEL ESPACIO - 75%): ESCAPARATE VISUAL
+          PANEL DERECHO (75% DEL ESPACIO): IMAGEN DE PORTADA EXCLUSIVA
          ================================================================= */}
-      <div className="hidden lg:flex lg:w-3/4 relative bg-[#06150F] items-center justify-center p-12 overflow-hidden">
-        {/* Imagen de fondo con overlay elegante */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/images/hacienda/mansion-exterior-hero.jpg"
-            alt="Hacienda Le Plus Quito Píntag"
-            className="w-full h-full object-cover opacity-35 scale-105 transition-transform duration-1000"
-          />
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#06150F] via-[#06150F]/85 to-[#13281F]/65" />
-        </div>
-
-        {/* Luces decorativas */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-[#C8A45D]/15 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
-
-        {/* Contenido central en los 3/4 */}
-        <div className="relative z-10 max-w-3xl w-full text-white space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-[#C8A45D]/30 text-[#E2C585] text-xs font-bold uppercase tracking-widest">
-            <Sparkles className="w-4 h-4 text-[#C8A45D]" />
-            <span>Sistema de Gestión de Contenidos &amp; Carruseles</span>
-          </div>
-
-          <h2 className="font-serif-luxury font-bold text-4xl xl:text-5xl leading-tight tracking-tight text-white">
-            Control total de sus{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E2C585] to-[#C8A45D] italic">
-              Habitaciones, Videos, Bodas y Eventos Corporativos
-            </span>{' '}
-            en tiempo real.
-          </h2>
-
-          <p className="text-slate-300 text-base xl:text-lg leading-relaxed max-w-2xl">
-            Administre desde un solo lugar las tarjetas de cada carrusel, suba fotografías optimizadas automáticamente a formato WebP, incorpore videos promocionales en larga estadía y actualice tarifas de manera inmediata.
-          </p>
-
-          {/* Tarjetas de módulos incluidos */}
-          <div className="grid grid-cols-3 gap-5 pt-4">
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:border-[#C8A45D]/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-[#C8A45D]/20 text-[#E2C585] flex items-center justify-center mb-3 font-bold">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
-              <h3 className="font-sans-ui font-bold text-sm uppercase text-white mb-1">
-                Hospedaje &amp; Videos
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Carrusel de Habitaciones para Empresas y Grupos + Servicio de Estadía con soporte de Video HD.
-              </p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:border-[#C8A45D]/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-[#C8A45D]/20 text-[#E2C585] flex items-center justify-center mb-3 font-bold">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
-              <h3 className="font-sans-ui font-bold text-sm uppercase text-white mb-1">
-                Bodas &amp; Celebraciones
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Edite o agregue tarjetas al carrusel de Propuestas Nupciales Destacadas y Paquetes.
-              </p>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:border-[#C8A45D]/40 transition-colors">
-              <div className="w-10 h-10 rounded-xl bg-[#C8A45D]/20 text-[#E2C585] flex items-center justify-center mb-3 font-bold">
-                <CheckCircle2 className="w-5 h-5" />
-              </div>
-              <h3 className="font-sans-ui font-bold text-sm uppercase text-white mb-1">
-                Eventos Corporativos
-              </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Gestione el carrusel de Formato Exclusivo y el carrusel de Grandes Eventos Corporativos.
-              </p>
-            </div>
-          </div>
+      <div className="hidden lg:block lg:flex-1 relative bg-[#06150F] overflow-hidden min-h-screen">
+        <img
+          src="/images/admin/login-hero.jpg"
+          alt="Hacienda Le Plus - Píntag, Quito"
+          className="w-full h-full object-cover object-center select-none"
+        />
+        {/* Gradientes sutiles para realce y profundidad visual */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#06150F]/25 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#06150F]/40 via-transparent to-black/10 pointer-events-none" />
+        
+        {/* Sello de alta gama discreto en la esquina inferior */}
+        <div className="absolute bottom-6 right-8 z-10 pointer-events-none text-right">
+          <span className="font-serif-luxury text-white text-base font-bold tracking-wider drop-shadow-md block">
+            Hacienda Le Plus
+          </span>
+          <span className="text-[10px] uppercase tracking-widest text-[#E2C585] font-semibold drop-shadow block">
+            Píntag · Quito, Ecuador
+          </span>
         </div>
       </div>
     </div>
