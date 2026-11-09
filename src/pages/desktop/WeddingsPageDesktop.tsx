@@ -201,9 +201,9 @@ export const WeddingsPageDesktop: React.FC = () => {
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados (14 habitaciones). Cotiza al WhatsApp 0969817891.',
+      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias en 13.000 m² de jardines, recepción, 8 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 65 invitados (14 baños internos). Cotiza al WhatsApp 0969817891.',
     description_en:
-      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies, reception, gardens, catering, decor, and on-site lodging for guests in 14 rooms.',
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies across 13,000 m² gardens, 8 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site guest lodging for up to 65 guests (14 internal baths).',
     canonicalPath: '/bodas',
     lang: language,
   });
@@ -392,13 +392,13 @@ export const WeddingsPageDesktop: React.FC = () => {
                   </p>
                   <p className="text-xs sm:text-[13.5px] text-[#4A433B] leading-[1.65]">
                     {tr(
-                      "We celebrate exclusive weddings and social gatherings with ceremonial gardens, gala marquee tent, in-house catering, bespoke decor, and",
-                      "Celebramos bodas y eventos sociales exclusivos con jardines ceremoniales, carpa estructural de gala, catering propio, decoración personalizada y"
+                      "We celebrate exclusive weddings and social gatherings across 13,000 m² of gardens with 8 external restrooms, 80–100 parking spots, gala marquee tent, in-house catering, bespoke decor, and",
+                      "Celebramos bodas y eventos sociales exclusivos en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, carpa de gala, catering propio, decoración personalizada y"
                     )}{' '}
-                    <strong>{tr("14 rooms (28 to 80 guests)", "14 habitaciones (28 a 80 huéspedes)")}</strong>
+                    <strong>{tr("on-site lodging for up to 65 guests (14 internal baths)", "hospedaje para hasta 65 huéspedes (14 baños internos)")}</strong>
                     {tr(
-                      ", strengthened by our heated pool, restaurant, and recreation grounds.",
-                      ", fortalecidos por nuestra piscina temperada, restaurante y áreas recreativas como complementos."
+                      ", complemented by our 84 m² pool (70 pax), spa, sports areas, 50-guest nightclub*, and social hall*.",
+                      ", fortalecidos con piscina 84 m² (70 pax), spa, áreas deportivas, discoteca 50 pax* y salón social*."
                     )}
                   </p>
                 </div>
@@ -480,10 +480,10 @@ export const WeddingsPageDesktop: React.FC = () => {
                     </svg>
                     <div>
                       <span className="block font-sans-ui text-xl sm:text-2xl font-bold text-[#181512] leading-none">
-                        {tr("14 Rooms", "14 Suites")}
+                        {tr("65 Pax · 14 Baths", "65 Pax · 14 Baños")}
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        {tr("Lodging (28–80 Pax)", "Alojamiento (28–80 Pax)")}
+                        {tr("Lodging (7 Double + 59 Single)", "Alojamiento (7 Matr. + 59 Indiv.)")}
                       </span>
                     </div>
                   </div>

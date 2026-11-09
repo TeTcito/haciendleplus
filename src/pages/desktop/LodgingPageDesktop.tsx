@@ -33,7 +33,7 @@ import { useDocumentMeta } from '../../utils/seo';
 import { DirectQuoteForm } from '../../components/DirectQuoteForm';
 import { ScrollReveal } from '../../components/ScrollReveal';
 import { CabinRoom } from '../../types/cms';
-import { getCabinsData } from '../../data/resortSpaces';
+import { getCabinsData, getLodgingServicesData } from '../../data/resortSpaces';
 
 export const LodgingPageDesktop: React.FC = () => {
   const { siteConfig, cabins, lodgingHeroBanner, lodgingServices, openQuoteModal, addLead } = useCMS();
@@ -45,9 +45,9 @@ export const LodgingPageDesktop: React.FC = () => {
     title: 'Hospedaje para Empresas y Grupos (Larga Estadía) en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Corporate & Group Long-Stay Lodging in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Hospedaje de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. 14 habitaciones (28 a 80 personas), alimentación, internet fibra óptica, parqueaderos y cotización según número de personas y duración.',
+      'Hospedaje de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos en Quito–Píntag. Capacidad máxima 65 personas y 14 baños internos (7 camas matrimoniales + 59 individuales), 13.000 m² de jardines, 80–100 parqueaderos, piscina 84 m² (70 pax), fibra óptica y alimentación.',
     description_en:
-      'Long-stay lodging for corporate staff, delegations, NGOs, volunteers and international groups in Quito–Píntag. 14 rooms (28 to 80 guests), full board, fiber-optic Wi-Fi, and parking.',
+      'Long-stay lodging for corporate staff, delegations, NGOs, volunteers and international groups in Quito–Píntag. Audited max capacity 65 guests with 14 internal baths (7 double + 59 single beds), 13,000 m² lawns, 80–100 parking spots, 84 m² pool (70 pax), full board, and fiber-optic Wi-Fi.',
     canonicalPath: '/hospedaje',
     lang: language,
   });
@@ -183,8 +183,8 @@ Could you please confirm availability for these dates and provide the proposal? 
     {
       id: 1,
       quote: tr(
-        'We hosted our international HXP mission of 42 volunteers across all 14 rooms. The 3-course meal plan, fiber-optic internet, and private bus parking performed flawlessly.',
-        'Alojamos a nuestra misión internacional HXP de 42 voluntarios en las 14 habitaciones. La alimentación de 3 tiempos, el internet por fibra óptica y los parqueaderos para buses funcionaron a la perfección.'
+        'We hosted our international HXP mission of 42 volunteers with full comfort. The 3-course meal plan, fiber-optic internet, and 80–100 private parking spaces for our buses performed flawlessly.',
+        'Alojamos a nuestra misión internacional HXP de 42 voluntarios con capacidad holgada en nuestras suites y habitaciones compartidas. La alimentación de 3 tiempos, el internet por fibra óptica y los parqueaderos para buses funcionaron a la perfección.'
       ),
       author: 'Sarah Mitchell',
       role: tr('HXP Mission Coordinator · International NGO', 'Coordinación Misión HXP · ONG Internacional'),
@@ -263,6 +263,27 @@ Could you please confirm availability for these dates and provide the proposal? 
       ? allCabins
       : Array.from({ length: visibleCabinsCount }, (_, i) => allCabins[(cabinPageStart + i) % allCabins.length]);
 
+  const defaultLodgingServices = getLodgingServicesData(language);
+  const resolvedLodgingServices =
+    lodgingServices && lodgingServices.length > 0
+      ? lodgingServices.map((card) => {
+          if (language !== 'es') {
+            const matched = defaultLodgingServices.find((d) => d.id === card.id);
+            if (matched) {
+              return {
+                ...matched,
+                image: card.image,
+                imagePosition: card.imagePosition,
+                videoUrl: card.videoUrl,
+                mediaType: card.mediaType,
+                serviceType: card.serviceType,
+              };
+            }
+          }
+          return card;
+        })
+      : defaultLodgingServices;
+
   return (
     <main className="w-full bg-[#FAF7F2] text-[#0A1F17] overflow-x-hidden selection:bg-[#C8A45D]/30 selection:text-[#06150F]">
       {/* =========================================================================
@@ -305,8 +326,8 @@ Could you please confirm availability for these dates and provide the proposal? 
             <ScrollReveal direction="left" delay={120} duration={750}>
               <p className="text-base sm:text-lg md:text-xl text-[#FAF7F2] max-w-3xl leading-relaxed font-light drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]">
                 {tr(
-                  "Long-stay lodging for corporate staff, delegations, NGOs, volunteers, and international groups in Quito–Píntag. 14 rooms (28 to 80 guests), full-board catering, fiber-optic Wi-Fi, and private parking, complemented by our heated pool, restaurant, and recreational sports grounds.",
-                  "Alojamiento de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. 14 habitaciones (28 a 80 huéspedes), alimentación completa, internet por fibra óptica y parqueaderos privados, fortalecidos con piscina temperada, restaurante y áreas recreativas como complementos."
+                  "Long-stay lodging for corporate staff, delegations, NGOs, volunteers, and international groups in Quito–Píntag. Audited capacity up to 65 guests with 14 internal bathrooms (7 double + 59 single beds), full board, fiber-optic Wi-Fi, and 80–100 private parking spaces, complemented by 13,000 m² lawns, 84 m² pool (70 pax), spa & sports courts.",
+                  "Alojamiento de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. Capacidad máxima de 65 personas con 14 baños internos (7 camas matrimoniales y 59 individuales), alimentación completa, fibra óptica y 80–100 parqueaderos, fortalecidos con 13.000 m² de jardines, piscina 84 m² (70 pax), spa y áreas deportivas."
                 )}
               </p>
             </ScrollReveal>
@@ -332,7 +353,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                   <span>{tr("View Options by Guests & Duration", "Ver Opciones según Personas y Duración")}</span>
                 </button>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#06150F]/60 backdrop-blur-sm border border-white/15 text-[#E2C585] shadow-sm">
-                  <Check className="w-3.5 h-3.5 text-[#C8A45D]" /> {tr("14 Rooms · Meal Plans · Fiber Optic · Bus Parking", "14 Habitaciones · Alimentación · Fibra Óptica · Parqueaderos")}
+                  <Check className="w-3.5 h-3.5 text-[#C8A45D]" /> {tr("Up to 65 Pax · 14 Baths · 7 Double + 59 Single · 80–100 Parking", "Hasta 65 Pax · 14 Baños · 7 Matr. + 59 Indiv. · 80–100 Parqueaderos")}
                 </span>
               </div>
             </ScrollReveal>
@@ -379,11 +400,11 @@ Could you please confirm availability for these dates and provide the proposal? 
                         <option value="Grupos Internacionales y Misiones" className="text-[#06150F]">
                           {tr("International Groups", "Grupos Internacionales")}
                         </option>
-                        <option value="Bloque Completo (14 Habitaciones · 28-80 Pax)" className="text-[#06150F]">
-                          {tr("14 Rooms Block", "Bloque 14 Habitaciones")}
+                        <option value="Bloque Completo (Hasta 65 Pax · 14 Baños · 66 Camas)" className="text-[#06150F]">
+                          {tr("Full Wing (Up to 65 Pax · 14 Baths)", "Bloque Completo (Hasta 65 Pax · 14 Baños)")}
                         </option>
-                        <option value="Suites Ejecutivas & Chalet (1-10 Pax)" className="text-[#06150F]">
-                          {tr("Executive Suites & Chalet", "Suites Ejecutivas & Chalet")}
+                        <option value="Suites Ejecutivas & Casa Familiar (1-11 Pax)" className="text-[#06150F]">
+                          {tr("Suites & Family House (1-11 Pax)", "Suites & Casa Familiar (1-11 Pax)")}
                         </option>
                       </select>
                     </div>
@@ -410,17 +431,17 @@ Could you please confirm availability for these dates and provide the proposal? 
                         <option value="" disabled hidden>
                           {tr("Select guests...", "Seleccionar personas...")}
                         </option>
-                        <option value="1 a 10 Personas (Suites / Chalet)" className="text-[#06150F]">
-                          {tr("1 to 10 Guests (Executive)", "1 a 10 Personas (Ejecutivo)")}
+                        <option value="1 a 11 Personas (Suites / Casa Familiar / Depto.)" className="text-[#06150F]">
+                          {tr("1 to 11 Guests (Suites / House / Apt.)", "1 a 11 Personas (Suites / Casa / Depto.)")}
                         </option>
                         <option value="10 a 25 Personas (Equipo / Empresa)" className="text-[#06150F]">
                           {tr("10 to 25 Guests (Company)", "10 a 25 Personas (Empresa)")}
                         </option>
-                        <option value="28 a 50 Personas (Delegación / ONG / Empresa)" className="text-[#06150F]">
-                          {tr("28 to 50 Guests (Delegation/NGO)", "28 a 50 Personas (Delegación/ONG)")}
+                        <option value="25 a 45 Personas (Delegación / ONG / Empresa)" className="text-[#06150F]">
+                          {tr("25 to 45 Guests (Delegation/NGO)", "25 a 45 Personas (Delegación/ONG)")}
                         </option>
-                        <option value="50 a 80 Personas (Bloque Completo 14 Hab.)" className="text-[#06150F]">
-                          {tr("50 to 80 Guests (14 Rooms)", "50 a 80 Personas (14 Hab.)")}
+                        <option value="45 a 65 Personas (Bloque Completo · Máx. 65 Pax)" className="text-[#06150F]">
+                          {tr("45 to 65 Guests (Max 65 · 14 Baths)", "45 a 65 Personas (Máx. 65 · 14 Baños)")}
                         </option>
                       </select>
                     </div>
@@ -529,7 +550,7 @@ Could you please confirm availability for these dates and provide the proposal? 
       <section className="w-full bg-white border-b border-[#0A1F17]/10 py-7 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 sm:gap-4 divide-y md:divide-y-0 md:divide-x divide-[#0A1F17]/10">
-            {/* Pilar 1: Habitaciones */}
+            {/* Pilar 1: Capacidad y Camas */}
             <ScrollReveal direction="up-left" delay={50} duration={650} className="pt-4 md:pt-0 md:px-4 first:pt-0">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 flex items-center justify-center text-[#123326] shrink-0">
@@ -537,10 +558,10 @@ Could you please confirm availability for these dates and provide the proposal? 
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-bold text-[#06150F]">
-                    14 Habitaciones (28–80 Pax)
+                    {tr("Up to 65 Pax · 14 Baths", "Hasta 65 Pax · 14 Baños")}
                   </h4>
                   <p className="text-[11px] text-[#0A1F17]/65 leading-tight">
-                    {tr("For corporate staff, NGOs & delegations", "Para personal de empresas, ONGs y delegaciones")}
+                    {tr("7 double beds + 59 single beds across all units", "7 camas matrimoniales + 59 camas individuales totales")}
                   </p>
                 </div>
               </div>
@@ -580,7 +601,7 @@ Could you please confirm availability for these dates and provide the proposal? 
               </div>
             </ScrollReveal>
 
-            {/* Pilar 4: Parqueaderos */}
+            {/* Pilar 4: Parqueaderos y Baños Externos */}
             <ScrollReveal direction="up" delay={260} duration={650} className="pt-4 md:pt-0 md:px-4">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 flex items-center justify-center text-[#123326] shrink-0">
@@ -588,16 +609,16 @@ Could you please confirm availability for these dates and provide the proposal? 
                 </div>
                 <div>
                   <h4 className="text-xs sm:text-sm font-bold text-[#06150F]">
-                    {tr("Private Parking", "Parqueaderos Privados")}
+                    {tr("80–100 Parking · 8 Ext. Baths", "80–100 Parqueos · 8 Baños Ext.")}
                   </h4>
                   <p className="text-[11px] text-[#0A1F17]/65 leading-tight">
-                    {tr("Spacious parking for cars, fleet vans & buses", "Amplio estacionamiento para autos, flotas y buses")}
+                    {tr("13,000 m² gardens & fleet/bus parking access", "13.000 m² de jardines y estacionamiento para buses")}
                   </p>
                 </div>
               </div>
             </ScrollReveal>
 
-            {/* Pilar 5: Cotización según Personas y Duración */}
+            {/* Pilar 5: Complementos Incluidos */}
             <ScrollReveal direction="up-right" delay={330} duration={650} className="pt-4 md:pt-0 md:px-4 col-span-2 md:col-span-1">
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 flex items-center justify-center text-[#123326] shrink-0">
@@ -608,7 +629,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                     {tr("Included Amenities", "Complementos Incluidos")}
                   </h4>
                   <p className="text-[11px] text-[#0A1F17]/65 leading-tight">
-                    {tr("14×6m heated pool, restaurant & sports courts", "Piscina 14×6m, restaurante y áreas deportivas")}
+                    {tr("84 m² pool (70 pax), spa (hot tubs*), 7v7 soccer, b-ball & volley", "Piscina 84 m² (70 pax), spa (hidromasajes*), fútbol 7v7, básquet y vóley")}
                   </p>
                 </div>
               </div>
@@ -844,8 +865,8 @@ Could you please confirm availability for these dates and provide the proposal? 
                   </h3>
                   <p className="text-xs sm:text-sm text-[#FAF7F2]/85 max-w-sm leading-relaxed font-light">
                     {tr(
-                      lodgingHeroBanner.description.startsWith('Alojamiento en 14 habitaciones')
-                        ? 'Lodging across 14 rooms with daily catering, fiber-optic internet, and private parking, fortified by our heated pool, restaurant, and recreational sports grounds.'
+                      lodgingHeroBanner.description.startsWith('Alojamiento hasta 65 personas')
+                        ? 'Lodging for up to 65 guests (14 internal baths · 7 double & 59 single beds) with daily catering, fiber-optic Wi-Fi, 80–100 parking spots, 84 m² pool (70 pax), 13,000 m² lawns & sports courts.'
                         : lodgingHeroBanner.description,
                       lodgingHeroBanner.description
                     )}
@@ -918,7 +939,7 @@ Could you please confirm availability for these dates and provide the proposal? 
               </ScrollReveal>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1 items-stretch">
-                {lodgingServices.map((card, idx) => {
+                {resolvedLodgingServices.map((card, idx) => {
                   const directions: ('tilt-left' | 'zoom-in' | 'zoom-in' | 'tilt-right')[] = [
                     'tilt-left',
                     'zoom-in',
@@ -1030,7 +1051,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                         {tr("Rates by Volume & Days", "Tarifa por Personas y Días")}
                       </h5>
                       <p className="text-[10px] text-[#0A1F17]/60">
-                        {tr("Scales from 10 to 80 guests", "Escalas de 10 a 80 huéspedes")}
+                        {tr("Scales from 1 up to 65 guests", "Escalas de 1 hasta 65 huéspedes")}
                       </p>
                     </div>
                   </div>
@@ -1192,7 +1213,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                 {tr("Guest Count & Duration", "de Personas y Duración")}
               </h3>
               <p className="text-xs sm:text-sm text-[#FAF7F2]/80 leading-relaxed font-light">
-                {tr("We design tailored proposals for corporate staff, delegations, NGOs, volunteers, and international groups. Choose your guest range (from 1 up to 80 guests in 14 rooms) and duration (by days, weeks, or months) with catering, fiber-optic internet, and private parking.", "Diseñamos propuestas a medida para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales. Elige el rango de huéspedes (de 1 hasta 80 personas en 14 habitaciones) y la duración (por días, semanas o meses) con alimentación, internet por fibra óptica y parqueaderos.")}
+                {tr("We design tailored proposals for corporate staff, delegations, NGOs, volunteers, and international groups. Choose your guest range (from 1 up to 65 guests with 14 internal bathrooms, 7 double + 59 single beds) and stay duration (days, weeks, or months) with catering, fiber-optic internet, and 80–100 parking spaces.", "Diseñamos propuestas a medida para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales. Elige el rango de huéspedes (de 1 hasta 65 personas con 14 baños internos, 7 camas matrimoniales y 59 individuales) y la duración (por días, semanas o meses) con alimentación, internet fibra óptica y 80–100 parqueaderos.")}
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <a
@@ -1243,13 +1264,13 @@ Could you please confirm availability for these dates and provide the proposal? 
                   onClick={() =>
                     openQuoteModal({
                       serviceType: 'grupos',
-                      itemName: tr("Quote 28 to 50 Guests (Delegations / NGOs / Volunteers)", "Cotización 28 a 50 Personas (Delegaciones / ONGs / Voluntarios)"),
+                      itemName: tr("Quote 25 to 45 Guests (Delegations / NGOs / Volunteers)", "Cotización 25 a 45 Personas (Delegaciones / ONGs / Voluntarios)"),
                     })
                   }
                   className="px-2.5 sm:px-4 py-3 rounded-2xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 text-center min-w-[65px] sm:min-w-[82px] transition-colors cursor-pointer"
                 >
                   <span className="font-serif-luxury text-xl sm:text-3xl font-bold text-white block">
-                    28–50
+                    25–45
                   </span>
                   <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#FAF7F2]/70 font-semibold block pt-1">
                     {tr("Pax · NGOs", "Pax · ONGs")}
@@ -1262,16 +1283,16 @@ Could you please confirm availability for these dates and provide the proposal? 
                   onClick={() =>
                     openQuoteModal({
                       serviceType: 'grupos',
-                      itemName: tr("Quote 50 to 80 Guests (Full 14 Rooms Block)", "Cotización 50 a 80 Personas (Bloque Completo 14 Habitaciones)"),
+                      itemName: tr("Quote 45 to 65 Guests (Full Wing · Max 65 Pax · 14 Baths)", "Cotización 45 a 65 Personas (Bloque Completo · Máx. 65 Pax · 14 Baños)"),
                     })
                   }
                   className="px-2.5 sm:px-4 py-3 rounded-2xl bg-white/[0.05] hover:bg-white/[0.12] border border-white/10 text-center min-w-[65px] sm:min-w-[82px] transition-colors cursor-pointer"
                 >
                   <span className="font-serif-luxury text-xl sm:text-3xl font-bold text-white block">
-                    50–80
+                    45–65
                   </span>
                   <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-[#FAF7F2]/70 font-semibold block pt-1">
-                    {tr("Pax · 14 Rooms", "Pax · 14 Hab.")}
+                    {tr("Pax · 14 Baths", "Pax · 14 Baños")}
                   </span>
                 </button>
 
@@ -1488,7 +1509,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                       {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
                     </h4>
                     <p className="text-xs text-[#FAF7F2]/80 max-w-md">
-                      {tr("14 rooms (28 to 80 guests), 3-meal catering, fiber optic WiFi, private bus parking, and heated pool, dining, and sports area access.", "14 habitaciones (28 a 80 personas), alimentación 3 tiempos, internet por fibra óptica, parqueaderos privados y complementos de piscina, restaurante y áreas deportivas.")}
+                      {tr("Capacity up to 65 guests (14 internal baths · 7 double + 59 single beds), 3-meal catering, fiber optic WiFi, 80–100 parking spots, 13,000 m² lawns, 84 m² pool (70 pax), wellness spa & sports areas.", "Capacidad hasta 65 personas (14 baños internos · 7 camas matrimoniales y 59 individuales), alimentación 3 tiempos, fibra óptica, 80–100 parqueaderos, 13.000 m² de jardines, piscina 84 m² (70 pax), spa y áreas deportivas.")}
                     </p>
                   </div>
                 </>
@@ -1544,7 +1565,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                   <tbody className="divide-y divide-[#0A1F17]/10">
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {tr("1 to 10 Guests (Executive Suites & Chalet)", "1 a 10 Personas (Suites Ejecutivas & Chalet)")}
+                        {tr("1 to 11 Guests (Master Suites, Family House & Apt.)", "1 a 11 Personas (Suites, Casa Familiar & Depto.)")}
                       </td>
                       <td className="py-3 px-4">
                         {tr("From $55 / guest (Breakfast + Fiber Optic WiFi)", "Desde $55 / persona (Desayuno + Fibra Óptica)")}
@@ -1561,7 +1582,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                         {tr("10 to 25 Guests (Company Staff / Teams)", "10 a 25 Personas (Personal de Empresas / Equipos)")}
                       </td>
                       <td className="py-3 px-4">
-                        {tr("Multiple-occupancy rooms + fleet parking", "Habitaciones múltiples + parqueadero flotas")}
+                        {tr("Multiple-occupancy rooms + fleet parking (80–100 spots)", "Habitaciones múltiples + parqueadero (80–100 plazas)")}
                       </td>
                       <td className="py-3 px-4 font-semibold">
                         {tr("Half board or 3 meals + Fiber Optic WiFi", "Media pensión o 3 tiempos + Fibra Óptica")}
@@ -1572,10 +1593,10 @@ Could you please confirm availability for these dates and provide the proposal? 
                     </tr>
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {tr("28 to 50 Guests (Delegations, NGOs & Volunteers)", "28 a 50 Personas (Delegaciones, ONGs y Voluntarios)")}
+                        {tr("25 to 45 Guests (Delegations, NGOs & Volunteers)", "25 a 45 Personas (Delegaciones, ONGs y Voluntarios)")}
                       </td>
                       <td className="py-3 px-4">
-                        {tr("Exclusive room wing + briefing room + bus lot", "Bloque exclusivo + salón operativo + buses")}
+                        {tr("Exclusive room wing + briefing hall + bus lot", "Bloque exclusivo + salón operativo + buses")}
                       </td>
                       <td className="py-3 px-4 font-semibold text-[#A6823C]">
                         {tr("From $45 / pax per night (3 full meals)", "Desde $45 / pax por noche (3 comidas)")}
@@ -1586,13 +1607,13 @@ Could you please confirm availability for these dates and provide the proposal? 
                     </tr>
                     <tr>
                       <td className="py-3 px-4 font-semibold">
-                        {tr("50 to 80 Guests (Entire Wing · 14 Rooms)", "50 a 80 Personas (Bloque Completo 14 Habitaciones)")}
+                        {tr("45 to 65 Guests (Full Wing · Max 65 Pax · 14 Baths)", "45 a 65 Personas (Bloque Completo · Máx. 65 Pax · 14 Baños)")}
                       </td>
                       <td className="py-3 px-4 font-bold">
-                        {tr("Exclusive Hacienda buy-out ($980 base/night)", "Hacienda en exclusividad ($980 base/noche)")}
+                        {tr("Exclusive Hacienda wing (7 double + 59 single beds)", "Bloque total en exclusividad (7 matr. + 59 indiv.)")}
                       </td>
                       <td className="py-3 px-4 font-bold text-[#A6823C]">
-                        {tr("Full board + private halls + parking", "Pensión completa + salones + parqueaderos")}
+                        {tr("Full board + 8 ext. restrooms + 80–100 parking", "Pensión completa + 8 baños ext. + 80–100 parqueos")}
                       </td>
                       <td className="py-3 px-4 font-bold text-[#071912]">
                         {tr("Maximum volume & duration discount", "Máximo beneficio por volumen y duración")}
@@ -1601,9 +1622,45 @@ Could you please confirm availability for these dates and provide the proposal? 
                   </tbody>
                 </table>
               </div>
+
+              {/* Desglose Auditado de Capacidad, Áreas Externas, Deportes y Nota Operativa */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#0A1F17]/10 space-y-2">
+                  <h4 className="font-bold text-[#071912] uppercase tracking-wider text-[11px]">
+                    {tr("Audited Lodging Distribution (Max 65 Pax · 14 Baths)", "Desglose Oficial de Hospedaje (65 Pax · 14 Baños)")}
+                  </h4>
+                  <ul className="space-y-1 text-[#0A1F17]/80">
+                    <li>• <strong>{tr("2 Master Suites w/ TV:", "2 Suites Matrimoniales c/ TV:")}</strong> {tr("1 three-plaza + 1 single bed · 1 bath ea. (2–3 pax ea.)", "1 cama 3 plazas + 1 indiv. · 1 baño c/u (2–3 pax c/u)")}</li>
+                    <li>• <strong>{tr("2 Family Master Suites:", "2 Suites Matrimoniales Familiares:")}</strong> {tr("1 three-plaza + additional singles · 1 bath ea. (2–5 pax ea.)", "1 cama 3 plazas + adicionales indiv. · 1 baño c/u (2–5 pax c/u)")}</li>
+                    <li>• <strong>{tr("1 Family House + 2 Rooms:", "1 Casa Familiar + 2 Habitaciones:")}</strong> {tr("2 double rooms (1 w/ TV) + 7 two-tier bunks · 3 baths (11 pax)", "2 matrimoniales (1 c/ TV) + 7 literas x 2 pisos · 3 baños (11 pax)")}</li>
+                    <li>• <strong>{tr("1 Apartment:", "1 Departamento:")}</strong> {tr("1 double w/ TV + 9 two-tier bunks · 2 baths (11 pax)", "1 matrimonial c/ TV + 9 literas x 2 pisos · 2 baños (11 pax)")}</li>
+                    <li>• <strong>{tr("1 Shared Bunk Room:", "1 Hab. Compartida Literas:")}</strong> {tr("8 two-tier bunks + 9 two-tier bunks · 3 baths (17 pax)", "8 literas + 9 literas x 2 pisos · 3 baños (17 pax)")}</li>
+                    <li>• <strong>{tr("1 Shared 10-Bed Room:", "1 Hab. Compartida 10 Camas:")}</strong> {tr("10 single beds · 2 baths (10 pax)", "10 camas individuales · 2 baños (10 pax)")}</li>
+                  </ul>
+                  <p className="text-[11px] font-bold text-[#06150F] pt-1 border-t border-[#0A1F17]/10">
+                    {tr("Total audited inventory: 7 double beds + 59 single beds · 14 internal baths · 65 PAX max.", "Total inventario certificado: 7 camas matrimoniales + 59 individuales · 14 baños internos · 65 PAX máx.")}
+                  </p>
+                </div>
+
+                <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#0A1F17]/10 space-y-2">
+                  <h4 className="font-bold text-[#071912] uppercase tracking-wider text-[11px]">
+                    {tr("External Grounds, Sports & Extra-Fee Services", "Áreas Externas, Deportes y Servicios con Pago Extra")}
+                  </h4>
+                  <ul className="space-y-1 text-[#0A1F17]/80">
+                    <li>• <strong>{tr("External grounds:", "Áreas externas:")}</strong> {tr("8 external restrooms · 13,000 m² gardens · 80–100 parking spots.", "8 baños externos · 13.000 m² de jardines · 80–100 parqueaderos.")}</li>
+                    <li>• <strong>{tr("Wet zone & spa:", "Piscina y spa:")}</strong> {tr("14×6m = 84 m² pool (70 pax) · 1 sauna/steam/jacuzzi (6–8 pax) · 2 hot tubs 2×2m (8–10 pax ea.).", "Piscina 14×6 m = 84 m² (70 pax) · 1 sauna/turco/jacuzzi (6–8 pax) · 2 hidromasajes 2×2 m (8–10 pax c/u).")}</li>
+                    <li>• <strong>{tr("Sports areas:", "Áreas deportivas:")}</strong> {tr("7v7 grass soccer, pro basketball, reg. grass volleyball, ping pong & billiards.", "Fútbol en césped 7 vs 7, básquet profesional, vóley reglamentaria en césped, ping pong y billar.")}</li>
+                    <li>• <strong>{tr("At an extra fee:", "Con pago extra adicional:")}</strong> {tr("Karaoke, Nightclub for 50 guests, Social Hall for events & coaching.", "Karaoke, Discoteca para 50 personas y Salón social para eventos y coaching.")}</li>
+                  </ul>
+                  <div className="bg-amber-100/90 border border-amber-400 text-amber-950 rounded-xl px-3 py-2 text-[11px] font-semibold">
+                    {tr("Note: Hot tubs are heated exclusively for large groups and at an extra fee.", "Nota: Los hidromasajes se encienden únicamente en grupos grandes y con tarifa extra.")}
+                  </div>
+                </div>
+              </div>
+
               <p className="text-xs text-[#0A1F17]/70 bg-[#FAF7F2] p-3.5 rounded-xl border border-[#0A1F17]/10">
                 <strong>{tr("Included facilities enhancing your stay:", "Complementos que fortalecen tu estadía:")}</strong>{' '}
-                {tr("Every plan enjoys coordinated access to our heated swimming pool (14×6m), on-site restaurant, and 5,000 m² of recreation grounds and sports courts in Quito–Píntag.", "Todas las modalidades cuentan con acceso coordinado a nuestra piscina temperada (14×6m), restaurante propio y 5.000 m² de áreas recreativas y canchas deportivas en Quito–Píntag.")}
+                {tr("Every plan enjoys coordinated access to our 84 m² pool (70 pax), 1 sauna/steam/jacuzzi (6–8 pax), on-site restaurant, 13,000 m² lawns, 8 external restrooms, 80–100 parking spots, and 5 sports disciplines in Quito–Píntag.", "Todas las modalidades cuentan con acceso coordinado a nuestra piscina de 84 m² (70 pax), 1 sauna/turco/jacuzzi (6–8 pax), restaurante propio, 13.000 m² de jardines, 8 baños externos, 80–100 parqueaderos y áreas deportivas en Quito–Píntag.")}
               </p>
             </div>
 

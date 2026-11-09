@@ -494,8 +494,8 @@ export const HomePageDesktop: React.FC = () => {
                 <ScrollReveal direction="left" delay={210} distance={80}>
                   <p className="text-sm sm:text-base lg:text-[17px] text-[#FAF7F2]/90 max-w-xl leading-relaxed font-normal">
                     {tr(
-                      "Welcome to Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging with 14 private rooms (28 to 80 guests), macro-events and weddings, featuring heated swimming pool, on-site dining and sports facilities.",
-                      "Presentación de Hacienda Le Plus en Quito–Píntag: alojamiento corporativo y grupal con 14 habitaciones (28 a 80 huéspedes), macroeventos empresariales y bodas exclusivas, fortalecidos por nuestra piscina temperada, restaurante propio y áreas deportivas."
+                      "Welcome to Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for up to 65 guests (14 internal baths · 7 double & 59 single beds), macro-events and weddings across 13,000 m² gardens, with 84 m² pool (70 pax), restaurant and sports courts.",
+                      "Presentación de Hacienda Le Plus en Quito–Píntag: alojamiento corporativo y grupal hasta 65 huéspedes (14 baños internos · 7 camas matrimoniales y 59 individuales), macroeventos y bodas en 13.000 m² de jardines, con piscina de 84 m² (70 pax), restaurante propio y canchas deportivas."
                     )}
                   </p>
                 </ScrollReveal>
@@ -858,7 +858,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="rounded-3xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-48 sm:h-56 translate-y-4 rotate-1 group">
                   <img
                     src="/images/hacienda/piscina-aerea.jpg"
-                    alt="Piscina de 14x6m y dos hidromasajes como complemento"
+                    alt="Piscina de 14×6m (84 m² · cap. 70 pax) y dos hidromasajes 2×2m (solo grupos grandes con tarifa extra)"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -868,7 +868,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="rounded-3xl overflow-hidden shadow-xl border border-[#0A1F17]/10 h-52 sm:h-60 mt-2 group">
                   <img
                     src="/images/hacienda/jardines-teambuilding.jpg"
-                    alt="Jardines y Carpas en Quito–Píntag para Grandes Eventos y Larga Estadía"
+                    alt="13.000 m² de jardines en Quito–Píntag para Grandes Eventos y Larga Estadía"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -900,8 +900,8 @@ export const HomePageDesktop: React.FC = () => {
                   {tr("and", "y")}{' '}
                   <strong>{tr("30 minutes from Mariscal Sucre International Airport", "30 minutos del Aeropuerto Internacional Mariscal Sucre")}</strong>.{' '}
                   {tr(
-                    "Our facilities integrate long-stay lodging for corporate teams and groups (14 rooms for 28 to 80 guests), gala tents and lawns for macro-events and weddings, alongside a heated pool, restaurant, and sports facilities as value-added amenities.",
-                    "Nuestras instalaciones integran hospedaje de larga estadía para empresas y grupos (14 habitaciones para 28 a 80 personas), carpas y jardines para grandes eventos y bodas, junto con piscina temperada, restaurante y actividades recreativas como complementos que fortalecen tu experiencia."
+                    "Our facilities integrate long-stay lodging for up to 65 guests (14 internal baths, 7 double & 59 single beds), 13,000 m² lawns, 8 external restrooms, and 80–100 parking spots alongside an 84 m² pool (70 pax), restaurant, and sports courts.",
+                    "Nuestras instalaciones integran hospedaje de larga estadía hasta 65 personas (14 baños internos, 7 camas matrimoniales y 59 individuales), 13.000 m² de jardines, 8 baños externos y 80–100 parqueaderos, junto con piscina de 84 m² (70 pax), restaurante y canchas deportivas."
                   )}
                 </p>
               </ScrollReveal>
@@ -917,7 +917,7 @@ export const HomePageDesktop: React.FC = () => {
                       <BedDouble className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {tr("14 Rooms", "14 Habitaciones")}
+                      {tr("Cap. 65 Pax · 14 Baths", "Cap. 65 Pax · 14 Baños")}
                     </span>
                   </Link>
                 </ScrollReveal>

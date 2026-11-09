@@ -656,7 +656,7 @@ export const HomePageMobile: React.FC = () => {
                     <BedDouble className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {tr("14 Rooms", "14 Hab.")}
+                    {tr("Cap. 65 Pax", "Cap. 65 Pax")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -720,7 +720,7 @@ export const HomePageMobile: React.FC = () => {
                 <div className="rounded-2xl overflow-hidden shadow-md border border-[#0A1F17]/10 h-36 sm:h-44 translate-y-2 rotate-1 group">
                   <img
                     src="/images/hacienda/piscina-aerea.jpg"
-                    alt="Piscina de 14x6m y dos hidromasajes como complemento"
+                    alt="Piscina 14×6m (84 m² · 70 pax) y dos hidromasajes 2×2m (grupos grandes c/ tarifa extra)"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>

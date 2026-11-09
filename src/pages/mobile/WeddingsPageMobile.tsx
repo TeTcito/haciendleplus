@@ -59,15 +59,15 @@ const WEDDING_SERVICES_CARDS = [
     id: 'srv-destination',
     title: 'Hospedaje para Invitados',
     description:
-      'Aloja de 28 a 80 invitados en 14 habitaciones, fortalecido con piscina 14×6m, hidromasajes y áreas recreativas.',
+      'Aloja hasta 65 invitados (14 baños internos · 7 matr. + 59 indiv.), fortalecido con piscina 84 m² (70 pax), 8 baños ext. y áreas deportivas.',
     priceTag: 'Desde $95 / invitado',
     iconType: 'couple' as const,
   },
   {
     id: 'srv-coordination',
-    title: 'Eventos Sociales & Gala',
+    title: 'Eventos Sociales & Discoteca*',
     description:
-      'Aniversarios, bautizos, graduaciones y celebraciones familiares con Suite Nupcial y parqueadero privado.',
+      'Celebraciones familiares con 80–100 parqueaderos, salón social para eventos/coaching*, discoteca 50 pax* y karaoke* (*pago extra).',
     priceTag: 'Quito – Píntag',
     iconType: 'calendar' as const,
   },
@@ -222,14 +222,14 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
   {
     id: 'boda-campestre-imperial',
     title: 'Ceremonia, Recepción & Jardines',
-    subtitle: 'Quito–Píntag · Jardines & Carpa de Gala',
+    subtitle: 'Quito–Píntag · 13.000 m² Jardines & Carpa Gala',
     badge: 'Más Solicitado',
     badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
     image: '/images/hacienda/boda-carpa-gala.jpg',
     specs: [
       { label: '80 a 300 Pax', icon: 'users' },
-      { label: 'Decoración & Carpa', icon: 'tent' },
-      { label: 'Catering 3 Tiempos', icon: 'utensils' },
+      { label: '13.000 m² Jardines', icon: 'tent' },
+      { label: '80–100 Parqueos', icon: 'utensils' },
     ],
     price: '$42',
     unit: '/ invitado',
@@ -238,14 +238,14 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
   {
     id: 'boda-destino-14-suites',
     title: 'Boda + Hospedaje para Invitados',
-    subtitle: 'Quito–Píntag · 14 Habitaciones (28 a 80 Pax)',
+    subtitle: 'Quito–Píntag · Hasta 65 Pax · 14 Baños Internos',
     badge: 'Hospedaje Invitados',
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
     image: '/images/hacienda/bodas-exteriores.jpg',
     specs: [
-      { label: '28 a 80 Pax', icon: 'users' },
-      { label: '14 Habitaciones', icon: 'bed' },
-      { label: 'Comp. Piscina 14×6m', icon: 'sparkles' },
+      { label: 'Hasta 65 Pax', icon: 'users' },
+      { label: '14 Baños (66 Camas)', icon: 'bed' },
+      { label: 'Piscina 84 m² (70 Pax)', icon: 'sparkles' },
     ],
     price: '$95',
     unit: '/ invitado',
@@ -397,9 +397,9 @@ export const WeddingsPageMobile: React.FC = () => {
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias, recepción, jardines, catering, decoración y hospedaje para invitados (14 habitaciones). Cotiza al WhatsApp 0969817891.',
+      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias en 13.000 m² de jardines, recepción, 8 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 65 invitados (14 baños internos). Cotiza al WhatsApp 0969817891.',
     description_en:
-      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies, reception, gardens, catering, decor, and on-site lodging for guests in 14 rooms.',
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies across 13,000 m² gardens, 8 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site lodging for up to 65 guests (14 internal baths).',
     canonicalPath: '/bodas',
     lang: language,
   });
@@ -490,8 +490,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/85 backdrop-blur-xs border border-[#8C6D3F]/30 shadow-2xs">
                     <BedDouble className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
-                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{tr("14 Rooms", "14 Suites")}</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("Lodging", "Alojamiento")}</span>
+                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{tr("Max 65 Pax", "Máx. 65 Pax")}</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("14 Baths", "14 Baños")}</span>
                     </div>
                   </div>
 

@@ -27,7 +27,7 @@ export const ContactPageMobile: React.FC = () => {
   useDocumentMeta({
     title: tr("Contact Us & Location in Píntag | Hacienda Le Plus", "Contáctanos y Ubicación en Pintag | Hacienda Le Plus"),
     title_en: 'Contact Us & Location in Píntag | Hacienda Le Plus',
-    description: tr("Get in touch with Hacienda Le Plus in Píntag, Quito. Schedule your visit for weddings, corporate events, or reserve lodging.", "Ponte en contacto con Hacienda Le Plus en Pintag, Quito. Agenda tu visita para bodas, eventos corporativos o reserva cabañas y suites."),
+    description: tr("Get in touch with Hacienda Le Plus in Píntag, Quito. Schedule your visit for weddings, corporate events, or reserve lodging.", "Ponte en contacto con Hacienda Le Plus en Pintag, Quito. Agenda tu visita para bodas, eventos corporativos o reserva suites y alojamiento."),
     description_en:
       'Get in touch with Hacienda Le Plus in Píntag, Quito. Schedule your visit for weddings, corporate events, or reserve lodging.',
     canonicalPath: '/contacto',
@@ -405,7 +405,7 @@ export const ContactPageMobile: React.FC = () => {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder={tr("e.g. Wedding Quote, Corporate Retreat, or Cabin Booking", "Ej: Cotización Boda, Retiro Corporativo o Reserva de Cabaña")}
+                      placeholder={tr("e.g. Wedding Quote, Corporate Retreat, or Lodging Booking", "Ej: Cotización Boda, Retiro Corporativo o Reserva de Hospedaje")}
                       required
                       className="w-full px-4 py-3 rounded-xl bg-[#FAF7F2] border border-[#0A1F17]/10 focus:border-[#C8A45D] focus:bg-white text-xs sm:text-sm text-[#06150F] placeholder-[#0A1F17]/40 outline-none transition-all shadow-inner"
                     />
