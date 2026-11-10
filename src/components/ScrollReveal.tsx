@@ -28,6 +28,7 @@ export interface ScrollRevealProps {
   duration?: number;
   distance?: number;
   scale?: number;
+  once?: boolean;
   className?: string;
   innerClassName?: string;
   style?: React.CSSProperties;
@@ -40,6 +41,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   duration = 850,
   distance = 75,
   scale = 0.88,
+  once = false,
   className = '',
   innerClassName = '',
   style,
@@ -73,13 +75,13 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       const effectiveBottom = Math.max(rect.bottom, rect.top + Math.min(rect.height, 260));
 
       if (!isVisibleRef.current) {
-        if (rect.top <= bottomEnterLine && effectiveBottom >= topEnterLine) {
+        if (once ? rect.top <= bottomEnterLine : rect.top <= bottomEnterLine && effectiveBottom >= topEnterLine) {
           isVisibleRef.current = true;
           setIsVisible(true);
         } else {
           setExitSide(rect.top < vh * 0.45 ? 'top' : 'bottom');
         }
-      } else {
+      } else if (!once) {
         if (scrollY > 70 && effectiveBottom < topExitLine) {
           isVisibleRef.current = false;
           setExitSide('top');
@@ -114,7 +116,7 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
       window.removeEventListener('scroll', onScrollOrResize);
       window.removeEventListener('resize', onScrollOrResize);
     };
-  }, []);
+  }, [once]);
 
   const getHiddenTransform = (): string => {
     const vSign = exitSide === 'top' ? -0.85 : 1;
