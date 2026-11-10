@@ -26,6 +26,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useDocumentMeta } from '../../utils/seo';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
 import { saveReviewToSupabase, fetchReviewsFromSupabase } from '../../lib/supabase';
+import { NewExpansionSection } from '../../components/NewExpansionSection';
 import {
   getHeroStopCards,
   getSection2Cards,
@@ -975,7 +976,7 @@ export const HomePageDesktop: React.FC = () => {
       ====================================================================== */}
       <section
         aria-labelledby="heading-vitrina"
-        className="bg-[#F4EFE6] text-[#141413] border-y border-[#071912]/10 overflow-hidden"
+        className="bg-[#F4EFE6] text-[#141413] border-t border-[#071912]/10 overflow-hidden"
       >
         <div className="w-full px-6 sm:px-10 lg:px-14 xl:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 lg:items-center">
@@ -1173,6 +1174,11 @@ export const HomePageDesktop: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* =====================================================================
+          SECCIÓN 3B: NUEVAS CONSTRUCCIONES EN PROMOCIÓN (ANCHO COMPLETO)
+      ====================================================================== */}
+      <NewExpansionSection />
 
       {/* =====================================================================
           SECCIÓN 4: EXPERIENCIAS Y RESEÑAS DE USUARIOS (RÉPLICA EXACTA DE MÁSCARA ORGÁNICA + CARRUSEL)
