@@ -26,6 +26,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useDocumentMeta } from '../../utils/seo';
 import { WhatsAppIcon } from '../../components/WhatsAppIcon';
 import { buildContextualWhatsAppUrl } from '../../utils/whatsapp';
+import { NewExpansionMobileSection } from '../../components/mobile/NewExpansionMobileSection';
 import {
   getHeroStopCards,
   getSection2Cards,
@@ -428,7 +429,7 @@ export const HomePageMobile: React.FC = () => {
     portfolioServices[selectedPortfolioIndex] || portfolioServices[0];
 
   return (
-    <main className="overflow-hidden bg-[#FAF7F2]">
+    <main className="overflow-x-clip bg-[#FAF7F2]">
       {/* =====================================================================
           SECCIÓN 1: PORTADA PRINCIPAL — MÁSCARAS SVG EXACTAS PIXEL A PIXEL
           SEGÚN REFERENCIA TIDEPOST + FOTOS REALES HACIENDA LE PLUS
@@ -746,7 +747,7 @@ export const HomePageMobile: React.FC = () => {
       ====================================================================== */}
       <section
         aria-labelledby="heading-vitrina"
-        className="bg-[#F4EFE6] text-[#141413] border-y border-[#071912]/10 overflow-hidden py-8 space-y-4"
+        className="bg-[#F4EFE6] text-[#141413] border-t border-[#071912]/10 overflow-hidden py-8 space-y-4"
       >
         {/* 1. TÍTULO Y SELECTOR DE 7 OPCIONES (Con padding estándar) */}
         <div className="w-full px-4 sm:px-6 space-y-3">
@@ -860,6 +861,11 @@ export const HomePageMobile: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* =====================================================================
+          NUEVAS CONSTRUCCIONES EN PROMOCIÓN — VISTA MÓVIL INDEPENDIENTE (ANCHO COMPLETO)
+      ====================================================================== */}
+      <NewExpansionMobileSection />
 
       {/* =====================================================================
           SECCIÓN 4: EXPERIENCIAS Y RESEÑAS DE USUARIOS (RÉPLICA EXACTA DE MÁSCARA ORGÁNICA + CARRUSEL)
