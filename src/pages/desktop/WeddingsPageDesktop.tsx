@@ -392,13 +392,8 @@ export const WeddingsPageDesktop: React.FC = () => {
                   </p>
                   <p className="text-xs sm:text-[13.5px] text-[#4A433B] leading-[1.65]">
                     {tr(
-                      "We celebrate exclusive weddings and social gatherings across 13,000 m² of gardens with 8 external restrooms, 80–100 parking spots, gala marquee tent, in-house catering, bespoke decor, and",
-                      "Celebramos bodas y eventos sociales exclusivos en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, carpa de gala, catering propio, decoración personalizada y"
-                    )}{' '}
-                    <strong>{tr("on-site lodging for up to 65 guests (14 internal baths)", "hospedaje para hasta 65 huéspedes (14 baños internos)")}</strong>
-                    {tr(
-                      ", complemented by our 84 m² pool (70 pax), spa, sports areas, 50-guest nightclub*, and social hall*.",
-                      ", fortalecidos con piscina 84 m² (70 pax), spa, áreas deportivas, discoteca 50 pax* y salón social*."
+                      "Say \"I do\" surrounded by blooming Andean landscapes, toast under illuminated gala tents with signature cuisine, and let your family and close guests unwind comfortably on-site without rushing the night away.",
+                      "Da el “sí, acepto” rodeado de paisajes andinos, celebra un banquete de autor bajo elegantes carpas iluminadas y brinda a tus seres queridos la comodidad de hospedarse en la misma hacienda sin prisas."
                     )}
                   </p>
                 </div>

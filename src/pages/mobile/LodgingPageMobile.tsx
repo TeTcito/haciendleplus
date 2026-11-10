@@ -886,7 +886,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                 {tr("Quote by Group Size & Duration", "Cotización según Personas & Duración")}
               </h2>
               <p className="text-[12.5px] sm:text-[13.5px] text-[#FAF7F2]/85 leading-snug line-clamp-2 text-left">
-                {tr("Tailored proposals for up to 65 guests (14 internal baths · 7 double + 59 single beds) with catering, fiber WiFi & 80–100 parking spots.", "Propuestas hasta 65 personas (14 baños · 7 matr. + 59 indiv.) con alimentación, fibra óptica y 80–100 parqueaderos.")}
+                {tr("Flexible corporate and group plans by days, weeks, or months—with full board, reliable Wi-Fi, and privacy in Píntag.", "Planes flexibles por días, semanas o meses con pensión completa, conectividad estable y privacidad en Píntag.")}
               </p>
             </div>
 
@@ -1087,7 +1087,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                   {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/80 max-w-md">
-                  {tr("Up to 65 guests (14 internal baths · 7 double + 59 single beds), 3-meal catering, fiber WiFi, 80–100 parking spots, 13,000 m² lawns, 84 m² pool (70 pax), spa & sports courts.", "Capacidad hasta 65 personas (14 baños · 7 matr. + 59 indiv.), alimentación 3 tiempos, fibra óptica, 80–100 parqueaderos, 13.000 m² jardines, piscina 84 m² (70 pax), spa y deportes.")}
+                  {tr("Discover our peaceful rooms, on-site dining room, landscaped gardens, pool, and recreational spaces designed for extended group stays in Quito–Píntag.", "Descubre nuestras habitaciones, restaurante propio, amplios jardines, piscina y áreas recreativas pensadas para el bienestar de tu equipo o delegación en Quito–Píntag.")}
                 </p>
                 <button
                   type="button"

@@ -33,7 +33,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   heroOverline: 'QUITO–PÍNTAG · LARGA ESTADÍA · GRANDES EVENTOS · BODAS',
   heroTitle: 'Más que una hacienda — tu sede para largas estadías y grandes eventos.',
   heroSubtitle:
-    'Prioridad comercial en hospedaje de larga estadía para empresas, delegaciones, ONG y grupos internacionales (capacidad máxima 65 personas · 14 baños, 7 camas matrimoniales y 59 individuales) y grandes eventos corporativos o bodas en 13.000 m² de jardines en Quito–Píntag, con restaurante, piscina de 84 m² (70 pax) y canchas deportivas como complementos.',
+    'Tu sede privada en Quito–Píntag diseñada para largas estadías empresariales y de delegaciones, grandes eventos corporativos y bodas campestres rodeados de naturaleza, gastronomía propia y bienestar.',
   heroVideoUrl:
     'https://assets.mixkit.co/videos/preview/mixkit-aerial-view-of-a-luxury-resort-in-the-mountains-41573-large.mp4',
   heroPosterUrl: '/images/hacienda/vista-aerea.jpg',
@@ -70,7 +70,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     capacity: 'Hasta 65 personas · 14 baños internos',
     setupInfo: 'Suites & Habitaciones + Alimentación + Fibra Óptica + 80–100 Parqueaderos',
     description:
-      'Alojamiento estratégico en Quito–Píntag para personal de empresas, delegaciones, ONG (IMC · HXP), voluntarios y grupos internacionales (capacidad máxima 65 pax: 7 camas matrimoniales y 59 individuales). Cotización flexible según personas y duración, con piscina de 84 m² (70 pax), restaurante y deportes como complemento.',
+      'Alojamiento estratégico en Quito–Píntag pensado para el descanso y la operación diaria de equipos empresariales, delegaciones, ONG y voluntarios, con cotización flexible según personas y estadía.',
     inclusions: [
       'Capacidad máx. 65 personas · 14 baños internos (4 suites, casa familiar, depto. y hab. compartidas)',
       'Alimentación completa en restaurante propio (desayuno, almuerzo, cena y refrigerios)',
@@ -93,7 +93,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     capacity: '50 a 350 participantes',
     setupInfo: 'Carpas + Jardines 13.000 m² + 8 Baños Ext. + Piscina 84 m² + Canchas',
     description:
-      'Escenario integral en Quito–Píntag para eventos corporativos de fin de año, jornadas de integración, convenciones y celebraciones de gran formato, con 13.000 m² de jardines, 8 baños externos, 80–100 parqueaderos, restaurante propio, canchas deportivas, piscina y hospedaje complementario.',
+      'Escenario campestre privado en Quito–Píntag para celebrar eventos de fin de año, convenciones e integraciones empresariales de alto impacto con producción, gastronomía y deporte en un mismo lugar.',
     inclusions: [
       '13.000 m² de jardines, 8 baños externos, carpas estructurales, tarima y pista (salón social eventos/coaching c/ pago extra)',
       'Canchas deportivas: fútbol césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, ping pong y billar',
@@ -116,7 +116,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     capacity: 'Hasta 65 participantes alojados (hasta 250 en plenaria)',
     setupInfo: 'Salón (pago extra) + Catering 3 Tiempos + Piscina 84 m² + Hospedaje 65 Pax',
     description:
-      'Combina convenciones, talleres o celebraciones empresariales con hospedaje complementario para hasta 65 personas (14 baños internos), internet por fibra óptica, alimentación completa, 80–100 parqueaderos y áreas recreativas.',
+      'Combina convenciones, talleres de liderazgo o encuentros directivos con descanso confortable en la misma hacienda, conectividad estable y experiencias gastronómicas y recreativas.',
     inclusions: [
       'Salón social para eventos y coaching (con pago extra), pantalla gigante, sonido pro y fibra óptica',
       'Hospedaje complementario hasta 65 personas (4 suites, casa familiar, depto. y hab. compartidas)',
@@ -139,7 +139,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     capacity: '80 a 300 invitados',
     setupInfo: '13.000 m² Jardines + 8 Baños Ext. + Carpa de Gala + Catering + Decoración',
     description:
-      'Escenario campestre y elegante para bodas y eventos sociales: ceremonias en 13.000 m² de jardines con vista a los volcanes, recepción en carpa estructural o salón, catering de autor, decoración y suite nupcial.',
+      'Un escenario campestre y romántico frente a los volcanes para vivir tu ceremonia al aire libre y disfrutar una recepción elegante con catering de autor y montaje personalizado.',
     inclusions: [
       '13.000 m² de jardines para ceremonia al aire libre, 8 baños externos y carpa/salón cubierto',
       'Catering propio (bocaditos, menú de gala, parrilladas y postres) y decoración',
@@ -162,7 +162,7 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     capacity: 'Hasta 65 invitados alojados (14 baños internos)',
     setupInfo: 'Ceremonia + Recepción + Hospedaje 65 Pax + Piscina 84 m² & Desayuno',
     description:
-      'Ideal para bodas con familias que vienen fuera de Quito o del extranjero. Integra ceremonia, recepción, decoración, catering y hospedaje para hasta 65 invitados (7 camas matrimoniales + 59 individuales) con piscina de 84 m² y desayuno al día siguiente.',
+      'Pensado para bodas con familiares y amigos que viajan desde fuera de la ciudad, integrando ceremonia, banquete, alojamiento privado en la hacienda y desayuno compartido al despertar.',
     inclusions: [
       'Bloqueo integral de hospedaje para alojar cómodamente hasta 65 invitados (14 baños internos)',
       'Piscina 14×6m = 84 m² (70 pax), sauna/turco/jacuzzi; 2 hidromasajes 2×2m en grupos grandes c/ tarifa extra',
@@ -523,7 +523,7 @@ export const DEFAULT_LODGING_BANNER: LodgingFeaturedBanner = {
   titleLine1: 'Operación Completa',
   titleLine2: 'para Larga Estadía',
   description:
-    'Alojamiento hasta 65 personas (14 baños internos · 7 camas matrimoniales y 59 individuales) con alimentación diaria, fibra óptica y 80–100 parqueaderos privados, fortalecido con piscina de 84 m² (70 pax), 13.000 m² de jardines y canchas deportivas como complementos.',
+    'Estadías prolongadas sin preocupaciones: habitaciones equipadas, tres comidas diarias de nuestro restaurante, conectividad estable y acceso a zonas verdes, piscina y recreación en un entorno privado.',
   locationBadge: 'Quito – Píntag · A 40 min de Quito y 30 min del Aeropuerto',
   videoButtonText: 'Ver Instalaciones',
   image: '/images/hacienda/piscina-nocturna.jpg',
@@ -707,7 +707,7 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     capacity: '80 a 350+ participantes',
     setupInfo: 'Carpas + Jardines 13.000 m² + 8 Baños Ext. + Catering',
     description:
-      'Macroeventos empresariales y fiestas de fin de año en 13.000 m² de jardines con montaje de carpas, tarima, pista de baile, banquete o parrillada y hospedaje complementario para hasta 65 personas.',
+      'Celebra eventos de fin de año y encuentros corporativos inolvidables bajo elegantes carpas rodeadas de naturaleza, con música, banquete a medida y opciones de descanso en la hacienda.',
     inclusions: [
       '13.000 m² de jardines iluminados, 8 baños externos, carpas, tarima y pista de baile',
       'Catering corporativo propio: menú de gala, buffet o parrillada campestre',
@@ -731,7 +731,7 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     capacity: 'Hasta 350 participantes',
     setupInfo: '13.000 m² Jardines + Canchas Pro + Piscina 84 m² + Catering',
     description:
-      'Jornadas de integración y team building en 13.000 m² de áreas verdes con fútbol en césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, ping pong, billar, piscina de 84 m² (70 pax) y restaurante.',
+      'Fortalece el espíritu de equipo con jornadas deportivas, actividades al aire libre, parrillada campestre y momentos de relajación junto a la piscina y áreas verdes.',
     inclusions: [
       '13.000 m² de jardines, 8 baños externos y canchas (fútbol 7v7, básquet pro, vóley reglamentaria, ping pong, billar)',
       'Catering y restaurante: desayuno, parrillada de integración y coffee breaks',
@@ -755,7 +755,7 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     capacity: 'Hasta 65 participantes alojados (hasta 250 en plenaria)',
     setupInfo: 'Salón Coaching* + Catering 3 Tiempos + Piscina 84 m² + Hosp. 65 Pax',
     description:
-      'Combina convenciones, talleres o coaching empresarial (salón social con pago extra) con hospedaje complementario hasta 65 personas (14 baños internos), internet fibra óptica, alimentación completa y 80–100 parqueaderos.',
+      'Reúne a tus directivos y colaboradores en un entorno privado ideal para convenciones, talleres estratégicos y descanso completo con alimentación diaria y conectividad estable.',
     inclusions: [
       'Salón social para eventos y coaching (con pago extra), pantalla gigante, sonido pro y fibra óptica',
       'Hospedaje complementario hasta 65 pax (7 camas matrimoniales y 59 individuales, 14 baños)',

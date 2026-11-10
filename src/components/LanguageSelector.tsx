@@ -165,6 +165,66 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
     );
   }
 
+  if (variant === 'footer') {
+    return (
+      <div ref={containerRef} className={`relative inline-block text-left ${className}`}>
+        <button
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
+          aria-label={`${t.nav.langSelect}: ${activeLangInfo.name}`}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+          className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-[#071912] hover:bg-[#0D2B1F] text-[#FAF7F2] border border-[#C8A45D]/40 hover:border-[#C8A45D]/75 transition-all cursor-pointer focus:outline-none shadow-sm"
+        >
+          <Globe className="w-3.5 h-3.5 text-[#C8A45D]" />
+          <FlagIcon code={activeLangInfo.code} className="w-4 h-3 rounded-[2px] shadow-xs" />
+          <span className="tracking-wide">{activeLangInfo.name}</span>
+          <ChevronDown
+            className={`w-3.5 h-3.5 text-[#C8A45D] transition-transform duration-200 ${
+              isOpen ? 'rotate-180' : ''
+            }`}
+          />
+        </button>
+
+        {isOpen && (
+          <div
+            role="listbox"
+            aria-label={t.nav.langSelect}
+            className="absolute right-0 bottom-full mb-2 w-48 rounded-2xl bg-[#071912] border border-[#C8A45D]/45 shadow-2xl p-1.5 z-50 animate-fadeIn text-xs"
+          >
+            <div className="space-y-0.5">
+              {availableLanguages.map((langItem) => {
+                const isSelected = language === langItem.code;
+
+                return (
+                  <button
+                    key={langItem.code}
+                    type="button"
+                    role="option"
+                    aria-selected={isSelected}
+                    onClick={() => handleSelect(langItem.code)}
+                    className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-left font-medium transition-colors cursor-pointer ${
+                      isSelected
+                        ? 'bg-[#C8A45D]/20 text-[#E2C585] font-bold'
+                        : 'text-[#FAF7F2]/90 hover:bg-white/5 hover:text-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <FlagIcon code={langItem.code} className="w-4 h-3 rounded-[2px] shadow-xs" />
+                      <span className="truncate">{langItem.name}</span>
+                    </div>
+
+                    {isSelected && <Check className="w-3.5 h-3.5 text-[#C8A45D] shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Default 'navbar' dropdown variant
   return (
     <div ref={containerRef} className={`relative inline-block text-left ${className}`}>

@@ -355,7 +355,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-larga-estadia',
     overline: tr("COMMERCIAL PRIORITY · LONG STAYS IN QUITO–PÍNTAG", "PRIORIDAD COMERCIAL · LARGA ESTADÍA EN QUITO–PÍNTAG", langOrIsEn),
     title: tr("Corporate & Group Lodging (Long Stay)", "Hospedaje para Empresas y Grupos (Larga Estadía)", langOrIsEn),
-    description: tr("Strategic on-site accommodation for up to 65 guests (14 internal baths · 7 double + 59 single beds): corporate staff, delegations, NGOs (IMC · HXP) and volunteers, with full dining, fiber Wi-Fi and 80–100 parking spots.", "Alojamiento estratégico para hasta 65 personas (14 baños internos · 7 camas matrimoniales y 59 individuales): empresas, delegaciones, ONG (IMC · HXP) y voluntarios, con alimentación, fibra óptica y 80–100 parqueaderos.", langOrIsEn),
+    description: tr("A peaceful home base in Quito–Píntag designed for extended stays of corporate staff, delegations, NGOs, and international teams—blending private rest, daily meals, and reliable connectivity.", "Un refugio funcional y acogedor en Quito–Píntag pensado para largas estadías de equipos empresariales, delegaciones, ONG y voluntarios internacionales, integrando descanso, gastronomía diaria y conectividad estable.", langOrIsEn),
     inclusions: trList([
           'Max capacity 65 guests (14 internal baths): 4 Suites, Family House (11), Apt. (11) & Shared Rooms (17+10)',
           'Full board in on-site restaurant, high-speed fiber Wi-Fi, and 80 to 100 private parking spots',
@@ -380,7 +380,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-grandes-eventos',
     overline: tr("COMMERCIAL PRIORITY · MACRO-EVENTS & CORPORATE", "PRIORIDAD COMERCIAL · MACROEVENTOS Y EMPRESAS", langOrIsEn),
     title: tr("Major Events & Corporate Experiences", "Grandes Eventos y Experiencias Corporativas", langOrIsEn),
-    description: tr("Year-end galas, team building, and conventions across 13,000 m² of gardens with 8 external restrooms, 80–100 parking spaces, structural tents, stage, dance floor, sports courts, and 84 m² pool. Social hall for events/coaching, 50-pax nightclub & karaoke at an extra fee.", "Eventos de fin de año, integración y convenciones en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, carpas, catering, tarima, deportes y piscina 84 m². Salón social eventos/coaching, discoteca 50 pax y karaoke con pago extra.", langOrIsEn),
+    description: tr("Transform year-end galas, team integration retreats, and conventions into seamless experiences surrounded by Andean nature, bespoke setups, chef catering, and outdoor sports.", "Transforma fiestas de fin de año, jornadas de integración y convenciones en encuentros memorables rodeados de naturaleza, con montaje versátil, catering propio y recreación integral.", langOrIsEn),
     inclusions: trList([
           '13,000 m² lawns, 8 external restrooms, 80–100 parking spots, gala tents & catering',
           'Soccer 7v7, pro basketball, regulation grass volleyball, ping pong & billiards',
@@ -405,7 +405,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-bodas',
     overline: tr("UNFORGETTABLE MEMORIES · GALA CELEBRATIONS", "EXPERIENCIAS INOLVIDABLES · CELEBRACIONES DE GALA", langOrIsEn),
     title: tr("Weddings & Celebrations in Quito–Píntag", "Bodas y Celebraciones en Quito–Píntag", langOrIsEn),
-    description: tr("Country-style weddings across 13,000 m² of gardens with 8 external restrooms, 80–100 private parking spaces, gala tent reception, gourmet catering, and on-site lodging for up to 65 guests (14 internal baths).", "Bodas campestres en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, carpa de gala, catering propio, decoración personalizada y hospedaje hasta 65 invitados (14 baños internos).", langOrIsEn),
+    description: tr("Celebrate an unforgettable wedding amidst open-air valley gardens, glowing gala receptions, signature gastronomy, and on-site accommodations for your closest family and friends.", "Vive una boda inolvidable entre paisajes andinos, recepción de gala bajo carpa iluminada, gastronomía de autor y la comodidad de hospedar a tus invitados en la misma hacienda.", langOrIsEn),
     inclusions: trList([
           'Open-air ceremony in 13,000 m² gardens with floral arch and 8 external restrooms',
           'Gala reception under imperial tent with dance floor and 80–100 parking spots',
@@ -455,7 +455,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-comp-piscina',
     overline: tr("WELLNESS & RECREATIONAL AMENITY", "COMPLEMENTO RECREATIVO Y DE BIENESTAR", langOrIsEn),
     title: tr("Complement: 84 m² Pool (70 Pax) & Wellness Spa", "Complemento: Piscina 84 m² (70 Pax) y Zona Spa", langOrIsEn),
-    description: tr("14×6 m = 84 m² pool (70-guest capacity), 1 sauna, steam room & jacuzzi (6–8 guests), and two 2×2 m hot tubs (8–10 guests each). Note: Hot tubs are heated exclusively for large groups and at an extra fee.", "Piscina de 14×6 m = 84 m² (cap. 70 personas), 1 sauna, turco y jacuzzi (6 a 8 pax) y dos hidromasajes de 2×2 m (8 a 10 pax c/u). Nota: Los hidromasajes se encienden únicamente en grupos grandes y con tarifa extra.", langOrIsEn),
+    description: tr("Recharge after productive meetings or celebrations in our spacious heated pool and tranquil thermal spa zone set among mountain breezes in Píntag.", "Relájate después de cada jornada laboral o celebración en nuestra amplia piscina y zona húmeda de descanso rodeadas de aire puro en Quito–Píntag.", langOrIsEn),
     inclusions: trList([
           '14×6 m = 84 m² swimming pool (capacity 70 guests)',
           '1 sauna, steam room & jacuzzi area (capacity 6 to 8 guests)',
@@ -480,7 +480,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-comp-recreacion',
     overline: tr("TEAM BUILDING & SPORTS AMENITY", "COMPLEMENTO DEPORTIVO Y DE INTEGRACIÓN", langOrIsEn),
     title: tr("Complement: Sports Areas, 13,000 m² & Club*", "Complemento: Áreas Deportivas, 13.000 m² & Discoteca*", langOrIsEn),
-    description: tr("13,000 m² of gardens with 7v7 grass soccer, pro basketball, regulation grass volleyball, ping pong, and billiards table. Additional extra-fee facilities: Karaoke, 50-guest Nightclub, and Social Hall for events and coaching.", "13.000 m² de jardines con cancha de fútbol en césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, mesa de ping pong y billar. Opcionales con pago extra: karaoke, discoteca para 50 personas y salón social para eventos y coaching.", langOrIsEn),
+    description: tr("Spark camaraderie and friendly competition outdoors with dedicated sporting grounds, indoor table games, and optional evening entertainment spaces for private groups.", "Impulsa la integración y el disfrute de tu grupo con escenarios deportivos al aire libre, juegos de salón y espacios nocturnos exclusivos para celebraciones privadas.", langOrIsEn),
     inclusions: trList([
           '7 vs 7 natural grass soccer pitch, pro basketball & regulation grass volleyball',
           'Table tennis (ping pong), billiards table, and 13,000 m² of private lawns',
@@ -505,7 +505,7 @@ export const getPortfolioServices = (langOrIsEn?: SupportedLanguage | boolean): 
     id: 'srv-ubicacion-logistica',
     overline: tr("STRATEGIC VENUE IN QUITO–PÍNTAG", "UBICACIÓN ESTRATÉGICA EN QUITO–PÍNTAG", langOrIsEn),
     title: tr("80–100 Parking Spots, 8 Ext. Baths & Fiber Wi-Fi", "80–100 Parqueaderos, 8 Baños Externos y Fibra Óptica", langOrIsEn),
-    description: tr("Located in Quito–Píntag (San Juan de la Tola, Calle Deus No. 100), 40 min from Quito and 30 min from Airport. Offers 80 to 100 gated parking spots (cars & buses), 8 external restrooms, and high-speed fiber Wi-Fi.", "Ubicada en Quito–Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100), a 40 min de Quito y 30 min del Aeropuerto. Dispone de 80 a 100 parqueaderos internos, 8 baños externos para eventos e internet por fibra óptica.", langOrIsEn),
+    description: tr("Strategic access right near Quito and Mariscal Sucre International Airport—built with seamless vehicle logistics, event support facilities, and high-speed connectivity.", "Conectividad ágil desde Quito y el Aeropuerto Internacional Mariscal Sucre, con infraestructura logística diseñada para recibir delegaciones, buses e invitados con total comodidad.", langOrIsEn),
     inclusions: trList([
           'Strategic location 30 minutes from Mariscal Sucre International Airport',
           '80 to 100 private gated parking spaces for buses, vans & vehicles',
@@ -610,7 +610,7 @@ export const getCorporatePackages = (langOrIsEn?: SupportedLanguage | boolean): 
     unit: tr("per guest", "por participante", langOrIsEn),
     capacity: tr("80 to 350+ guests", "80 a 350+ participantes", langOrIsEn),
     setupInfo: tr("Tents + 13,000 m² Lawns + 8 Ext. Baths + Catering", "Carpas + Jardines 13.000 m² + 8 Baños Ext. + Catering", langOrIsEn),
-    description: tr("Major corporate events and year-end galas across 13,000 m² of gardens featuring tents, stage, dance floor, gourmet BBQ, and lodging up to 65 guests.", "Macroeventos empresariales y fiestas de fin de año en 13.000 m² de jardines con montaje de carpas, tarima, pista de baile, banquete o parrillada y hospedaje complementario para hasta 65 personas.", langOrIsEn),
+    description: tr("Host unforgettable year-end galas and large corporate celebrations under glowing marquee tents surrounded by greenery, custom menus, live music setups, and restful group accommodations.", "Celebra eventos de fin de año y encuentros corporativos inolvidables bajo elegantes carpas rodeadas de naturaleza, con música, banquete a medida y opciones de descanso en la hacienda.", langOrIsEn),
     inclusions: trList([
           '13,000 m² illuminated gardens, 8 external restrooms, gala tents, stage & dance floor',
           'In-house corporate catering: gala dinner, buffet, or country BBQ',
@@ -637,7 +637,7 @@ export const getCorporatePackages = (langOrIsEn?: SupportedLanguage | boolean): 
     unit: tr("per guest", "por participante", langOrIsEn),
     capacity: tr("Up to 350 guests", "Hasta 350 participantes", langOrIsEn),
     setupInfo: tr("13,000 m² Lawns + Sports Courts + 84 m² Pool + Catering", "13.000 m² Jardines + Canchas Pro + Piscina 84 m² + Catering", langOrIsEn),
-    description: tr("Corporate team building across 13,000 m² of green lawns featuring 7v7 grass soccer, pro basketball, reg. grass volleyball, ping pong, billiards, 84 m² pool (70 pax) & restaurant.", "Jornadas de integración y team building en 13.000 m² de áreas verdes con fútbol en césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, ping pong, billar, piscina de 84 m² (70 pax) y restaurante.", langOrIsEn),
+    description: tr("Energize your organization with active outdoor tournaments, country barbecues, refreshing pool breaks, and effortless team bonding away from the office.", "Fortalece el espíritu de equipo con jornadas deportivas, actividades al aire libre, parrillada campestre y momentos de relajación junto a la piscina y áreas verdes.", langOrIsEn),
     inclusions: trList([
           '13,000 m² lawns, 8 ext. baths & sports (7v7 soccer, pro b-ball, reg. volley, ping pong, billiards)',
           'In-house dining: breakfast, integration BBQ, and coffee breaks',
@@ -664,7 +664,7 @@ export const getCorporatePackages = (langOrIsEn?: SupportedLanguage | boolean): 
     unit: tr("per guest / night", "por persona / noche", langOrIsEn),
     capacity: tr("Up to 65 lodged guests (up to 250 in plenary)", "Hasta 65 participantes alojados (hasta 250 en plenaria)", langOrIsEn),
     setupInfo: tr("Coaching Hall* + 3-Course Catering + 84 m² Pool + 65-Pax Lodging", "Salón Coaching* + Catering 3 Tiempos + Piscina 84 m² + Hosp. 65 Pax", langOrIsEn),
-    description: tr("Combine conventions, workshops, or coaching (social hall at extra fee) with on-site lodging for up to 65 guests (14 internal baths), fiber-optic Wi-Fi, full board & 80–100 parking spots.", "Combina convenciones, talleres o coaching empresarial (salón social con pago extra) con hospedaje complementario hasta 65 personas (14 baños internos), internet fibra óptica, alimentación completa y 80–100 parqueaderos.", langOrIsEn),
+    description: tr("Bring leaders and teams together in a quiet private estate tailored for productive strategic sessions, multi-day conventions, full-board dining, and restorative overnight stays.", "Reúne a tus directivos y colaboradores en un entorno privado ideal para convenciones, talleres estratégicos y descanso completo con alimentación diaria y conectividad estable.", langOrIsEn),
     inclusions: trList([
           'Social hall for events & coaching (available at extra fee), giant screen, pro audio & fiber Wi-Fi',
           'On-site lodging up to 65 guests (7 double + 59 single beds, 14 internal baths)',

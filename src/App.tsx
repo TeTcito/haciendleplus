@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CMSProvider } from './context/CMSContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
 import { FloatingWhatsAppAndMobileBar } from './components/FloatingWhatsAppAndMobileBar';
 import { QuickQuoteModal } from './components/QuickQuoteModal';
 import { HomePage } from './pages/HomePage';
@@ -54,6 +55,7 @@ const AppShell: React.FC = () => {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
+      {!isAdminRoute && <Footer />}
       {!isAdminRoute && <FloatingWhatsAppAndMobileBar />}
       {!isAdminRoute && <QuickQuoteModal />}
     </div>

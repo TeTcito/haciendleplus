@@ -22,7 +22,7 @@ export const esTranslations: Translations = {
     title: 'Más que una hacienda —',
     titleAccent: 'tu sede para largas estadías y grandes eventos.',
     subtitle:
-      'Prioridad comercial en hospedaje de larga estadía para empresas, delegaciones, ONG y grupos internacionales (capacidad máxima 65 personas · 14 baños, 7 camas matrimoniales y 59 individuales) y grandes eventos corporativos o bodas en 13.000 m² de jardines en Quito–Píntag, con restaurante, piscina de 84 m² (70 pax) y canchas deportivas como complementos.',
+      'Tu sede privada en Quito–Píntag diseñada para largas estadías empresariales y de delegaciones, grandes eventos corporativos y bodas campestres rodeados de naturaleza, gastronomía propia y bienestar.',
     quoteBtn: 'Cotizar',
     whatsappBtn: 'Solicitar cotización por WhatsApp',
     watchVideo: 'Ver video del resort',
@@ -153,7 +153,7 @@ export const enTranslations: Translations = {
     title: 'More than a hacienda —',
     titleAccent: 'your venue for long stays and major events.',
     subtitle:
-      'Commercial priority in long-stay lodging for companies, delegations, NGOs, and international groups (max capacity 65 guests · 14 bathrooms, 7 double beds, and 59 single beds) and major corporate events or weddings across 13,000 m² of gardens in Quito–Píntag, featuring restaurant, 84 m² pool (70 pax), and sports courts as amenities.',
+      'Your private estate in Quito–Píntag crafted for productive corporate and delegation long stays, high-impact events, and unforgettable weddings surrounded by Andean nature, signature dining, and recreation.',
     quoteBtn: 'Get Quote',
     whatsappBtn: 'Request quote via WhatsApp',
     watchVideo: 'Watch resort video',
@@ -284,7 +284,7 @@ export const ptTranslations: Translations = {
     title: 'Mais do que uma fazenda —',
     titleAccent: 'sua sede para longas estadias e grandes eventos.',
     subtitle:
-      'Prioridade comercial em hospedagem de longa estadia para empresas, delegações, ONGs e grupos internacionais (capacidade máxima 65 pessoas · 14 banheiros, 7 camas de casal e 59 de solteiro) e grandes eventos corporativos ou casamentos em 13.000 m² de jardins em Quito–Píntag, com restaurante, piscina de 84 m² (70 pax) e quadras esportivas como complementos.',
+      'Sua sede privativa em Quito–Píntag projetada para longas estadias corporativas e de delegações, grandes eventos empresariais e casamentos no campo em meio à natureza andina, gastronomia própria e bem-estar.',
     quoteBtn: 'Cotar',
     whatsappBtn: 'Solicitar cotação via WhatsApp',
     watchVideo: 'Assistir ao vídeo do resort',
@@ -415,7 +415,7 @@ export const frTranslations: Translations = {
     title: 'Bien plus qu’une hacienda —',
     titleAccent: 'votre lieu d’exception pour longs séjours et grands événements.',
     subtitle:
-      'Priorité commerciale dans l’hébergement long séjour pour entreprises, délégations, ONG et groupes internationaux (capacité max. 65 personnes · 14 salles de bain, 7 lits doubles et 59 lits simples) et grands événements d’entreprise ou mariages sur 13 000 m² de jardins à Quito–Píntag, avec restaurant, piscine de 84 m² (70 pax) et terrains sportifs en complément.',
+      'Votre domaine privé à Quito–Píntag conçu pour les longs séjours d’entreprises et délégations, grands événements professionnels et mariages champêtres au cœur de la nature andine, avec restauration maison et loisirs.',
     quoteBtn: 'Demander un devis',
     whatsappBtn: 'Demander un devis via WhatsApp',
     watchVideo: 'Voir la vidéo du resort',
@@ -546,7 +546,7 @@ export const deTranslations: Translations = {
     title: 'Mehr als eine Hazienda —',
     titleAccent: 'Ihr offizieller Standort für Langzeitaufenthalte und Großveranstaltungen.',
     subtitle:
-      'Kommerzielle Priorität für Langzeitunterkünfte von Unternehmen, Delegationen, NGOs und internationalen Gruppen (max. 65 Personen · 14 Bäder, 7 Doppelbetten und 59 Einzelbetten) sowie exklusive Firmenevents und Hochzeiten in 13.000 m² Gartenanlage in Quito–Píntag, ergänzt durch Restaurant, 84 m² Pool (70 Pax) und Sportanlagen.',
+      'Ihr privates Anwesen in Quito–Píntag für produktive Langzeitaufenthalte von Firmen und Delegationen, erstklassige Firmenevents und unvergessliche Hochzeiten inmitten der Andennatur mit eigener Gastronomie und Erholung.',
     quoteBtn: 'Angebot anfordern',
     whatsappBtn: 'Angebot via WhatsApp anfordern',
     watchVideo: 'Resort-Video ansehen',
@@ -677,7 +677,7 @@ export const zhTranslations: Translations = {
     title: '不仅是一座庄园 —',
     titleAccent: '更是您长期住宿与大型活动的尊贵基地。',
     subtitle:
-      '商业首选：为企业团队、外派代表团、国际NGO与志愿者提供长期住宿保障（最大容量65位宾客 · 14间卫浴、7张双人床与59张单人床），并在基多-宾塔格13,000平方米花园举办大型企业盛典与婚礼，配套餐厅、84平方米泳池（70人容量）及专业运动场。',
+      '位于基多–平塔格的私密度假庄园，专为企业与代表团长期驻留、大型商务盛会及浪漫户外婚礼打造，环绕安第斯自然风光，配备庄园自有餐饮与康体休闲体验。',
     quoteBtn: '立即获取报价',
     whatsappBtn: '通过 WhatsApp 咨询报价',
     watchVideo: '观看度假庄园全景视频',

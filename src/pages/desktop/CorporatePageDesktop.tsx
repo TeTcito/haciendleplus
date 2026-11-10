@@ -169,8 +169,8 @@ export const CorporatePageDesktop: React.FC = () => {
             <ScrollReveal direction="left" delay={120} duration={750}>
               <p className="text-base sm:text-lg text-[#FAF7F2]/85 leading-relaxed max-w-xl font-normal">
                 {tr(
-                  "Year-end galas, team integration, conventions, and large-format celebrations in Quito–Píntag. Featuring 13,000 m² gardens, 8 external restrooms, 80–100 parking spaces, structural tents, in-house catering, stage, sports courts (7v7 soccer, pro basketball, volleyball), 84 m² pool (70 pax), and lodging up to 65 guests.",
-                  "Eventos de fin de año, integración, convenciones y celebraciones de gran formato en Quito–Píntag. Disponemos de 13.000 m² de jardines, 8 baños externos, 80–100 parqueaderos, carpas, catering propio, tarima, canchas deportivas (fútbol 7v7, básquet pro, vóley), piscina 84 m² (70 pax) y hospedaje hasta 65 personas."
+                  "Transform your company's year-end gala, team integration retreat, or convention into a memorable experience—set in a private estate just outside Quito with full-scale production, in-house dining, and restful hospitality.",
+                  "Transforma tus eventos de fin de año, jornadas de integración o convenciones en encuentros memorables, rodeados de naturaleza a pocos minutos de Quito con producción integral, catering propio y descanso en un solo lugar."
                 )}
               </p>
             </ScrollReveal>
@@ -338,7 +338,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 </h2>
 
                 <p className="text-xs sm:text-sm text-[#FAF7F2]/80 mt-2 leading-relaxed max-w-xs mx-auto lg:mx-0 font-normal">
-                  {tr("Year-end galas, team integration, conventions, and large-format celebrations with tents, gardens, catering, stage, dance floor, sports, pool, and lodging.", "Eventos de fin de año, integración, convenciones y celebraciones de gran formato con carpas, jardines, catering, tarima, pista de baile, deportes, piscina y hospedaje complementario.")}
+                  {tr("High-impact corporate gatherings executed with seamless logistics, versatile indoor and outdoor settings, chef-driven catering, and exclusive hospitality.", "Encuentros empresariales de alto impacto con producción integral, gastronomía propia y amplios espacios al aire libre para fortalecer el vínculo de tu equipo.")}
                 </p>
 
                 <div className="pt-2">
@@ -610,7 +610,7 @@ export const CorporatePageDesktop: React.FC = () => {
               </h3>
 
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {tr("Year-end galas, team integration, conventions, and large-format events across 13,000 m² gardens with 8 external restrooms, 80–100 parking spots, sports courts, 84 m² pool, and optional extra-fee social hall (events/coaching), 50-pax nightclub & karaoke.", "Eventos de fin de año, integración y convenciones en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, deportes, piscina 84 m² y salón social (eventos/coaching), discoteca 50 pax y karaoke con pago extra.")}
+                {tr("From open-air garden galas and team sports tournaments to executive coaching workshops, explore our main environments beside or open the technical capacity matrix.", "Desde celebraciones campestres bajo carpa hasta torneos de integración y sesiones de liderazgo: explora nuestras áreas principales o revisa la matriz técnica completa de espacios y aforos.")}
               </p>
 
               <div className="pt-2">

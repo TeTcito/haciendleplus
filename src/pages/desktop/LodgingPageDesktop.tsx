@@ -326,8 +326,8 @@ Could you please confirm availability for these dates and provide the proposal? 
             <ScrollReveal direction="left" delay={120} duration={750}>
               <p className="text-base sm:text-lg md:text-xl text-[#FAF7F2] max-w-3xl leading-relaxed font-light drop-shadow-[0_2px_14px_rgba(0,0,0,0.9)]">
                 {tr(
-                  "Long-stay lodging for corporate staff, delegations, NGOs, volunteers, and international groups in Quito–Píntag. Audited capacity up to 65 guests with 14 internal bathrooms (7 double + 59 single beds), full board, fiber-optic Wi-Fi, and 80–100 private parking spaces, complemented by 13,000 m² lawns, 84 m² pool (70 pax), spa & sports courts.",
-                  "Alojamiento de larga estadía para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales en Quito–Píntag. Capacidad máxima de 65 personas con 14 baños internos (7 camas matrimoniales y 59 individuales), alimentación completa, fibra óptica y 80–100 parqueaderos, fortalecidos con 13.000 m² de jardines, piscina 84 m² (70 pax), spa y áreas deportivas."
+                  "A tranquil sanctuary near Quito designed for extended stays of corporate staff, delegations, NGOs, and international teams—blending comfortable rest, daily dining, seamless connectivity, and refreshing outdoor amenities.",
+                  "Un entorno tranquilo cerca de Quito pensado para que equipos de empresas, delegaciones, ONGs y grupos internacionales descansen, trabajen con fluidez y disfruten de gastronomía diaria y espacios al aire libre."
                 )}
               </p>
             </ScrollReveal>
@@ -865,8 +865,9 @@ Could you please confirm availability for these dates and provide the proposal? 
                   </h3>
                   <p className="text-xs sm:text-sm text-[#FAF7F2]/85 max-w-sm leading-relaxed font-light">
                     {tr(
-                      lodgingHeroBanner.description.startsWith('Alojamiento hasta 65 personas')
-                        ? 'Lodging for up to 65 guests (14 internal baths · 7 double & 59 single beds) with daily catering, fiber-optic Wi-Fi, 80–100 parking spots, 84 m² pool (70 pax), 13,000 m² lawns & sports courts.'
+                      lodgingHeroBanner.description.startsWith('Estadías prolongadas sin preocupaciones') ||
+                        lodgingHeroBanner.description.startsWith('Alojamiento hasta 65 personas')
+                        ? 'Worry-free extended stays under one roof: equipped accommodations, three daily meals from our kitchen, reliable connectivity, and peaceful access to gardens, pool, and recreation.'
                         : lodgingHeroBanner.description,
                       lodgingHeroBanner.description
                     )}
@@ -1213,7 +1214,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                 {tr("Guest Count & Duration", "de Personas y Duración")}
               </h3>
               <p className="text-xs sm:text-sm text-[#FAF7F2]/80 leading-relaxed font-light">
-                {tr("We design tailored proposals for corporate staff, delegations, NGOs, volunteers, and international groups. Choose your guest range (from 1 up to 65 guests with 14 internal bathrooms, 7 double + 59 single beds) and stay duration (days, weeks, or months) with catering, fiber-optic internet, and 80–100 parking spaces.", "Diseñamos propuestas a medida para personal de empresas, delegaciones, ONG, voluntarios y grupos internacionales. Elige el rango de huéspedes (de 1 hasta 65 personas con 14 baños internos, 7 camas matrimoniales y 59 individuales) y la duración (por días, semanas o meses) con alimentación, internet fibra óptica y 80–100 parqueaderos.")}
+                {tr("Tailored proposals crafted around your team's schedule and goals—by the day, week, or month—integrating comfortable rest, daily dining, connectivity, and full estate logistics in Píntag.", "Diseñamos propuestas flexibles adaptadas al ritmo de tu empresa o delegación, por días, semanas o meses, integrando descanso, alimentación diaria y logística completa en un entorno privado en Píntag.")}
               </p>
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <a
@@ -1509,7 +1510,7 @@ Could you please confirm availability for these dates and provide the proposal? 
                       {tr("Lodging for Companies, Delegations & Groups", "Hospedaje para Empresas, Delegaciones y Grupos")}
                     </h4>
                     <p className="text-xs text-[#FAF7F2]/80 max-w-md">
-                      {tr("Capacity up to 65 guests (14 internal baths · 7 double + 59 single beds), 3-meal catering, fiber optic WiFi, 80–100 parking spots, 13,000 m² lawns, 84 m² pool (70 pax), wellness spa & sports areas.", "Capacidad hasta 65 personas (14 baños internos · 7 camas matrimoniales y 59 individuales), alimentación 3 tiempos, fibra óptica, 80–100 parqueaderos, 13.000 m² de jardines, piscina 84 m² (70 pax), spa y áreas deportivas.")}
+                      {tr("Discover our peaceful rooms, on-site dining room, landscaped gardens, pool, and recreational spaces designed for extended group stays in Quito–Píntag.", "Descubre nuestras habitaciones, restaurante propio, amplios jardines, piscina y áreas recreativas pensadas para el bienestar de tu equipo o delegación en Quito–Píntag.")}
                     </p>
                   </div>
                 </>

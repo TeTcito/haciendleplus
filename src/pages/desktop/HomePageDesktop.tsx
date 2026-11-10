@@ -494,8 +494,8 @@ export const HomePageDesktop: React.FC = () => {
                 <ScrollReveal direction="left" delay={210} distance={80}>
                   <p className="text-sm sm:text-base lg:text-[17px] text-[#FAF7F2]/90 max-w-xl leading-relaxed font-normal">
                     {tr(
-                      "Welcome to Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for up to 65 guests (14 internal baths · 7 double & 59 single beds), macro-events and weddings across 13,000 m² gardens, with 84 m² pool (70 pax), restaurant and sports courts.",
-                      "Presentación de Hacienda Le Plus en Quito–Píntag: alojamiento corporativo y grupal hasta 65 huéspedes (14 baños internos · 7 camas matrimoniales y 59 individuales), macroeventos y bodas en 13.000 m² de jardines, con piscina de 84 m² (70 pax), restaurante propio y canchas deportivas."
+                      "Your private country estate in Quito–Píntag crafted for productive corporate long stays, high-impact events, and unforgettable weddings surrounded by Andean nature, signature dining, and recreation.",
+                      "Tu sede campestre privada en Quito–Píntag diseñada para largas estadías empresariales, grandes eventos y celebraciones memorables en un entorno natural con gastronomía propia y bienestar."
                     )}
                   </p>
                 </ScrollReveal>
@@ -900,8 +900,8 @@ export const HomePageDesktop: React.FC = () => {
                   {tr("and", "y")}{' '}
                   <strong>{tr("30 minutes from Mariscal Sucre International Airport", "30 minutos del Aeropuerto Internacional Mariscal Sucre")}</strong>.{' '}
                   {tr(
-                    "Our facilities integrate long-stay lodging for up to 65 guests (14 internal baths, 7 double & 59 single beds), 13,000 m² lawns, 8 external restrooms, and 80–100 parking spots alongside an 84 m² pool (70 pax), restaurant, and sports courts.",
-                    "Nuestras instalaciones integran hospedaje de larga estadía hasta 65 personas (14 baños internos, 7 camas matrimoniales y 59 individuales), 13.000 m² de jardines, 8 baños externos y 80–100 parqueaderos, junto con piscina de 84 m² (70 pax), restaurante y canchas deportivas."
+                    "A private sanctuary where restful corporate stays, expansive outdoor celebrations, signature kitchen service, and recreational living come together effortlessly.",
+                    "Un refugio privado donde el descanso estratégico para equipos, la realización de eventos inolvidables, nuestra cocina de autor y las áreas recreativas conviven en total armonía."
                   )}
                 </p>
               </ScrollReveal>
