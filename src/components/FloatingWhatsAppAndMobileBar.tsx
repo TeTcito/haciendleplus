@@ -9,7 +9,7 @@ import { LanguageSelector } from './LanguageSelector';
 
 export const FloatingWhatsAppAndMobileBar: React.FC = () => {
   const { siteConfig } = useCMS();
-  const { isEn, tr } = useLanguage();
+  const { tr } = useLanguage();
   const location = useLocation();
 
   if (location.pathname.startsWith('/portal-admin') || location.pathname.startsWith('/admin')) {

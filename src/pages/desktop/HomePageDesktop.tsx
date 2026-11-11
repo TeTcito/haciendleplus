@@ -210,7 +210,7 @@ const ScrollReveal: React.FC<ScrollRevealProps> = ({
 
 export const HomePageDesktop: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
-  const { language, isEn, t, tr } = useLanguage();
+  const { language, t, tr } = useLanguage();
 
   const heroStopCards = getHeroStopCards(language);
   const portfolioServices = getPortfolioServices(language);
@@ -220,9 +220,9 @@ export const HomePageDesktop: React.FC = () => {
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
     title_en: 'Hacienda Le Plus | Corporate Long-Stays, Major Events & Weddings in Quito–Píntag',
     description:
-      'Presentación de Hacienda Le Plus en Quito–Píntag: prioridad comercial en hospedaje de larga estadía para empresas y grupos, grandes eventos corporativos y bodas. Cotizaciones al WhatsApp 0969817891.',
+      'Presentación de Hacienda Le Plus en Quito–Píntag: prioridad comercial en hospedaje de larga estadía hasta 81 personas (18 baños), eventos hasta 1.000 personas en 13.000 m² de áreas verdes donde montamos carpas gigantes según cada evento y bodas. Cotizaciones al WhatsApp 0969817891.',
     description_en:
-      'Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for corporate groups, major events and weddings. Inquiries via WhatsApp +593 96 981 7891.',
+      'Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for up to 81 guests (18 baths), outdoor events for up to 1,000 people across 13,000 m² green areas with giant tents sized to each event, and weddings. Inquiries via WhatsApp +593 96 981 7891.',
     canonicalPath: '/',
     lang: language,
   });
@@ -406,7 +406,7 @@ export const HomePageDesktop: React.FC = () => {
           SEGÚN REFERENCIA TIDEPOST + FOTOS REALES HACIENDA LE PLUS
       ====================================================================== */}
       <section
-        aria-label="Portada Principal Hacienda Le Plus"
+        aria-label={tr("Hacienda Le Plus Main Cover", "Portada Principal Hacienda Le Plus")}
         className="relative bg-[#FAF7F2] pt-[64px] sm:pt-[72px] overflow-hidden"
       >
         {/* SVG ClipPath Definition for the Organic Arched Floating Card */}
@@ -530,22 +530,22 @@ export const HomePageDesktop: React.FC = () => {
                     <div className="flex -space-x-3 shrink-0">
                       <img
                         src="/images/hacienda/grupos-hxp.jpg"
-                        alt="Hospedaje Larga Estadía Empresas y ONGs"
+                        alt={tr("Long-Stay Lodging for Companies and NGOs", "Hospedaje Larga Estadía Empresas y ONGs")}
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
                         src="/images/hacienda/reunion-corporativa.jpg"
-                        alt="Grandes Eventos Corporativos e Integraciones"
+                        alt={tr("Major Corporate Events and Team Retreats", "Grandes Eventos Corporativos e Integraciones")}
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
                         src="/images/hacienda/bodas-exteriores.jpg"
-                        alt="Bodas y Celebraciones en Hacienda Le Plus"
+                        alt={tr("Weddings and Celebrations at Hacienda Le Plus", "Bodas y Celebraciones en Hacienda Le Plus")}
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
                         src="/images/hacienda/piscina-aerea.jpg"
-                        alt="Complemento Piscina, Restaurante y Áreas Recreativas"
+                        alt={tr("Pool, Restaurant and Recreation Amenities", "Complemento Piscina, Restaurante y Áreas Recreativas")}
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                     </div>
@@ -849,7 +849,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="rounded-3xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-48 sm:h-56 -rotate-1 group">
                   <img
                     src="/images/hacienda/cabana-exterior.jpg"
-                    alt="Instalaciones de Hospedaje en Hacienda Le Plus Quito–Píntag"
+                    alt={tr("Lodging Facilities at Hacienda Le Plus Quito–Píntag", "Instalaciones de Hospedaje en Hacienda Le Plus Quito–Píntag")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -859,7 +859,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="rounded-3xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-48 sm:h-56 translate-y-4 rotate-1 group">
                   <img
                     src="/images/hacienda/piscina-aerea.jpg"
-                    alt="Piscina de 14×6m (84 m² · cap. 70 pax) y dos hidromasajes 2×2m (solo grupos grandes con tarifa extra)"
+                    alt={tr("14×6m Pool (84 m² · 70 pax) and two 2×2m hot tubs (large groups with extra fee)", "Piscina de 14×6m (84 m² · cap. 70 pax) y dos hidromasajes 2×2m (solo grupos grandes con costo adicional)")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -869,7 +869,7 @@ export const HomePageDesktop: React.FC = () => {
                 <div className="rounded-3xl overflow-hidden shadow-xl border border-[#0A1F17]/10 h-52 sm:h-60 mt-2 group">
                   <img
                     src="/images/hacienda/jardines-teambuilding.jpg"
-                    alt="13.000 m² de jardines en Quito–Píntag para Grandes Eventos y Larga Estadía"
+                    alt={tr("13,000 m² gardens in Quito–Píntag for Major Events and Long Stays", "13.000 m² de jardines en Quito–Píntag para Grandes Eventos y Larga Estadía")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -887,7 +887,7 @@ export const HomePageDesktop: React.FC = () => {
                   className="font-serif-luxury text-3xl sm:text-5xl font-semibold text-[#071912] leading-tight"
                 >
                   {tr("Exclusive resort facilities in", "Instalaciones exclusivas en")}{' '}
-                  <em className="italic text-[#A6823C] font-normal">Quito – Píntag</em>{' '}
+                  <em className="italic text-[#A6823C] font-normal">{tr("Quito – Píntag", "Quito – Píntag")}</em>{' '}
                   {tr("for stays and major events.", "para estadías y eventos.")}
                 </h2>
               </ScrollReveal>
@@ -918,7 +918,7 @@ export const HomePageDesktop: React.FC = () => {
                       <BedDouble className="w-5 h-5" />
                     </div>
                     <span className="text-xs font-bold text-[#071912]">
-                      {tr("Cap. 65 Pax · 14 Baths", "Cap. 65 Pax · 14 Baños")}
+                      {tr("Cap. 81 Pax · 18 Baths", "Cap. 81 Pax · 18 Baños")}
                     </span>
                   </Link>
                 </ScrollReveal>
@@ -1030,7 +1030,7 @@ export const HomePageDesktop: React.FC = () => {
                   ))}
                 </ul>
 
-                {/* Píldoras de Precio y Capacidad independientes */}
+                {/* Píldoras de Características y Capacidad independientes */}
                 <div className="pt-1 flex flex-wrap items-center gap-2 text-xs font-bold text-[#071912]/85">
                   <ScrollReveal direction="zoom-in" delay={410} scale={0.75} className="inline-block">
                     <span className="inline-block px-3.5 py-1 rounded-full bg-white/85 border border-[#071912]/10 shadow-xs">
@@ -1374,7 +1374,7 @@ export const HomePageDesktop: React.FC = () => {
                           {displayNumber}
                         </span>
 
-                        <div className="flex items-center justify-center gap-0.5 my-0.5" aria-label={`${rev.rating} de 5 estrellas`}>
+                        <div className="flex items-center justify-center gap-0.5 my-0.5" aria-label={`${rev.rating} ${tr("out of 5 stars", "de 5 estrellas")}`}>
                           {Array.from({ length: rev.rating }).map((_, sIdx) => (
                             <Star
                               key={sIdx}
@@ -1390,7 +1390,7 @@ export const HomePageDesktop: React.FC = () => {
 
                         {/* Rol / Tipo de evento */}
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#5E842E] mb-1">
-                          {rev.role}
+                          {tr(rev.role, rev.role)}
                         </span>
 
                         {/* Comentario / Reseña */}
@@ -1413,7 +1413,7 @@ export const HomePageDesktop: React.FC = () => {
                       key={r.id}
                       type="button"
                       onClick={() => handleDotSelectReview(dotIdx)}
-                      aria-label={`Ir a reseña ${dotIdx + 1}`}
+                      aria-label={`${tr("Go to review", "Ir a reseña")} ${dotIdx + 1}`}
                       className={`h-2 rounded-full transition-all cursor-pointer ${
                         dotIdx === reviewStartIndex
                           ? 'w-6 bg-[#113221]'
@@ -1425,12 +1425,12 @@ export const HomePageDesktop: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                   <span className="text-[11px] font-semibold text-[#113221]/60 mr-1 hidden sm:inline">
-                    Deslizar reseñas ({reviews.length})
+                    {tr("Swipe reviews", "Deslizar reseñas")} ({reviews.length})
                   </span>
                   <button
                     type="button"
                     onClick={handlePrevReviews}
-                    aria-label="Reseña anterior"
+                    aria-label={tr("Previous review", "Reseña anterior")}
                     className="w-8 h-8 rounded-full border border-[#113221]/20 bg-white hover:bg-[#113221] text-[#113221] hover:text-white flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                   >
                     <ChevronLeft className="w-4 h-4" />
@@ -1438,7 +1438,7 @@ export const HomePageDesktop: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleNextReviews}
-                    aria-label="Siguiente reseña"
+                    aria-label={tr("Next review", "Siguiente reseña")}
                     className="w-8 h-8 rounded-full border border-[#113221]/20 bg-white hover:bg-[#113221] text-[#113221] hover:text-white flex items-center justify-center transition-colors cursor-pointer shadow-2xs"
                   >
                     <ChevronRight className="w-4 h-4" />
@@ -1464,7 +1464,7 @@ export const HomePageDesktop: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsReviewModalOpen(false)}
-                aria-label="Cerrar ventana"
+                aria-label={tr("Close dialog", "Cerrar ventana")}
                 className="absolute top-5 right-5 w-8 h-8 rounded-full bg-[#113221]/10 hover:bg-[#113221] text-[#113221] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -1521,19 +1521,19 @@ export const HomePageDesktop: React.FC = () => {
                         onChange={(e) => setNewReviewRole(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-xs font-semibold text-[#113221] focus:outline-none focus:border-[#5E842E]"
                       >
-                        <option value={tr("Weddings & Celebrations", "Bodas & Recepciones")}>
+                        <option value="Bodas & Recepciones">
                           {tr("Weddings & Celebrations", "Bodas & Recepciones")}
                         </option>
-                        <option value={tr("Corporate & Conventions", "Corporativo & GADs")}>
+                        <option value="Corporativo & GADs">
                           {tr("Corporate & Conventions", "Corporativo & GADs")}
                         </option>
-                        <option value={tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}>
+                        <option value="Delegación ONG / HXP">
                           {tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}
                         </option>
-                        <option value={tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}>
+                        <option value="Suites & Zona Húmeda">
                           {tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}
                         </option>
-                        <option value={tr("Dining & Catering", "Gastronomía & Eventos")}>
+                        <option value="Gastronomía & Eventos">
                           {tr("Dining & Catering", "Gastronomía & Eventos")}
                         </option>
                       </select>
@@ -1550,7 +1550,7 @@ export const HomePageDesktop: React.FC = () => {
                             type="button"
                             onClick={() => setNewReviewRating(starVal)}
                             className="cursor-pointer focus:outline-none"
-                            aria-label={tr("${starVal} stars", "${starVal} estrellas")}
+                            aria-label={`${starVal} ${tr("stars", "estrellas")}`}
                           >
                             <Star
                               className={`w-4 h-4 transition-colors ${

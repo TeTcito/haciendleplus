@@ -31,7 +31,7 @@ import { RESORT_SPACES, CORPORATE_SPACES_TABLE, CORPORATE_SPACES_CARDS, getCorpo
 
 export const CorporatePageDesktop: React.FC = () => {
   const { siteConfig, corporateExclusiveFormats, corporateHighlights, openQuoteModal } = useCMS();
-  const { language, isEn, t, tr } = useLanguage();
+  const { language, t, tr } = useLanguage();
   const aforosRef = useRef<HTMLDivElement | null>(null);
 
   const [currentPkgIndex, setCurrentPkgIndex] = useState(0);
@@ -44,9 +44,9 @@ export const CorporatePageDesktop: React.FC = () => {
     title: 'Grandes Eventos y Experiencias Corporativas en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Major Corporate Events, Retreats & Conventions in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Macroeventos y encuentros empresariales en Quito–Píntag: 13.000 m² de jardines, 8 baños externos, 80–100 parqueaderos, carpas, catering, tarima, deportes (fútbol 7v7, básquet pro, vóley, ping pong, billar), piscina 84 m² (70 pax), discoteca 50 pax*, karaoke*, salón coaching* y hospedaje hasta 65 pax.',
+      'Macroeventos y encuentros empresariales en Quito–Píntag hasta 1.000 personas en 13.000 m² de áreas verdes donde montamos carpas gigantes según el tamaño de cada evento: 20 baños externos, 80–100 parqueaderos, catering, tarima, deportes, piscina 84 m² (70 pax), discoteca 50 pax*, karaoke*, salón coaching* y hospedaje hasta 81 pax.',
     description_en:
-      'Major corporate events, retreats & conventions in Quito–Píntag: 13,000 m² lawns, 8 external restrooms, 80–100 parking spots, structural tents, catering, stage, sports (7v7 soccer, pro b-ball, volley, ping pong, billiards), 84 m² pool (70 pax), 50-pax club*, karaoke*, social hall* & lodging up to 65 pax.',
+      'Major corporate events, retreats & conventions in Quito–Píntag for up to 1,000 guests across 13,000 m² green areas with giant tents sized to each event: 20 external restrooms, 80–100 parking spots, catering, stage, sports, 84 m² pool (70 pax), 50-pax club*, karaoke*, social hall* & lodging up to 81 pax.',
     canonicalPath: '/corporativo',
     lang: language,
   });
@@ -60,7 +60,9 @@ export const CorporatePageDesktop: React.FC = () => {
             if (matched) {
               return {
                 ...matched,
-                priceValue: cmsPkg.priceValue,
+                priceValue: 0,
+                priceLabel: '',
+                unit: '',
                 image: cmsPkg.image,
                 imagePosition: cmsPkg.imagePosition,
                 videoUrl: cmsPkg.videoUrl,
@@ -122,7 +124,9 @@ export const CorporatePageDesktop: React.FC = () => {
     e.preventDefault();
     openQuoteModal({
       serviceType: 'corporativo',
-      itemName: quickEmail ? `Dossier Corporativo (${quickEmail})` : 'Dossier Corporativo & Tarifario',
+      itemName: quickEmail
+        ? `${tr('Corporate Dossier', 'Dossier Corporativo')} (${quickEmail})`
+        : tr('Corporate Event Dossier', 'Dossier Corporativo de Eventos'),
     });
   };
 
@@ -146,7 +150,7 @@ export const CorporatePageDesktop: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="/images/hacienda/corporate-hero-composite.jpg"
-            alt="Eventos y Convenciones en Salón de Hacienda Le Plus"
+            alt={tr("Corporate Events and Conventions at Hacienda Le Plus Hall", "Eventos y Convenciones en Salón de Hacienda Le Plus")}
             className="w-full h-full object-cover object-right sm:object-center select-none"
           />
           {/* Sutil overlay en móviles para garantizar contraste de lectura óptimo */}
@@ -199,9 +203,9 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Coffee className="w-6 h-6" />
                   </div>
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
-                    <span>{tr("Tents, gardens", "Carpas, jardines")}</span>
+                    <span>{tr("Green areas, giant tents", "Áreas verdes, carpas gigantes")}</span>
                     <br />
-                    <span className="text-[#E2C585]">&amp; {tr("in-house catering", "catering propio")}</span>
+                    <span className="text-[#E2C585]">{tr("& in-house catering", "& catering propio")}</span>
                   </div>
                 </div>
 
@@ -213,7 +217,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
                     <span>{tr("Stage, floor", "Tarima, pista")}</span>
                     <br />
-                    <span className="text-[#E2C585]">&amp; {tr("pro sound", "sonido pro")}</span>
+                    <span className="text-[#E2C585]">{tr("& pro sound", "& sonido pro")}</span>
                   </div>
                 </div>
 
@@ -225,7 +229,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   <div className="text-xs sm:text-sm font-semibold text-[#FAF7F2] leading-snug">
                     <span>{tr("Sports, 84 m² pool", "Deportes, piscina 84 m²")}</span>
                     <br />
-                    <span className="text-[#E2C585]">&amp; {tr("up to 65 pax lodging", "hosp. hasta 65 pax")}</span>
+                    <span className="text-[#E2C585]">{tr("& up to 81 pax lodging", "& hosp. hasta 81 pax")}</span>
                   </div>
                 </div>
               </div>
@@ -258,10 +262,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {tr("Tents, Stage & Dance Floor", "Carpas, Tarima & Pista")}
+                  {tr("Giant Tents, Stage & Floor", "Carpas Gigantes, Tarima & Pista")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {tr("Modular structural tents, professional elevated stage, lacquered dance floor, and convention hall.", "Carpas estructurales, tarima profesional, pista de baile y salón de convenciones.")}
+                  {tr("Giant tents sized to your event on 13,000 m² green areas, elevated stage, dance floor & hall.", "Carpas gigantes según el evento en 13.000 m² de áreas verdes, tarima, pista y salón.")}
                 </p>
               </div>
             </div>
@@ -309,10 +313,10 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h3 className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#071912] leading-snug">
-                  {tr("Lodging (Max 65 Pax · 14 Baths)", "Hospedaje (Máx. 65 Pax)")}
+                  {tr("Lodging (Max 81 Pax · 18 Baths)", "Hospedaje (Máx. 81 Pax)")}
                 </h3>
                 <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed">
-                  {tr("Up to 65 guests with 14 internal baths (7 double + 59 single beds) plus 8 external restrooms & 80–100 parking spots.", "Hasta 65 huéspedes en 14 baños internos (7 camas matr. + 59 indiv.), además de 8 baños externos y 80–100 parqueos.")}
+                  {tr("Up to 81 guests with 18 internal baths (7 double + 75 single beds) plus 20 external restrooms & 80–100 parking spots.", "Hasta 81 huéspedes en 18 baños internos (7 camas matr. + 75 indiv.), además de 20 baños externos y 80–100 parqueos.")}
                 </p>
               </div>
             </div>
@@ -518,8 +522,6 @@ export const CorporatePageDesktop: React.FC = () => {
                     <Users className="w-3.5 h-3.5" />
                     {currentPkg.capacity}
                   </span>
-                  <span className="text-white/30">•</span>
-                  <span>{tr("From", "Desde")} ${currentPkg.priceValue} / {tr(currentPkg.unit, currentPkg.unit)}</span>
                 </div>
 
                 <div className="pt-3">
@@ -557,7 +559,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       {currentPkg.setupInfo}
                     </span>
                     <span className="text-[11px] text-white/70 uppercase tracking-wider shrink-0">
-                      {currentPkg.highlightBadge || 'Exclusivo'}
+                      {currentPkg.highlightBadge || tr('Exclusive', 'Exclusivo')}
                     </span>
                   </div>
                 </div>
@@ -569,7 +571,7 @@ export const CorporatePageDesktop: React.FC = () => {
                       key={idx}
                       type="button"
                       onClick={() => setCurrentPkgIndex(idx)}
-                      aria-label={`Ir al formato ${idx + 1}`}
+                      aria-label={`${tr("Go to format", "Ir al formato")} ${idx + 1}`}
                       className={`h-1.5 transition-all rounded-full cursor-pointer ${
                         idx === currentPkgIndex ? 'w-8 bg-[#C8A45D]' : 'w-2 bg-white/20 hover:bg-white/40'
                       }`}
@@ -606,11 +608,11 @@ export const CorporatePageDesktop: React.FC = () => {
               </div>
 
               <h3 className="font-serif-luxury text-3xl sm:text-4xl lg:text-[2.65rem] font-semibold text-[#071912] leading-[1.12]">
-                {tr("Tents, gardens, stage & large-format spaces", "Carpas, jardines, tarima y espacios de gran formato")}
+                {tr("Giant tents, green areas, stage & spaces", "Carpas gigantes, áreas verdes, tarima y espacios")}
               </h3>
 
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {tr("From open-air garden galas and team sports tournaments to executive coaching workshops, explore our main environments beside or open the technical capacity matrix.", "Desde celebraciones campestres bajo carpa hasta torneos de integración y sesiones de liderazgo: explora nuestras áreas principales o revisa la matriz técnica completa de espacios y aforos.")}
+                {tr("Our external grounds are 13,000 m² green areas where we mount giant tents sized to your event, alongside sports tournaments and coaching sessions.", "Nuestras áreas externas son 13.000 m² de áreas verdes donde montamos carpas gigantes según el tamaño de tu evento, junto con torneos deportivos y salones.")}
               </p>
 
               <div className="pt-2">
@@ -704,10 +706,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Presentation className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {tr("Stage, Dance Floor & Tents", "Tarima, Pista de Baile & Carpas")}
+                  {tr("Stage, Dance Floor & Giant Tents", "Tarima, Pista de Baile & Carpas Gigantes")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {tr("Modular structural tents on lawns, stage, dance floor, and pro technical production for year-end galas and conventions.", "Montaje de carpas imperiales en jardines, tarima de escenario, pista de baile y producción técnica para eventos de fin de año y convenciones.")}
+                  {tr("In our 13,000 m² green areas we mount giant tents sized to each event, with stage, dance floor & AV production.", "En nuestras 13.000 m² de áreas verdes montamos carpas gigantes según el tamaño de cada evento, con tarima, pista de baile y producción técnica.")}
                 </p>
               </div>
             </div>
@@ -735,7 +737,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   {tr("Sports, 84 m² Pool (70 Pax) & Spa*", "Deportes, Piscina 84 m² & Spa*")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {tr("13,000 m² lawns, 7v7 grass soccer, pro basketball, reg. grass volley, ping pong, billiards, 84 m² pool (70 pax), sauna/steam/jacuzzi (6–8 pax) & 2 hot tubs (extra fee for large groups). Extra fee: Karaoke, 50-pax Nightclub & Social Hall (events/coaching).", "13.000 m² jardines, fútbol 7v7, básquet pro, vóley regl., ping pong, billar, piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax) y 2 hidromasajes (grupos grandes c/ tarifa extra). Pago extra: Karaoke, Discoteca 50 pax y Salón social eventos/coaching.")}
+                  {tr("13,000 m² green areas, 7v7 grass soccer, pro basketball, reg. grass volley, ping pong, billiards, 84 m² pool (70 pax), sauna/steam/jacuzzi (6–8 pax) & 2 hot tubs (extra fee for large groups). Extra fee: Karaoke, 50-pax Nightclub & Social Hall (events/coaching).", "13.000 m² áreas verdes, fútbol 7v7, básquet pro, vóley regl., ping pong, billar, piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax) y 2 hidromasajes (grupos grandes c/ costo adicional). Pago extra: Karaoke, Discoteca 50 pax y Salón social eventos/coaching.")}
                 </p>
               </div>
             </div>
@@ -746,10 +748,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <BedDouble className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {tr("Complimentary Lodging (Max 65 Pax)", "Hospedaje (Hasta 65 Pax · 14 Baños)")}
+                  {tr("Complimentary Lodging (Max 81 Pax)", "Hospedaje (Hasta 81 Pax · 18 Baños)")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {tr("Audited capacity of 65 guests with 14 internal bathrooms (7 double + 59 single beds) across Suites, Family House, Apartment & Shared Rooms.", "Capacidad máxima de 65 personas y 14 baños internos (7 camas matrimoniales + 59 individuales) entre suites, casa familiar, depto. y habitaciones compartidas.")}
+                  {tr("Audited capacity of 81 guests with 18 internal bathrooms (7 double + 75 single beds) across Suites, Panoramic Room, Family House, Apartment & Shared Rooms.", "Capacidad máxima de 81 personas y 18 baños internos (7 camas matrimoniales + 75 individuales) entre suites, hab. panorámica, casa familiar, depto. y hab. compartidas.")}
                 </p>
               </div>
             </div>
@@ -760,10 +762,10 @@ export const CorporatePageDesktop: React.FC = () => {
               <Car className="w-5 h-5 text-[#C8A45D] shrink-0 mt-1" />
               <div>
                 <h4 className="font-semibold text-sm text-white">
-                  {tr("80–100 Parking Spots & 8 Ext. Baths", "80–100 Parqueaderos & 8 Baños Ext.")}
+                  {tr("80–100 Parking Spots & 20 Ext. Baths", "80–100 Parqueaderos & 20 Baños Ext.")}
                 </h4>
                 <p className="text-xs text-[#FAF7F2]/75 mt-1 leading-relaxed">
-                  {tr("80 to 100 gated parking spaces in Quito–Píntag with coach bus access, plus 8 external restrooms dedicated to outdoor areas.", "De 80 a 100 parqueaderos internos seguros en Quito–Píntag con maniobra cómoda para buses y vehículos, más 8 baños externos para eventos.")}
+                  {tr("80 to 100 gated parking spaces in Quito–Píntag with coach bus access, plus 20 external restrooms dedicated to outdoor areas.", "De 80 a 100 parqueaderos internos seguros en Quito–Píntag con maniobra cómoda para buses y vehículos, más 20 baños externos para eventos.")}
                 </p>
               </div>
             </div>
@@ -822,7 +824,7 @@ export const CorporatePageDesktop: React.FC = () => {
                 {tr("Formal Proposal for Your Company", "Cotización Formal para tu Empresa")}
               </h3>
               <p className="text-xs sm:text-sm text-[#0A1F17]/75 leading-relaxed font-normal">
-                {tr("Request a tailored proposal for your year-end gala, team integration retreat, or convention with tents, catering, stage, and lodging.", "Solicita la propuesta para tu evento de fin de año, integración o convención con carpas, catering, tarima y hospedaje complementario.")}
+                {tr("Request a tailored proposal for your year-end gala, team integration retreat, or convention with giant tents on our green areas, catering, stage, and lodging.", "Solicita la propuesta para tu evento de fin de año, integración o convención con carpas gigantes según tu evento en áreas verdes, catering, tarima y hospedaje.")}
               </p>
             </ScrollReveal>
 
@@ -947,16 +949,16 @@ export const CorporatePageDesktop: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div className="bg-[#FAF7F2] rounded-2xl p-4 border border-[#0A1F17]/10 space-y-2">
                 <h4 className="font-bold text-[#071912] uppercase tracking-wider text-[11px]">
-                  {tr("External Areas & Wellness Facilities", "Áreas Externas & Zona Húmeda")}
+                  {tr("Green Areas (w/ Tents) & Wellness Facilities", "Áreas Verdes c/ Carpas & Zona Húmeda")}
                 </h4>
                 <ul className="space-y-1 text-[#0A1F17]/80">
-                  <li>• <strong>{tr("Gardens & Parking:", "Jardines & Parqueaderos:")}</strong> {tr("13,000 m² gardens · 8 external restrooms · 80–100 parking spots.", "13.000 m² de jardines · 8 baños externos · 80–100 parqueaderos.")}</li>
+                  <li>• <strong>{tr("Green Areas & Tents:", "Áreas Verdes & Carpas:")}</strong> {tr("13,000 m² green areas where we mount giant tents sized to your event (up to 1,000 pax) · 20 ext. restrooms · 80–100 parking.", "13.000 m² de áreas verdes donde montamos carpas gigantes según el evento (hasta 1.000 pax) · 20 baños ext. · 80–100 parqueos.")}</li>
                   <li>• <strong>{tr("Swimming Pool:", "Piscina:")}</strong> {tr("14×6 m = 84 m² · capacity 70 guests.", "14×6 m = 84 m² · capacidad 70 personas.")}</li>
                   <li>• <strong>{tr("Wellness Spa:", "Zona Spa:")}</strong> {tr("1 sauna, steam room & jacuzzi (capacity 6–8 guests).", "1 sauna, turco y jacuzzi (capacidad 6 a 8 personas).")}</li>
                   <li>• <strong>{tr("Hot Tubs (×2):", "Hidromasajes (×2):")}</strong> {tr("Two 2×2 m units (8–10 guests each).", "2 unidades de 2×2 m (capacidad 8 a 10 personas c/u).")}</li>
                 </ul>
                 <div className="bg-amber-100/90 border border-amber-400 text-amber-950 rounded-xl px-3 py-2 text-[11px] font-semibold">
-                  {tr("Note: Hot tubs are heated exclusively for large groups and at an extra fee.", "Nota: Los hidromasajes se encienden únicamente en grupos grandes y con tarifa extra.")}
+                  {tr("Note: Hot tubs are heated exclusively for large groups and at an extra fee.", "Nota: Los hidromasajes se encienden únicamente en grupos grandes y con costo adicional.")}
                 </div>
               </div>
 
@@ -968,7 +970,7 @@ export const CorporatePageDesktop: React.FC = () => {
                   <li>• <strong>{tr("Outdoor Sports:", "Canchas Deportivas:")}</strong> {tr("7 vs 7 grass soccer field, pro basketball court & regulation grass volleyball.", "Cancha de fútbol en césped 7 vs 7, básquet profesional y vóley en césped reglamentaria.")}</li>
                   <li>• <strong>{tr("Games Lounge:", "Juegos:")}</strong> {tr("Table tennis (ping pong) table & billiards table.", "Mesa de ping pong y mesa de billar.")}</li>
                   <li>• <strong>{tr("Extra-Fee Services:", "Con pago extra adicional:")}</strong> {tr("Karaoke, Nightclub (50 guests capacity), and Social Hall for events & coaching.", "Karaoke, Discoteca para 50 personas y Salón social para eventos y coaching.")}</li>
-                  <li>• <strong>{tr("On-Site Lodging:", "Hospedaje:")}</strong> {tr("Max 65 PAX · 14 internal baths · 7 double + 59 single beds.", "Máx. 65 PAX · 14 baños internos · 7 matrimoniales + 59 individuales.")}</li>
+                  <li>• <strong>{tr("On-Site Lodging:", "Hospedaje:")}</strong> {tr("Max 81 PAX · 18 internal baths · 7 double + 75 single beds.", "Máx. 81 PAX · 18 baños internos · 7 matrimoniales + 75 individuales.")}</li>
                 </ul>
               </div>
             </div>

@@ -25,7 +25,121 @@ import {
   fetchModulesFromSupabase,
 } from '../lib/supabase';
 
-const STORAGE_KEY = 'hacienda_leplus_cms_v5';
+const STORAGE_KEY = 'hacienda_leplus_cms_v7';
+
+const SKIP_NORMALIZATION_KEYS = new Set([
+  'id',
+  'image',
+  'rawImage',
+  'videoUrl',
+  'route',
+  'linkTo',
+  'email',
+  'phone',
+]);
+
+const LEGACY_EXT_RESTROOMS_RE =
+  /\b8(?=\s+(?:(?:dedicated|independent|external\s+event)\s+)?(?:baños?\b|ext(?:ernal|ernos?)?\b))/gi;
+const LEGACY_MAX_PAX_RE =
+  /(?<!\$)\b65(?=\s*(?:[-–]\s*pax|\+?\s*(?:pax\b|personas?\b|hu[eé]spedes?\b|invitados?\b|participantes?\b|guests?\b|p\b|·|,|\))))/gi;
+const LEGACY_PAX_RANGE_RE = /\b(45\s*[-–a]\s*|45\s+to\s+)65\b/gi;
+const LEGACY_INT_BATHS_RE = /(?<!\d)\b14(?=\s+(?:internal\s+)?(?:ba[ñn]os?|baths?)\b)/gi;
+const LEGACY_SINGLE_BEDS_RE = /\b59(?=\s+(?:camas\s+)?(?:indiv(?:\.|iduales)?|single(?:\s+beds?)?))/gi;
+const LEGACY_TOTAL_BEDS_RE = /\b66(?=\s+(?:camas?|beds?)\b)/gi;
+
+function normalizeLegacyString(value: string): string {
+  return value
+    .replace(LEGACY_EXT_RESTROOMS_RE, '20')
+    .replace(LEGACY_PAX_RANGE_RE, '$181')
+    .replace(LEGACY_MAX_PAX_RE, '81')
+    .replace(LEGACY_INT_BATHS_RE, '18')
+    .replace(LEGACY_SINGLE_BEDS_RE, '75')
+    .replace(LEGACY_TOTAL_BEDS_RE, '82')
+    .replace(/\b80\s+a\s+300\s+invitados\b/gi, 'Eventos hasta 1.000 personas en áreas verdes c/ carpas')
+    .replace(/\b50\s+a\s+300\s+Invitados\b/g, 'Hasta 1.000 Invitados Ext.')
+    .replace(/\b50\s+a\s+300\s+Pax\b/g, 'Hasta 1.000 Ext.')
+    .replace(/\b(?:50|80)\s+a\s+350\+?\s*participantes\b/gi, 'Eventos hasta 1.000 personas en áreas verdes c/ carpas')
+    .replace(/\bHasta\s+350\s+participantes\b/gi, 'Hasta 1.000 personas en áreas verdes c/ carpas')
+    .replace(/\bHasta\s+350\+?\s*pax\b/gi, 'Hasta 1.000 pax ext.')
+    .replace(/\b(?:300|350|400)\+(?=\s*(?:pax\b|personas?\b|invitados?\b|guests?\b)?)/gi, '1.000')
+    .replace(/\bTarifas?\s+(?:grupales?\s+)?desde\s+\$\s*\d+(?:[.,]\d+)?(?:\s*(?:por\s+persona|\/\s*(?:persona|noche|guest|invitado))[^\n.]*)?/gi, 'Cotización personalizada según personas y duración')
+    .replace(/\b(?:Desde|From)\s+\$\s*\d+(?:[.,]\d+)?[^\n.·]*/gi, '')
+    .replace(/\$\s*\d+(?:[.,]\d+)?(?:\s*USD)?/gi, '')
+    .replace(/\btarifa(?:s)?\s+extra(?:s)?\b/gi, 'costo adicional')
+    .replace(/\btarifario\b/gi, 'propuesta')
+    .replace(/\btarifa(?:s)?\b/gi, 'cotización');
+}
+
+function normalizeLegacyCMSData<T>(data: T, currentKey?: string): T {
+  if (typeof data === 'string') {
+    if (currentKey && SKIP_NORMALIZATION_KEYS.has(currentKey)) {
+      return data;
+    }
+    return normalizeLegacyString(data) as unknown as T;
+  }
+  if (Array.isArray(data)) {
+    return data.map((item) => normalizeLegacyCMSData(item)) as unknown as T;
+  }
+  if (data && typeof data === 'object') {
+    const normalized: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(data)) {
+      if (key === 'showPrice') {
+        normalized[key] = false;
+      } else if (key === 'pricePerNight' || key === 'priceValue') {
+        normalized[key] = 0;
+      } else if (key === 'price' || key === 'priceLabel' || key === 'unit') {
+        normalized[key] = '';
+      } else {
+        normalized[key] = normalizeLegacyCMSData(value, key);
+      }
+    }
+    return normalized as T;
+  }
+  return data;
+}
+
+function ensureUpdatedCabins(cabins: CabinRoom[] | undefined, fallbackCabins: CabinRoom[]): CabinRoom[] {
+  if (!cabins || cabins.length === 0) return fallbackCabins;
+  const panoramicaDefault = fallbackCabins.find((c) => c.id === 'cabin-panoramica');
+  const upgraded = cabins.map((cabin) => {
+    const cleanCabin = {
+      ...cabin,
+      pricePerNight: 0,
+      showPrice: false,
+    };
+    if (cleanCabin.id === 'cabin-complejo-grupal') {
+      const next = {
+        ...cleanCabin,
+        maxGuests: cleanCabin.maxGuests === 65 ? 81 : cleanCabin.maxGuests,
+        bathrooms: cleanCabin.bathrooms === 14 ? 18 : cleanCabin.bathrooms,
+      };
+      if (next.description && !next.description.includes('Panorámica')) {
+        next.description = next.description.replace(
+          /:\s*/,
+          ': Habitación Panorámica (16 pax, 4 baños), '
+        );
+      }
+      return next;
+    }
+    if (cleanCabin.id === 'cabin-panoramica') {
+      return {
+        ...cleanCabin,
+        imagePosition: cleanCabin.imagePosition || '50% 48%',
+      };
+    }
+    return cleanCabin;
+  });
+
+  if (panoramicaDefault && !upgraded.some((c) => c.id === 'cabin-panoramica')) {
+    const insertIdx = Math.min(1, upgraded.length);
+    return [
+      ...upgraded.slice(0, insertIdx),
+      { ...panoramicaDefault },
+      ...upgraded.slice(insertIdx),
+    ];
+  }
+  return upgraded;
+}
 
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   brandName: 'Hacienda Le Plus',
@@ -64,15 +178,15 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     category: 'hospedaje',
     title: 'Hospedaje Larga Estadía: Empresas, Delegaciones y ONGs',
     subtitle: 'Prioridad comercial: alojamiento para personal de empresas, ONG, voluntarios y grupos internacionales.',
-    priceLabel: 'Desde',
-    priceValue: 35,
-    unit: 'por persona / noche (según grupo y duración)',
-    capacity: 'Hasta 65 personas · 14 baños internos',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Hasta 81 personas · 18 baños internos',
     setupInfo: 'Suites & Habitaciones + Alimentación + Fibra Óptica + 80–100 Parqueaderos',
     description:
       'Alojamiento estratégico en Quito–Píntag pensado para el descanso y la operación diaria de equipos empresariales, delegaciones, ONG y voluntarios, con cotización flexible según personas y estadía.',
     inclusions: [
-      'Capacidad máx. 65 personas · 14 baños internos (4 suites, casa familiar, depto. y hab. compartidas)',
+      'Capacidad máx. 81 personas · 18 baños internos (Hab. Panorámica, 4 suites, casa familiar, depto. y hab. compartidas)',
       'Alimentación completa en restaurante propio (desayuno, almuerzo, cena y refrigerios)',
       'Internet Wi-Fi por fibra óptica de alta estabilidad y 80 a 100 parqueaderos privados',
       'Complementos: piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax), fútbol 7v7, básquet pro y vóley',
@@ -86,19 +200,19 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     id: 'pkg-corp-jornada',
     category: 'corporativo',
     title: 'Grandes Eventos, Fin de Año, Integración y Convenciones',
-    subtitle: 'Macroeventos empresariales con carpas, 13.000 m² de jardines, catering, tarima y canchas.',
-    priceLabel: 'Desde',
-    priceValue: 45,
-    unit: 'por participante',
-    capacity: '50 a 350 participantes',
-    setupInfo: 'Carpas + Jardines 13.000 m² + 8 Baños Ext. + Piscina 84 m² + Canchas',
+    subtitle: '13.000 m² de áreas verdes donde montamos carpas gigantes según cada evento, catering, tarima y canchas.',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Eventos hasta 1.000 pax en áreas verdes c/ carpas',
+    setupInfo: 'Carpas Gigantes + 13.000 m² Áreas Verdes + 20 Baños Ext. + Piscina 84 m²',
     description:
-      'Escenario campestre privado en Quito–Píntag para celebrar eventos de fin de año, convenciones e integraciones empresariales de alto impacto con producción, gastronomía y deporte en un mismo lugar.',
+      'Escenario campestre privado en Quito–Píntag con 13.000 m² de áreas verdes donde montamos carpas gigantes según el tamaño de tu evento para celebrar fin de año, convenciones e integraciones con gastronomía y deporte.',
     inclusions: [
-      '13.000 m² de jardines, 8 baños externos, carpas estructurales, tarima y pista (salón social eventos/coaching c/ pago extra)',
+      '13.000 m² de áreas verdes con carpas gigantes según evento, 20 baños externos, tarima y pista (salón coaching* pago extra)',
       'Canchas deportivas: fútbol césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, ping pong y billar',
       'Catering corporativo: parrilladas, banquetes y coffee breaks (karaoke y discoteca 50 pax c/ pago extra)',
-      'Complementos: piscina 14×6m = 84 m² (70 pax), sauna/turco/jacuzzi, 80–100 parqueaderos y hospedaje hasta 65 pax',
+      'Complementos: piscina 14×6m = 84 m² (70 pax), sauna/turco/jacuzzi, 80–100 parqueaderos y hospedaje hasta 81 pax',
     ],
     highlightBadge: 'Macroeventos & Empresas',
     image: '/images/hacienda/jardines-teambuilding.jpg',
@@ -110,18 +224,18 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     category: 'corporativo',
     title: 'Convenciones y Encuentros Empresariales con Hospedaje Complementario',
     subtitle: 'Sesiones estratégicas, plenarias y celebración con alojamiento in situ para equipos y directivos.',
-    priceLabel: 'Desde',
-    priceValue: 88,
-    unit: 'por persona / noche',
-    capacity: 'Hasta 65 participantes alojados (hasta 250 en plenaria)',
-    setupInfo: 'Salón (pago extra) + Catering 3 Tiempos + Piscina 84 m² + Hospedaje 65 Pax',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Hasta 81 participantes alojados (hasta 250 en plenaria)',
+    setupInfo: 'Salón (pago extra) + Catering 3 Tiempos + Piscina 84 m² + Hospedaje 81 Pax',
     description:
       'Combina convenciones, talleres de liderazgo o encuentros directivos con descanso confortable en la misma hacienda, conectividad estable y experiencias gastronómicas y recreativas.',
     inclusions: [
       'Salón social para eventos y coaching (con pago extra), pantalla gigante, sonido pro y fibra óptica',
-      'Hospedaje complementario hasta 65 personas (4 suites, casa familiar, depto. y hab. compartidas)',
+      'Hospedaje complementario hasta 81 personas (Hab. Panorámica 16 pax, 4 suites, casa familiar, depto. y hab. compartidas)',
       'Tres comidas diarias en nuestro restaurante y coffee breaks continuos',
-      'Piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax) e hidromasajes 2×2m (solo grupos grandes c/ tarifa extra)',
+      'Piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax) e hidromasajes 2×2m (solo grupos grandes c/ costo adicional)',
     ],
     highlightBadge: 'Convención + Hospedaje',
     image: '/images/hacienda/reunion-corporativa.jpg',
@@ -131,17 +245,17 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
   {
     id: 'pkg-boda-gastronomia',
     category: 'bodas',
-    title: 'Bodas y Celebraciones: Ceremonia, Recepción, Jardines y Catering',
-    subtitle: 'Ceremonias al aire libre, recepción de gala, decoración y gastronomía propia en Quito–Píntag.',
-    priceLabel: 'Desde',
-    priceValue: 70,
-    unit: 'por invitado',
-    capacity: '80 a 300 invitados',
-    setupInfo: '13.000 m² Jardines + 8 Baños Ext. + Carpa de Gala + Catering + Decoración',
+    title: 'Bodas y Celebraciones: Ceremonia, Carpas Gigantes en Áreas Verdes y Catering',
+    subtitle: 'Ceremonias en 13.000 m² de áreas verdes, carpas gigantes según cada boda, decoración y gastronomía propia en Quito–Píntag.',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Eventos hasta 1.000 pax en áreas verdes c/ carpas',
+    setupInfo: '13.000 m² Áreas Verdes + Carpas Gigantes + 20 Baños Ext. + Catering',
     description:
-      'Un escenario campestre y romántico frente a los volcanes para vivir tu ceremonia al aire libre y disfrutar una recepción elegante con catering de autor y montaje personalizado.',
+      'Un escenario campestre y romántico frente a los volcanes para vivir tu ceremonia en 13.000 m² de áreas verdes donde montamos carpas gigantes a medida y disfrutas un banquete de autor.',
     inclusions: [
-      '13.000 m² de jardines para ceremonia al aire libre, 8 baños externos y carpa/salón cubierto',
+      '13.000 m² de áreas verdes donde montamos carpas gigantes según tu evento y 20 baños externos',
       'Catering propio (bocaditos, menú de gala, parrilladas y postres) y decoración',
       'Tarima, pista de baile, coordinación de protocolo y personal profesional de servicio',
       'Suite nupcial y 80 a 100 parqueaderos privados internos con seguridad permanente',
@@ -154,20 +268,20 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
   {
     id: 'pkg-boda-hospedaje',
     category: 'bodas',
-    title: 'Boda Destino + Hospedaje para Invitados (Hasta 65 Pax)',
-    subtitle: 'Ceremonia, recepción y alojamiento exclusivo para hasta 65 invitados dentro de la hacienda.',
-    priceLabel: 'Desde',
-    priceValue: 95,
-    unit: 'por invitado',
-    capacity: 'Hasta 65 invitados alojados (14 baños internos)',
-    setupInfo: 'Ceremonia + Recepción + Hospedaje 65 Pax + Piscina 84 m² & Desayuno',
+    title: 'Boda Destino + Hospedaje para Invitados (Hasta 81 Pax)',
+    subtitle: 'Ceremonia, recepción y alojamiento exclusivo para hasta 81 invitados dentro de la hacienda.',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Hasta 81 invitados alojados (18 baños internos)',
+    setupInfo: 'Ceremonia + Recepción + Hospedaje 81 Pax + Piscina 84 m² & Desayuno',
     description:
       'Pensado para bodas con familiares y amigos que viajan desde fuera de la ciudad, integrando ceremonia, banquete, alojamiento privado en la hacienda y desayuno compartido al despertar.',
     inclusions: [
-      'Bloqueo integral de hospedaje para alojar cómodamente hasta 65 invitados (14 baños internos)',
-      'Piscina 14×6m = 84 m² (70 pax), sauna/turco/jacuzzi; 2 hidromasajes 2×2m en grupos grandes c/ tarifa extra',
+      'Bloqueo integral de hospedaje para alojar cómodamente hasta 81 invitados (18 baños internos)',
+      'Piscina 14×6m = 84 m² (70 pax), sauna/turco/jacuzzi; 2 hidromasajes 2×2m en grupos grandes c/ costo adicional',
       'Desayuno americano en nuestro restaurante a la mañana siguiente del evento',
-      '80 a 100 parqueaderos internos (buses y autos) y 8 baños externos para recepción',
+      '80 a 100 parqueaderos internos (buses y autos) y 20 baños externos para áreas verdes',
     ],
     highlightBadge: 'Boda + Hospedaje Invitados',
     image: '/images/hacienda/bodas-exteriores.jpg',
@@ -179,15 +293,15 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
     category: 'escapadas',
     title: 'Hospedaje Corporativo por Semanas o Quincenas (Personal de Empresas)',
     subtitle: 'Alojamiento funcional con alimentación, internet por fibra óptica y 80–100 parqueaderos.',
-    priceLabel: 'Desde',
-    priceValue: 40,
-    unit: 'por persona / noche (planes corporativos)',
-    capacity: 'Equipos de 10 a 65 personas',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Equipos de 10 a 81 personas',
     setupInfo: 'Habitaciones + Alimentación + Fibra Óptica + 80–100 Parqueaderos',
     description:
       'Solución llave en mano para empresas, contratistas y proyectos que requieren alojar personal cerca de Quito y del Aeropuerto con control presupuestario, alimentación e internet.',
     inclusions: [
-      'Suites matrimoniales, casa familiar, departamento o habitaciones compartidas con limpieza y lavandería',
+      'Suites matrimoniales, habitación panorámica, casa familiar, departamento o habitaciones compartidas con limpieza',
       'Desayunos, almuerzos y cenas ajustados a los turnos de trabajo del personal',
       'Internet por fibra óptica, áreas de trabajo y 80 a 100 parqueaderos internos para camionetas y buses',
       'Complementos: piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax), fútbol 7v7, básquet pro y vóley',
@@ -202,18 +316,38 @@ export const DEFAULT_PACKAGES: ServicePackage[] = [
 export const DEFAULT_CABINS: CabinRoom[] = [
   {
     id: 'cabin-complejo-grupal',
-    name: 'Bloque Completo de Hospedaje (Capacidad Máxima 65 Pax)',
+    name: 'Bloque Completo de Hospedaje (Capacidad Máxima 81 Pax)',
     type: 'Villa Grupal',
-    capacity: 'Hasta 65 Personas · 14 Baños Internos',
-    maxGuests: 65,
-    beds: '7 Camas Matrimoniales + 59 Camas Individuales (Total 65 Pax)',
-    bathrooms: 14,
-    pricePerNight: 35,
-    weekendNote: 'Tarifa desde $35 por persona/noche según grupo y duración. Hidromasajes 2×2m (8–10 pax c/u) se encienden únicamente para grupos grandes y con tarifa extra.',
+    capacity: 'Hasta 81 Personas · 18 Baños Internos',
+    maxGuests: 81,
+    beds: '7 Camas Matrimoniales + 75 Camas Individuales (Total 81 Pax)',
+    bathrooms: 18,
+    pricePerNight: 0,
+    showPrice: false,
+    weekendNote: 'Cotización grupal según personas y duración. Hidromasajes 2×2m (8–10 pax c/u) se encienden únicamente para grupos grandes y con costo adicional.',
     description:
-      'Capacidad total certificada de la hacienda (65 PAX y 14 baños internos): 4 Suites Matrimoniales (2 con TV de 2–3 pax + 2 familiares de 2–5 pax), Casa Familiar (11 pax), Departamento (11 pax) y 2 Habitaciones Compartidas (17 pax + 10 pax), además de 8 baños externos y 80–100 parqueaderos.',
-    amenities: ['Capacidad Máx. 65 Pax', '14 Baños Internos', '7 Matr. + 59 Indiv.', '80–100 Parqueaderos', 'Piscina 84 m² (70 Pax)'],
+      'Capacidad total certificada de la hacienda (81 PAX y 18 baños internos): Habitación Panorámica (16 pax, 4 baños), 4 Suites Matrimoniales (2 con TV de 2–3 pax + 2 familiares de 2–5 pax), Casa Familiar (11 pax), Departamento (11 pax) y 2 Habitaciones Compartidas (17 pax + 10 pax), además de 20 baños externos y 80–100 parqueaderos.',
+    amenities: ['Capacidad Máx. 81 Pax', '18 Baños Internos', '7 Matr. + 75 Indiv.', '80–100 Parqueaderos', 'Piscina 84 m² (70 Pax)'],
     image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
+    available: true,
+    featuredInHome: true,
+  },
+  {
+    id: 'cabin-panoramica',
+    name: 'Habitación Panorámica (16 Pax · 4 Baños)',
+    type: 'Habitación Panorámica',
+    capacity: '16 Personas (8 Literas · 2 Pisos)',
+    maxGuests: 16,
+    beds: '8 Literas de 2 Pisos (16 Camas Individuales)',
+    bathrooms: 4,
+    pricePerNight: 0,
+    showPrice: false,
+    weekendNote: 'Cotización grupal y corporativa preferencial según número de personas y duración.',
+    description:
+      'Amplia Habitación Panorámica con acabados en madera equipada con 8 literas de 2 pisos (16 camas individuales), capacidad total para 16 personas y 4 baños junto a la habitación; ideal para equipos empresariales, delegaciones, ONGs e invitados.',
+    amenities: ['16 Personas (4 Baños)', '8 Literas x 2 Pisos (16 Camas)', 'Internet Fibra Óptica', '80–100 Parqueaderos', 'Piscina 84 m² (70 Pax)'],
+    image: '/images/hacienda/habitacion-panoramica.jpg',
+    imagePosition: '50% 48%',
     available: true,
     featuredInHome: true,
   },
@@ -225,7 +359,8 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 11,
     beds: '2 Camas de 2 Plazas (1 c/ TV) + 7 Literas Individuales x 2 Pisos',
     bathrooms: 3,
-    pricePerNight: 165,
+    pricePerNight: 0,
+    showPrice: false,
     weekendNote: 'Cotización especial por duración para familias, brigadas técnicas, voluntarios y equipos.',
     description:
       'Incluye 2 habitaciones matrimoniales con 1 cama de dos plazas c/u (una con TV, 2 pax c/u, 1 baño c/u) y 1 habitación con 7 literas individuales de dos pisos (7 pax, 1 baño). Total: 11 pax y 3 baños privados.',
@@ -242,7 +377,8 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 3,
     beds: '1 Cama de 3 Plazas + 1 Adicional Individual por Suite',
     bathrooms: 1,
-    pricePerNight: 115,
+    pricePerNight: 0,
+    showPrice: false,
     weekendNote: '2 unidades disponibles (3 pax máx. c/u · 1 baño privado por suite · incluye TV).',
     description:
       'Dos suites matrimoniales equipadas con TV y baño privado cada una. Cada suite cuenta con 1 cama de 3 plazas + 1 cama adicional individual (capacidad 2–3 pax por unidad, 6 pax total entre ambas).',
@@ -259,7 +395,8 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 5,
     beds: '1 Cama de 3 Plazas + Adicionales Individuales por Suite',
     bathrooms: 1,
-    pricePerNight: 145,
+    pricePerNight: 0,
+    showPrice: false,
     weekendNote: '2 unidades disponibles (5 pax máx. c/u · 1 baño privado por suite).',
     description:
       'Dos amplias suites matrimoniales familiares con baño privado cada una, configuradas con 1 cama de 3 plazas más adicionales individuales (capacidad 2–5 pax por unidad, 10 pax en total).',
@@ -276,7 +413,8 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 11,
     beds: '1 Cama de 2 Plazas (c/ TV) + 9 Literas Individuales x 2 Pisos',
     bathrooms: 2,
-    pricePerNight: 240,
+    pricePerNight: 0,
+    showPrice: false,
     weekendNote: 'Distribución ideal para coordinador/pareja con TV + equipo de 9 personas dentro de una misma unidad.',
     description:
       'Departamento funcional compuesto por 1 habitación matrimonial con TV y cama de 2 plazas (2 pax, 1 baño) más ambiente con 9 literas individuales de dos pisos (9 pax, 1 baño). Total: 11 pax y 2 baños.',
@@ -293,8 +431,9 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 17,
     beds: '8 Literas Individuales x 2 Pisos + 9 Literas Individuales x 2 Pisos',
     bathrooms: 3,
-    pricePerNight: 35,
-    weekendNote: 'Tarifa grupal desde $35/persona con alimentación programada y acceso a áreas recreativas.',
+    pricePerNight: 0,
+    showPrice: false,
+    weekendNote: 'Estadía grupal cotizada con alimentación programada y acceso a áreas recreativas.',
     description:
       'Bloque de alojamiento grupal dividido en dos ambientes integrados: sección de 8 literas individuales de dos pisos (8 pax) y sección de 9 literas individuales de dos pisos (9 pax), servido por 3 baños completos.',
     amenities: ['17 Personas (3 Baños)', '8 + 9 Literas x 2 Pisos', 'Camas Individuales', 'Internet Fibra Óptica', 'Canchas & Piscina 84 m²'],
@@ -310,7 +449,8 @@ export const DEFAULT_CABINS: CabinRoom[] = [
     maxGuests: 10,
     beds: '10 Camas Individuales',
     bathrooms: 2,
-    pricePerNight: 35,
+    pricePerNight: 0,
+    showPrice: false,
     weekendNote: 'Práctica habitación múltiple de 1 nivel con 2 baños completos para brigadas o delegaciones.',
     description:
       'Amplia habitación compartida equipada con 10 camas individuales y 2 baños completos para descanso práctico y ordenado de delegaciones, voluntarios y personal de campo.',
@@ -359,7 +499,7 @@ export const DEFAULT_PHOTOS: EventPhoto[] = [
     spaceName: 'Explanada Verde 13.000 m²',
     dateTag: 'Empresas & Colegios',
     imageUrl: '/images/hacienda/jardines-teambuilding.jpg',
-    description: 'Dinámicas grupales al aire libre en 13.000 m² con 80 a 100 parqueaderos internos y 8 baños externos.',
+    description: 'Dinámicas grupales al aire libre en 13.000 m² con 80 a 100 parqueaderos internos y 20 baños externos.',
     featured: true,
   },
   {
@@ -369,7 +509,7 @@ export const DEFAULT_PHOTOS: EventPhoto[] = [
     spaceName: 'Zona Húmeda & Recreación',
     dateTag: 'Bienestar',
     imageUrl: '/images/hacienda/piscina-nocturna.jpg',
-    description: 'Piscina 84 m² (70 pax), 1 sauna/turco/jacuzzi (6–8 pax) y 2 hidromasajes 2×2m (8–10 pax c/u, solo grupos grandes c/ tarifa extra).',
+    description: 'Piscina 84 m² (70 pax), 1 sauna/turco/jacuzzi (6–8 pax) y 2 hidromasajes 2×2m (8–10 pax c/u, solo grupos grandes c/ costo adicional).',
     featured: true,
   },
   {
@@ -390,11 +530,11 @@ export const DEFAULT_CASE_STUDIES: CaseStudy[] = [
     category: 'ONGs del Mundo Nos Eligen (IMC · HXP)',
     title: 'Estadías Prolongadas para Delegaciones Internacionales y Voluntariado',
     clientProfile: 'Organizaciones Internacionales · IMC · HXP · Embajadas',
-    metrics: 'Hasta 65 huéspedes · 14 baños internos · Varias semanas',
+    metrics: 'Hasta 81 huéspedes · 18 baños internos · Varias semanas',
     challenge:
       'Las delegaciones internacionales requieren una base segura cerca del Aeropuerto Mariscal Sucre (30 min) y Quito (40 min) con alimentación planificada, fibra óptica y áreas de convivencia.',
     solution:
-      'Operación integral con distribución flexible (hasta 65 pax: 7 camas matrimoniales y 59 individuales, 14 baños internos), 3 comidas diarias, lavandería y 80–100 parqueaderos internos.',
+      'Operación integral con distribución flexible (hasta 81 pax: 7 camas matrimoniales y 75 individuales, 18 baños internos), 3 comidas diarias, lavandería y 80–100 parqueaderos internos.',
     quote:
       '“Privacidad, amplitud y atención directa para que nuestros grupos internacionales puedan concentrarse, descansar y convivir durante varias semanas en Ecuador.”',
     author: 'Coordinación de Delegaciones Internacionales (IMC · HXP)',
@@ -406,7 +546,7 @@ export const DEFAULT_CASE_STUDIES: CaseStudy[] = [
     category: 'Instituciones & Sector Corporativo',
     title: 'Reuniones Institucionales, GAD de Pichincha y Jornadas de Team Building',
     clientProfile: 'Instituciones del Estado · Bancos · Universidades · Empresas',
-    metrics: '13.000 m² jardines · 80–100 parqueaderos · 8 baños ext.',
+    metrics: '13.000 m² jardines · 80–100 parqueaderos · 20 baños ext.',
     challenge:
       'Contar con un mismo lugar reservado para sesionar con internet de fibra óptica, realizar actividades de integración en 13.000 m² al aire libre y servir almuerzos o parrilladas puntuales.',
     solution:
@@ -422,13 +562,13 @@ export const DEFAULT_CASE_STUDIES: CaseStudy[] = [
     category: 'Bodas & Celebraciones Sociales',
     title: 'Ceremonias al Aire Libre, Recepciones de Gala y Hotel Boutique In Situ',
     clientProfile: 'Matrimonios, Recepciones y Eventos Sociales en Píntag',
-    metrics: '13.000 m² jardines · 8 baños ext. · Hosp. hasta 65 pax',
+    metrics: '13.000 m² jardines · 20 baños ext. · Hosp. hasta 81 pax',
     challenge:
       'Integrar ceremonia campestre, recepción elegante bajo carpa estructural o salón, personal de servicio uniformado y alojamiento para la familia en un mismo predio.',
     solution:
-      'Montaje completo en 13.000 m² de jardines con 8 baños externos, 80–100 parqueaderos, flores, equipo profesional y alojamiento in situ hasta 65 huéspedes (suites matrimoniales, casa familiar y depto.).',
+      'Montaje completo en 13.000 m² de áreas verdes donde montamos carpas gigantes según el evento, 20 baños externos, 80–100 parqueaderos, flores, equipo profesional y alojamiento hasta 81 huéspedes.',
     quote:
-      '“Amplias áreas exteriores para tu evento y un equipo profesional en todas las áreas para crear momentos inolvidables.”',
+      '“13.000 m² de áreas verdes donde instalamos carpas gigantes a medida y un equipo profesional impecable.”',
     author: 'Familias & Novios — Hacienda Le Plus',
     image: '/images/hacienda/montaje-banquete.jpg',
     linkTo: '/bodas',
@@ -441,21 +581,21 @@ export const DEFAULT_FAQS: FAQItem[] = [
     category: 'hospedaje',
     question: '¿Cuál es la capacidad real de hospedaje y cómo se distribuyen las camas y baños?',
     answer:
-      'Hacienda Le Plus tiene capacidad máxima para 65 personas y 14 baños internos (7 camas matrimoniales y 59 individuales en total), distribuidos en: 2 suites matrimoniales con TV (2–3 pax c/u), 2 suites matrimoniales familiares (2–5 pax c/u), 1 casa familiar + 2 habitaciones (11 pax, 3 baños), 1 departamento (11 pax, 2 baños), 1 habitación compartida de 8+9 literas (17 pax, 3 baños) y 1 habitación compartida de 10 camas (10 pax, 2 baños).',
+      'Hacienda Le Plus tiene capacidad máxima para 81 personas y 18 baños internos (7 camas matrimoniales y 75 individuales en total), distribuidos en: 1 habitación panorámica de 8 literas x 2 pisos (16 pax, 4 baños), 2 suites matrimoniales con TV (2–3 pax c/u), 2 suites matrimoniales familiares (2–5 pax c/u), 1 casa familiar + 2 habitaciones (11 pax, 3 baños), 1 departamento (11 pax, 2 baños), 1 habitación compartida de 8+9 literas (17 pax, 3 baños) y 1 habitación compartida de 10 camas (10 pax, 2 baños).',
   },
   {
     id: 'faq-2',
     category: 'general',
-    question: '¿A qué distancia está de Quito y cuántos parqueaderos y baños externos tiene?',
+    question: '¿A qué distancia está de Quito y cómo funcionan sus áreas verdes, carpas, parqueaderos y baños externos?',
     answer:
-      'Estamos ubicados en Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100), a 40 minutos de Quito y a 30 minutos del Aeropuerto Internacional Mariscal Sucre. En áreas externas ofrecemos 13.000 m² de jardines, 8 baños externos y de 80 a 100 parqueaderos privados.',
+      'Estamos ubicados en Píntag (Barrio San Juan de la Tola, Calle Deus N.º 100), a 40 minutos de Quito y a 30 minutos del Aeropuerto Internacional Mariscal Sucre. En áreas externas ofrecemos 13.000 m² de áreas verdes donde montamos carpas gigantes dimensionadas según el tamaño de cada evento (hasta 1.000 pax), 20 baños externos y de 80 a 100 parqueaderos privados.',
   },
   {
     id: 'faq-3',
     category: 'corporativo',
     question: '¿Qué áreas húmedas, deportivas y servicios con pago extra ofrece la hacienda?',
     answer:
-      'Contamos con internet fibra óptica, piscina de 14×6 m = 84 m² (cap. 70 personas), 1 sauna/turco/jacuzzi (cap. 6–8 pax) y 2 hidromasajes de 2×2 m (cap. 8–10 pax c/u; nota: se encienden únicamente en grupos grandes y con tarifa extra). En deportes: fútbol en césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, mesa de ping pong y mesa de billar. Con pago extra adicional: karaoke, discoteca para 50 personas y salón social para eventos y coaching.',
+      'Contamos con internet fibra óptica, piscina de 14×6 m = 84 m² (cap. 70 personas), 1 sauna/turco/jacuzzi (cap. 6–8 pax) y 2 hidromasajes de 2×2 m (cap. 8–10 pax c/u; nota: se encienden únicamente en grupos grandes y con costo adicional). En deportes: fútbol en césped 7 vs 7, básquet profesional, vóley en césped reglamentaria, mesa de ping pong y mesa de billar. Con pago extra adicional: karaoke, discoteca para 50 personas y salón social para eventos y coaching.',
   },
   {
     id: 'faq-4',
@@ -506,7 +646,7 @@ export const DEFAULT_LEADS: LeadSubmission[] = [
     phone: '+1 801 555 0192',
     serviceType: 'grupos',
     tentativeDate: '2027-06-10',
-    estimatedVolume: '55 personas × 18 noches (Bloque Completo · 14 baños)',
+    estimatedVolume: '55 personas × 18 noches (Bloque Completo · 18 baños)',
     notes: 'Looking for full-board accommodation (breakfast, lunch, dinner), laundry service, and airport bus transfer.',
     targetCorporateEmail: 'reservas@haciendaleplus.com',
     sourcePage: '/hospedaje',
@@ -538,7 +678,7 @@ export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
     badge: 'Alimentación & Comp.',
     badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
     description:
-      'Desayunos, almuerzos, cenas y coffee breaks programados para grupos de hasta 65 personas, con restaurante propio como complemento.',
+      'Desayunos, almuerzos, cenas y coffee breaks programados para grupos de hasta 81 personas, con restaurante propio como complemento.',
     ctaText: 'Cotizar con pensión',
     image: '/images/hacienda/gastronomia-parrillada.jpg',
     videoUrl: '',
@@ -552,7 +692,7 @@ export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
     badge: 'Internet & Parqueaderos',
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
     description:
-      'Wi-Fi por fibra óptica de alta estabilidad, 8 baños externos de apoyo y 80 a 100 parqueaderos internos seguros para autos y buses.',
+      'Wi-Fi por fibra óptica de alta estabilidad, 20 baños externos de apoyo y 80 a 100 parqueaderos internos seguros para autos y buses.',
     ctaText: 'Consultar logística',
     image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793737502604.webp',
     videoUrl: '',
@@ -566,7 +706,7 @@ export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
     badge: 'Complemento',
     badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
     description:
-      'Piscina 14×6 m = 84 m² (cap. 70 pax) y sauna/turco/jacuzzi (6–8 pax). Nota: 2 hidromasajes 2×2 m solo en grupos grandes y con tarifa extra.',
+      'Piscina 14×6 m = 84 m² (cap. 70 pax) y sauna/turco/jacuzzi (6–8 pax). Nota: 2 hidromasajes 2×2 m solo en grupos grandes y con costo adicional.',
     ctaText: 'Ver inclusiones',
     image: '/images/hacienda/area-humeda.jpg',
     videoUrl: '',
@@ -593,36 +733,36 @@ export const DEFAULT_LODGING_SERVICES: LodgingServiceCard[] = [
 export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
   {
     id: 'boda-clasica-integral',
-    title: 'Boda Integral & Recepción en Jardines',
-    subtitle: 'Quito–Píntag · 50 a 300 Invitados · 13.000 m²',
+    title: 'Boda Integral & Carpas Gigantes en Áreas Verdes',
+    subtitle: 'Quito–Píntag · Hasta 1.000 Pax · Carpas Gigantes en 13.000 m² Áreas Verdes',
     badge: 'Boda Popular',
     badgeClass: 'bg-[#C8A45D] text-[#0A1F17]',
     image: 'https://pezajodvvouezumnppaj.supabase.co/storage/v1/object/public/hacienda-media/img-whatsapp-image-2026-10-16-at-12-41-33-1793738382768.webp',
     specs: [
-      { label: '50 a 300 Pax', icon: 'users' },
-      { label: '13.000 m² Jardines', icon: 'sparkles' },
+      { label: 'Carpas hasta 1.000 Pax', icon: 'users' },
+      { label: '13.000 m² Áreas Verdes', icon: 'sparkles' },
       { label: 'Catering 3 Tiempos', icon: 'utensils' },
     ],
-    price: '$42',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
   {
     id: 'boda-destino-14-suites',
     title: 'Boda + Hospedaje para Invitados',
-    subtitle: 'Quito–Píntag · Hasta 65 Pax · 14 Baños Internos',
+    subtitle: 'Quito–Píntag · Hasta 81 Pax · 18 Baños Internos',
     badge: 'Hospedaje Invitados',
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
     image: '/images/hacienda/bodas-exteriores.jpg',
     specs: [
-      { label: 'Hasta 65 Pax', icon: 'users' },
-      { label: '14 Baños (66 Camas)', icon: 'bed' },
+      { label: 'Hasta 81 Pax', icon: 'users' },
+      { label: '18 Baños (82 Camas)', icon: 'bed' },
       { label: 'Piscina 84 m² (70 Pax)', icon: 'sparkles' },
     ],
-    price: '$95',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
   {
@@ -635,34 +775,34 @@ export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
     specs: [
       { label: 'Descorche Libre', icon: 'glass' },
       { label: 'Catering Propio', icon: 'utensils' },
-      { label: '8 Baños Externos', icon: 'sparkles' },
+      { label: '20 Baños Externos', icon: 'sparkles' },
     ],
-    price: '$70',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
   {
     id: 'ceremonia-jardin-palmeras',
-    title: 'Ceremonia en 13.000 m² de Jardines',
-    subtitle: 'Quito–Píntag · Altares & Decoración Natural',
+    title: 'Ceremonia en 13.000 m² de Áreas Verdes',
+    subtitle: 'Quito–Píntag · Carpas Gigantes según Evento',
     badge: 'Ceremonias',
     badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
     image: '/images/hacienda/boda-ceremonia-arco.jpg',
     specs: [
-      { label: '50 a 300 Pax', icon: 'users' },
+      { label: 'Hasta 1.000 Ext.', icon: 'users' },
       { label: '80–100 Parqueaderos', icon: 'sparkles' },
       { label: 'Sillas Tiffany', icon: 'sparkles' },
     ],
-    price: '$35',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
   {
     id: 'experiencia-zona-humeda',
     title: 'Complemento: Piscina 84 m², Restaurante & Deportes',
-    subtitle: 'Quito–Píntag · Hidromasajes en grupos grandes c/ tarifa extra',
+    subtitle: 'Quito–Píntag · Hidromasajes en grupos grandes c/ costo adicional',
     badge: 'Complemento Nupcial',
     badgeClass: 'bg-[#7A6A58]/90 text-[#FAF7F2]',
     image: '/images/hacienda/area-humeda.jpg',
@@ -671,9 +811,9 @@ export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
       { label: 'Sauna/Turco/Jacuzzi', icon: 'utensils' },
       { label: 'Áreas Deportivas', icon: 'sparkles' },
     ],
-    price: '$55',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
   {
@@ -688,9 +828,9 @@ export const DEFAULT_WEDDING_PROPOSALS: WeddingProposalCard[] = [
       { label: 'Salón Social*', icon: 'utensils' },
       { label: 'Karaoke (Pago Extra)', icon: 'bed' },
     ],
-    price: '$48',
-    unit: '/ invitado',
-    showPrice: true,
+    price: '',
+    unit: '',
+    showPrice: false,
     serviceType: 'bodas',
   },
 ];
@@ -700,23 +840,23 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     id: 'pkg-corp-findeanio',
     category: 'corporativo',
     title: 'Fiestas de Fin de Año & Celebraciones de Gran Formato',
-    subtitle: 'Carpas, 13.000 m² de jardines, catering, 8 baños externos y 80–100 parqueaderos.',
-    priceLabel: 'Desde',
-    priceValue: 45,
-    unit: 'por participante',
-    capacity: '80 a 350+ participantes',
-    setupInfo: 'Carpas + Jardines 13.000 m² + 8 Baños Ext. + Catering',
+    subtitle: 'Carpas gigantes según evento en 13.000 m² de áreas verdes, catering, 20 baños ext. y 80–100 parqueos.',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Eventos hasta 1.000 pax en áreas verdes c/ carpas',
+    setupInfo: 'Carpas Gigantes + 13.000 m² Áreas Verdes + 20 Baños Ext. + Catering',
     description:
-      'Celebra eventos de fin de año y encuentros corporativos inolvidables bajo elegantes carpas rodeadas de naturaleza, con música, banquete a medida y opciones de descanso en la hacienda.',
+      'Celebra eventos de fin de año y encuentros corporativos inolvidables en 13.000 m² de áreas verdes donde montamos carpas gigantes según el tamaño de tu evento, con música, banquete a medida y opciones de descanso.',
     inclusions: [
-      '13.000 m² de jardines iluminados, 8 baños externos, carpas, tarima y pista de baile',
+      '13.000 m² de áreas verdes donde montamos carpas gigantes según evento, 20 baños ext., tarima y pista',
       'Catering corporativo propio: menú de gala, buffet o parrillada campestre',
       'Piscina 84 m² (70 pax), deportes y 80–100 parqueaderos; karaoke/discoteca 50 pax/salón social c/ pago extra',
-      'Opción de hospedaje complementario hasta 65 pax (14 baños internos · 7 matr. + 59 indiv.)',
+      'Opción de hospedaje complementario hasta 81 pax (18 baños internos · 7 matr. + 75 indiv.)',
     ],
     highlightBadge: 'Fin de Año & Macroeventos',
     image: '/images/hacienda/boda-carpa-gala.jpg',
-    showPrice: true,
+    showPrice: false,
     whatsappIntent: 'Evento Corporativo de Fin de Año / Gran Formato',
     featuredInHome: false,
   },
@@ -725,22 +865,22 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     category: 'corporativo',
     title: 'Integración Empresarial, Deportes & Piscina 84 m²',
     subtitle: 'Fútbol 7v7, básquet profesional, vóley reglamentaria, ping pong, billar y piscina 70 pax.',
-    priceLabel: 'Desde',
-    priceValue: 40,
-    unit: 'por participante',
-    capacity: 'Hasta 350 participantes',
-    setupInfo: '13.000 m² Jardines + Canchas Pro + Piscina 84 m² + Catering',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Hasta 1.000 pax en áreas verdes c/ carpas',
+    setupInfo: '13.000 m² Áreas Verdes + Canchas Pro + Piscina 84 m² + Catering',
     description:
-      'Fortalece el espíritu de equipo con jornadas deportivas, actividades al aire libre, parrillada campestre y momentos de relajación junto a la piscina y áreas verdes.',
+      'Fortalece el espíritu de equipo con jornadas deportivas, actividades al aire libre en 13.000 m² de áreas verdes, carpas según tu evento, parrillada campestre y relajación junto a la piscina.',
     inclusions: [
-      '13.000 m² de jardines, 8 baños externos y canchas (fútbol 7v7, básquet pro, vóley reglamentaria, ping pong, billar)',
+      '13.000 m² de áreas verdes, 20 baños externos y canchas (fútbol 7v7, básquet pro, vóley reglamentaria, ping pong, billar)',
       'Catering y restaurante: desayuno, parrillada de integración y coffee breaks',
-      'Piscina 84 m² (70 pax) y 1 sauna/turco/jacuzzi (6–8 pax); 2 hidromasajes 2×2m en grupos grandes c/ tarifa extra',
-      '80 a 100 parqueaderos privados internos y hospedaje complementario hasta 65 pax',
+      'Piscina 84 m² (70 pax) y 1 sauna/turco/jacuzzi (6–8 pax); 2 hidromasajes 2×2m en grupos grandes c/ costo adicional',
+      '80 a 100 parqueaderos privados internos y hospedaje complementario hasta 81 pax',
     ],
     highlightBadge: 'Integración & Deportes',
     image: '/images/hacienda/jardines-teambuilding.jpg',
-    showPrice: true,
+    showPrice: false,
     whatsappIntent: 'Jornada de Integración y Deportes',
     featuredInHome: false,
   },
@@ -748,23 +888,23 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
     id: 'pkg-corp-retiro',
     category: 'corporativo',
     title: 'Convenciones y Encuentros Empresariales con Hospedaje Complementario',
-    subtitle: 'Salón de eventos/coaching (pago extra), plenarias y alojamiento hasta 65 personas.',
-    priceLabel: 'Desde',
-    priceValue: 88,
-    unit: 'por persona / noche',
-    capacity: 'Hasta 65 participantes alojados (hasta 250 en plenaria)',
-    setupInfo: 'Salón Coaching* + Catering 3 Tiempos + Piscina 84 m² + Hosp. 65 Pax',
+    subtitle: 'Salón de eventos/coaching (pago extra), plenarias y alojamiento hasta 81 personas.',
+    priceLabel: '',
+    priceValue: 0,
+    unit: '',
+    capacity: 'Hasta 81 participantes alojados (hasta 250 en plenaria)',
+    setupInfo: 'Salón Coaching* + Catering 3 Tiempos + Piscina 84 m² + Hosp. 81 Pax',
     description:
       'Reúne a tus directivos y colaboradores en un entorno privado ideal para convenciones, talleres estratégicos y descanso completo con alimentación diaria y conectividad estable.',
     inclusions: [
       'Salón social para eventos y coaching (con pago extra), pantalla gigante, sonido pro y fibra óptica',
-      'Hospedaje complementario hasta 65 pax (7 camas matrimoniales y 59 individuales, 14 baños)',
+      'Hospedaje complementario hasta 81 pax (7 camas matrimoniales y 75 individuales, 18 baños)',
       'Tres comidas diarias en nuestro restaurante y coffee breaks continuos',
       'Piscina 84 m² (70 pax), sauna/turco/jacuzzi (6–8 pax), 80–100 parqueaderos e hidromasajes*',
     ],
     highlightBadge: 'Convenciones + Hospedaje',
     image: '/images/hacienda/reunion-corporativa.jpg',
-    showPrice: true,
+    showPrice: false,
     whatsappIntent: 'Convención o Encuentro con Hospedaje',
     featuredInHome: false,
   },
@@ -773,9 +913,9 @@ export const DEFAULT_CORPORATE_EXCLUSIVE_FORMATS: ServicePackage[] = [
 export const DEFAULT_CORPORATE_HIGHLIGHTS: CorporateHighlightItem[] = [
   {
     id: 'corp-hl-findeanio',
-    title: 'Fin de Año & 13.000 m² Jardines',
-    subtitle: 'Carpas, 8 baños externos, 80–100 parqueaderos y catering',
-    highlightMetric: 'Hasta 350+ pax',
+    title: 'Fin de Año & 13.000 m² Áreas Verdes',
+    subtitle: 'Carpas gigantes según evento, 20 baños externos, 80–100 parqueaderos y catering',
+    highlightMetric: 'Carpas hasta 1.000 pax',
     image: '/images/hacienda/boda-carpa-gala.jpg',
     mediaType: 'image',
     whatsappItemName: 'Eventos de Fin de Año & Celebraciones de Gran Formato',
@@ -791,12 +931,12 @@ export const DEFAULT_CORPORATE_HIGHLIGHTS: CorporateHighlightItem[] = [
   },
   {
     id: 'corp-hl-convenciones',
-    title: 'Convenciones + Hospedaje 65 Pax',
+    title: 'Convenciones + Hospedaje 81 Pax',
     subtitle: 'Salón eventos/coaching*, discoteca 50 pax* y karaoke* (*pago extra)',
-    highlightMetric: 'Hasta 65 huéspedes',
+    highlightMetric: 'Hasta 81 huéspedes',
     image: '/images/hacienda/reunion-corporativa.jpg',
     mediaType: 'image',
-    whatsappItemName: 'Convenciones con Hospedaje Complementario (Hasta 65 Personas)',
+    whatsappItemName: 'Convenciones con Hospedaje Complementario (Hasta 81 Personas)',
   },
 ];
 
@@ -866,11 +1006,11 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
+        const parsed = normalizeLegacyCMSData(JSON.parse(saved));
         return {
           siteConfig: { ...DEFAULT_SITE_CONFIG, ...parsed.siteConfig },
           packages: parsed.packages?.length ? parsed.packages : DEFAULT_PACKAGES,
-          cabins: parsed.cabins?.length ? parsed.cabins : DEFAULT_CABINS,
+          cabins: ensureUpdatedCabins(parsed.cabins, DEFAULT_CABINS),
           lodgingHeroBanner: parsed.lodgingHeroBanner
             ? { ...DEFAULT_LODGING_BANNER, ...parsed.lodgingHeroBanner }
             : DEFAULT_LODGING_BANNER,
@@ -950,32 +1090,36 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     fetchSiteConfigFromSupabase().then((remoteConfig) => {
       if (remoteConfig) {
+        const normalizedConfig = normalizeLegacyCMSData(remoteConfig);
         setState((prev) => ({
           ...prev,
-          siteConfig: { ...prev.siteConfig, ...remoteConfig },
+          siteConfig: { ...prev.siteConfig, ...normalizedConfig },
         }));
       }
     });
 
     fetchModulesFromSupabase().then((remoteModules) => {
       if (remoteModules) {
+        const normalizedModules = normalizeLegacyCMSData(remoteModules);
         setState((prev) => ({
           ...prev,
-          cabins: remoteModules.cabins?.length ? remoteModules.cabins : prev.cabins,
-          lodgingHeroBanner: remoteModules.lodgingHeroBanner
-            ? { ...prev.lodgingHeroBanner, ...remoteModules.lodgingHeroBanner }
+          cabins: normalizedModules.cabins?.length
+            ? ensureUpdatedCabins(normalizedModules.cabins, DEFAULT_CABINS)
+            : prev.cabins,
+          lodgingHeroBanner: normalizedModules.lodgingHeroBanner
+            ? { ...prev.lodgingHeroBanner, ...normalizedModules.lodgingHeroBanner }
             : prev.lodgingHeroBanner,
-          lodgingServices: remoteModules.lodgingServices?.length
-            ? remoteModules.lodgingServices
+          lodgingServices: normalizedModules.lodgingServices?.length
+            ? normalizedModules.lodgingServices
             : prev.lodgingServices,
-          weddingProposals: remoteModules.weddingProposals?.length
-            ? remoteModules.weddingProposals
+          weddingProposals: normalizedModules.weddingProposals?.length
+            ? normalizedModules.weddingProposals
             : prev.weddingProposals,
-          corporateExclusiveFormats: remoteModules.corporateExclusiveFormats?.length
-            ? remoteModules.corporateExclusiveFormats
+          corporateExclusiveFormats: normalizedModules.corporateExclusiveFormats?.length
+            ? normalizedModules.corporateExclusiveFormats
             : prev.corporateExclusiveFormats,
-          corporateHighlights: remoteModules.corporateHighlights?.length
-            ? remoteModules.corporateHighlights
+          corporateHighlights: normalizedModules.corporateHighlights?.length
+            ? normalizedModules.corporateHighlights
             : prev.corporateHighlights,
         }));
       }

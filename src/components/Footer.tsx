@@ -39,7 +39,7 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      aria-label="Pie de página Hacienda Le Plus"
+      aria-label={tr("Hacienda Le Plus Footer", "Pie de página Hacienda Le Plus")}
       className="hidden md:block bg-[#06150F] text-[#FAF7F2] border-t border-[#C8A45D]/30 relative z-20"
     >
       {/* Contenido Principal del Footer Desktop */}
@@ -50,7 +50,7 @@ export const Footer: React.FC = () => {
             <Link to="/" className="inline-flex items-center gap-3 group focus:outline-none">
               <img
                 src="/logo-leplus.png"
-                alt="Logo Hacienda Le Plus"
+                alt={tr("Hacienda Le Plus Logo", "Logo Hacienda Le Plus")}
                 className="h-14 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
               />
               <div className="flex flex-col leading-tight">

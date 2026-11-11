@@ -251,7 +251,7 @@ const SectionDividerTitle: React.FC<SectionDividerTitleProps> = ({
 
 export const HomePageMobile: React.FC = () => {
   const { siteConfig, packages, openQuoteModal } = useCMS();
-  const { language, isEn, t, tr } = useLanguage();
+  const { language, t, tr } = useLanguage();
 
   const heroStopCards = getHeroStopCards(language);
   const mainServicesCards = getSection2Cards(language);
@@ -261,9 +261,9 @@ export const HomePageMobile: React.FC = () => {
     title: 'Hacienda Le Plus | Hospedaje de larga estadía, grandes eventos y bodas en Quito–Píntag',
     title_en: 'Hacienda Le Plus | Corporate Long-Stays, Major Events & Weddings in Quito–Píntag',
     description:
-      'Presentación de Hacienda Le Plus en Quito–Píntag: prioridad comercial en hospedaje de larga estadía para empresas y grupos, grandes eventos corporativos y bodas. Cotizaciones al WhatsApp 0969817891.',
+      'Presentación de Hacienda Le Plus en Quito–Píntag: prioridad comercial en hospedaje de larga estadía hasta 81 personas (18 baños), eventos hasta 1.000 personas en 13.000 m² de áreas verdes donde montamos carpas gigantes según cada evento y bodas. Cotizaciones al WhatsApp 0969817891.',
     description_en:
-      'Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for corporate groups, major events and weddings. Inquiries via WhatsApp +593 96 981 7891.',
+      'Hacienda Le Plus in Quito–Píntag: commercial priority in long-stay lodging for up to 81 guests (18 baths), outdoor events for up to 1,000 people across 13,000 m² green areas with giant tents sized to each event, and weddings. Inquiries via WhatsApp +593 96 981 7891.',
     canonicalPath: '/',
     lang: language,
   });
@@ -435,7 +435,7 @@ export const HomePageMobile: React.FC = () => {
           SEGÚN REFERENCIA TIDEPOST + FOTOS REALES HACIENDA LE PLUS
       ====================================================================== */}
       <section
-        aria-label="Portada Principal Hacienda Le Plus"
+        aria-label={tr("Hacienda Le Plus Main Cover", "Portada Principal Hacienda Le Plus")}
         className="relative bg-[#06150F] overflow-hidden w-full"
       >
         {/* SVG ClipPath Definition for the Organic Arched Floating Card */}
@@ -490,7 +490,7 @@ export const HomePageMobile: React.FC = () => {
               <ScrollReveal direction="left" delay={60} distance={20}>
                 <h1 className="font-serif-luxury text-[36px] sm:text-[40px] font-bold text-white leading-[0.98] tracking-tight">
                   {tr("Long Stays", "Larga Estadía")} <br />
-                  <span className="text-[#E5C98B] italic font-normal">&amp; {tr("Major Events", "Grandes Eventos")}</span>
+                  <span className="text-[#E5C98B] italic font-normal">{tr("& Major Events", "& Grandes Eventos")}</span>
                 </h1>
               </ScrollReveal>
 
@@ -516,11 +516,11 @@ export const HomePageMobile: React.FC = () => {
                 <Link
                   to="/"
                   className="block focus:outline-none active:scale-95 transition-transform"
-                  aria-label="Hacienda Le Plus Inicio"
+                  aria-label={tr("Hacienda Le Plus Home", "Hacienda Le Plus Inicio")}
                 >
                   <img
                     src="/logo-leplus.png"
-                    alt="Logo Oficial Hacienda Le Plus"
+                    alt={tr("Hacienda Le Plus Official Logo", "Logo Oficial Hacienda Le Plus")}
                     className="w-[114px] h-[114px] sm:w-[130px] sm:h-[130px] object-contain drop-shadow-[0_4px_16px_rgba(0,0,0,0.65)]"
                   />
                 </Link>
@@ -657,7 +657,7 @@ export const HomePageMobile: React.FC = () => {
                     <BedDouble className="w-4 h-4" />
                   </div>
                   <span className="text-[10px] font-bold text-[#071912] leading-tight">
-                    {tr("Cap. 65 Pax", "Cap. 65 Pax")}
+                    {tr("Cap. 81 Pax", "Cap. 81 Pax")}
                   </span>
                 </Link>
               </ScrollReveal>
@@ -711,7 +711,7 @@ export const HomePageMobile: React.FC = () => {
                 <div className="rounded-2xl overflow-hidden shadow-md border border-[#0A1F17]/10 h-36 sm:h-44 -rotate-1 group">
                   <img
                     src="/images/hacienda/cabana-exterior.jpg"
-                    alt="Instalaciones de Hospedaje en Hacienda Le Plus"
+                    alt={tr("Lodging Facilities at Hacienda Le Plus", "Instalaciones de Hospedaje en Hacienda Le Plus")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -721,7 +721,7 @@ export const HomePageMobile: React.FC = () => {
                 <div className="rounded-2xl overflow-hidden shadow-md border border-[#0A1F17]/10 h-36 sm:h-44 translate-y-2 rotate-1 group">
                   <img
                     src="/images/hacienda/piscina-aerea.jpg"
-                    alt="Piscina 14×6m (84 m² · 70 pax) y dos hidromasajes 2×2m (grupos grandes c/ tarifa extra)"
+                    alt={tr("14×6m Pool (84 m² · 70 pax) and two 2×2m hot tubs (large groups with extra fee)", "Piscina 14×6m (84 m² · 70 pax) y dos hidromasajes 2×2m (grupos grandes con costo adicional)")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -731,7 +731,7 @@ export const HomePageMobile: React.FC = () => {
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-40 sm:h-48 mt-1 group">
                   <img
                     src="/images/hacienda/jardines-teambuilding.jpg"
-                    alt="Jardines y Carpas para Grandes Eventos y Larga Estadía"
+                    alt={tr("Gardens and Tents for Major Events and Long Stays", "Jardines y Carpas para Grandes Eventos y Larga Estadía")}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -767,9 +767,15 @@ export const HomePageMobile: React.FC = () => {
               {portfolioServices.map((srv, idx) => {
                 const isSelected = idx === selectedPortfolioIndex;
                 const IconComponent = srv.Icon;
-                const shortLabels = isEn
-                  ? ['Long Stays', 'Major Events', 'Weddings', 'Restaurant', 'Pool & Spa', 'Sports & Games', 'Parking']
-                  : ['Larga Estadía', 'Grandes Eventos', 'Bodas & Gala', 'Restaurante', 'Piscina & Spa', 'Canchas & Juegos', 'Parqueaderos'];
+                const shortLabels = [
+                  tr('Long Stays', 'Larga Estadía'),
+                  tr('Major Events', 'Grandes Eventos'),
+                  tr('Weddings', 'Bodas & Gala'),
+                  tr('Restaurant', 'Restaurante'),
+                  tr('Pool & Spa', 'Piscina & Spa'),
+                  tr('Sports & Games', 'Canchas & Juegos'),
+                  tr('Parking', 'Parqueaderos'),
+                ];
                 return (
                   <button
                     key={srv.id}
@@ -836,7 +842,7 @@ export const HomePageMobile: React.FC = () => {
             ))}
           </ul>
 
-          {/* Píldoras de Precio y Capacidad */}
+          {/* Píldoras de Características y Capacidad */}
           <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-[#071912]/85 pt-1">
             <span className="px-3 py-1 rounded-full bg-white/90 border border-[#071912]/10 shadow-xs">
               {activePortfolioService.priceText}
@@ -989,7 +995,7 @@ export const HomePageMobile: React.FC = () => {
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center justify-between">
                               <span className="text-[10px] font-bold uppercase tracking-wider text-[#5E842E] truncate">
-                                {rev.role}
+                                {tr(rev.role, rev.role)}
                               </span>
                               <span className="text-xs font-bold text-[#113221]/60">
                                 {displayNumber}
@@ -998,7 +1004,7 @@ export const HomePageMobile: React.FC = () => {
                             <h4 className="font-sans-ui text-[14px] font-extrabold text-[#113221] leading-tight truncate">
                               {rev.author}
                             </h4>
-                            <div className="flex items-center gap-0.5 mt-0.5" aria-label={`${rev.rating} de 5 estrellas`}>
+                            <div className="flex items-center gap-0.5 mt-0.5" aria-label={`${rev.rating} ${tr("out of 5 stars", "de 5 estrellas")}`}>
                               {Array.from({ length: rev.rating }).map((_, sIdx) => (
                                 <Star
                                   key={sIdx}
@@ -1094,19 +1100,19 @@ export const HomePageMobile: React.FC = () => {
                         onChange={(e) => setNewReviewRole(e.target.value)}
                         className="w-full px-3 py-2.5 rounded-xl bg-white border border-[#113221]/20 text-xs font-semibold text-[#113221] focus:outline-none focus:border-[#5E842E]"
                       >
-                        <option value={tr("Weddings & Celebrations", "Bodas & Recepciones")}>
+                        <option value="Bodas & Recepciones">
                           {tr("Weddings & Celebrations", "Bodas & Recepciones")}
                         </option>
-                        <option value={tr("Corporate & Conventions", "Corporativo & GADs")}>
+                        <option value="Corporativo & GADs">
                           {tr("Corporate & Conventions", "Corporativo & GADs")}
                         </option>
-                        <option value={tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}>
+                        <option value="Delegación ONG / HXP">
                           {tr("NGO Delegation / Long Stay", "Delegación ONG / HXP")}
                         </option>
-                        <option value={tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}>
+                        <option value="Suites & Zona Húmeda">
                           {tr("Suites & Wellness Spa", "Suites & Zona Húmeda")}
                         </option>
-                        <option value={tr("Dining & Catering", "Gastronomía & Eventos")}>
+                        <option value="Gastronomía & Eventos">
                           {tr("Dining & Catering", "Gastronomía & Eventos")}
                         </option>
                       </select>
@@ -1123,7 +1129,7 @@ export const HomePageMobile: React.FC = () => {
                             type="button"
                             onClick={() => setNewReviewRating(starVal)}
                             className="cursor-pointer focus:outline-none"
-                            aria-label={tr("${starVal} stars", "${starVal} estrellas")}
+                            aria-label={`${starVal} ${tr("stars", "estrellas")}`}
                           >
                             <Star
                               className={`w-4 h-4 transition-colors ${

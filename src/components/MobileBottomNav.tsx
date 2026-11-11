@@ -146,7 +146,7 @@ export const MobileBottomNav: React.FC = () => {
       ref={menuRef}
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden h-[48px] w-full safe-area-pb select-none overflow-visible pointer-events-none"
       role="navigation"
-      aria-label="Navegación móvil Hacienda Le Plus"
+      aria-label={tr("Hacienda Le Plus Mobile Navigation", "Navegación móvil Hacienda Le Plus")}
     >
       {/* Respaldo sólido inferior para safe-area en teléfonos (evita franjas blancas en iOS) */}
       <div className="absolute -bottom-10 left-0 right-0 h-10 bg-[#06150F] pointer-events-none -z-10" />

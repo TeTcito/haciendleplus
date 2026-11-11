@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { tr } from '../i18n/phraseDictionary';
+import { SupportedLanguage } from '../i18n/types';
 
 interface PageMetaOptions {
   title: string;
@@ -8,6 +10,8 @@ interface PageMetaOptions {
   title_en?: string;
   description_en?: string;
 }
+
+const VALID_LANGS: SupportedLanguage[] = ['es', 'en', 'pt', 'fr', 'de', 'zh'];
 
 /**
  * Updates document title, html lang, meta description, hreflang, and OpenGraph tags dynamically per route
@@ -22,15 +26,22 @@ export function useDocumentMeta({
   description_en,
 }: PageMetaOptions) {
   useEffect(() => {
-    const isEn = lang === 'en';
-    const effectiveTitle = isEn && title_en ? title_en : title;
-    const effectiveDescription = isEn && description_en ? description_en : description;
+    const normalizedLang: SupportedLanguage = VALID_LANGS.includes(lang as SupportedLanguage)
+      ? (lang as SupportedLanguage)
+      : 'es';
+    const isEn = normalizedLang === 'en';
+    const effectiveTitle = title_en
+      ? tr(title_en, title, normalizedLang)
+      : tr(title, title, normalizedLang);
+    const effectiveDescription = description_en
+      ? tr(description_en, description, normalizedLang)
+      : tr(description, description, normalizedLang);
 
     // 1. Dynamic document.title
     document.title = effectiveTitle;
 
     // 2. Dynamic html lang attribute
-    document.documentElement.lang = lang;
+    document.documentElement.lang = normalizedLang;
 
     // 3. Meta tags helper
     const setMeta = (selector: string, content: string) => {
@@ -61,7 +72,7 @@ export function useDocumentMeta({
       de: 'de_DE',
       zh: 'zh_CN',
     };
-    setMeta('meta[property="og:locale"]', localeMap[lang] || (isEn ? 'en_US' : 'es_EC'));
+    setMeta('meta[property="og:locale"]', localeMap[normalizedLang] || (isEn ? 'en_US' : 'es_EC'));
     setMeta('meta[name="twitter:title"]', effectiveTitle);
     setMeta('meta[name="twitter:description"]', effectiveDescription);
 

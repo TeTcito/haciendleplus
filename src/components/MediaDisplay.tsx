@@ -20,7 +20,7 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
   mediaType = 'image',
   url,
   posterUrl,
-  alt = 'Hacienda Le Plus Resort',
+  alt,
   className = '',
   aspectRatio = 'aspect-[16/9]',
   autoPlay = true,
@@ -29,7 +29,8 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
   showBadge = true,
   allowFullscreen = true,
 }) => {
-  const { t } = useLanguage();
+  const { t, tr } = useLanguage();
+  const resolvedAlt = alt || tr('Hacienda Le Plus Resort', 'Hacienda Le Plus');
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isMuted, setIsMuted] = useState(muted);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,7 +94,7 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
               <button
                 type="button"
                 onClick={toggleMute}
-                aria-label={isMuted ? 'Activar sonido' : 'Silenciar video'}
+                aria-label={isMuted ? tr('Unmute video', 'Activar sonido') : tr('Mute video', 'Silenciar video')}
                 className="p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer"
               >
                 {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -103,7 +104,7 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
-                  aria-label="Ver video en pantalla completa"
+                  aria-label={tr('Watch video fullscreen', 'Ver video en pantalla completa')}
                   className="p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer"
                 >
                   <Maximize2 className="w-3.5 h-3.5" />
@@ -115,7 +116,7 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
           <>
             <img
               src={url}
-              alt={alt}
+              alt={resolvedAlt}
               loading="lazy"
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
@@ -143,7 +144,7 @@ export const MediaDisplay: React.FC<MediaDisplayProps> = ({
               type="button"
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 z-20 p-2.5 rounded-full bg-black/70 text-white hover:bg-[#C8A45D] hover:text-[#06150F] transition-all cursor-pointer"
-              aria-label="Cerrar reproductor"
+              aria-label={tr('Close player', 'Cerrar reproductor')}
             >
               <X className="w-6 h-6" />
             </button>

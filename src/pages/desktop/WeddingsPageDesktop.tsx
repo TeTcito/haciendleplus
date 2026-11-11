@@ -156,7 +156,7 @@ const ServiceCardIcon: React.FC<{ type: 'rings' | 'flower' | 'camera' | 'couple'
 
 export const WeddingsPageDesktop: React.FC = () => {
   const { siteConfig, packages, photos, weddingProposals, openQuoteModal } = useCMS();
-  const { language, isEn, t, tr } = useLanguage();
+  const { language, tr } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
   const [isDirectFormOpen, setIsDirectFormOpen] = useState(false);
@@ -171,7 +171,8 @@ export const WeddingsPageDesktop: React.FC = () => {
             if (matched) {
               return {
                 ...matched,
-                price: prop.price,
+                price: '',
+                unit: '',
                 image: prop.image,
                 imagePosition: prop.imagePosition,
                 videoUrl: prop.videoUrl,
@@ -201,9 +202,9 @@ export const WeddingsPageDesktop: React.FC = () => {
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias en 13.000 m² de jardines, recepción, 8 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 65 invitados (14 baños internos). Cotiza al WhatsApp 0969817891.',
+      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias y eventos en 13.000 m² de áreas verdes donde montamos carpas gigantes según el evento (hasta 1.000 personas), recepción, 20 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 81 invitados (18 baños internos). Cotiza al WhatsApp 0969817891.',
     description_en:
-      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies across 13,000 m² gardens, 8 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site guest lodging for up to 65 guests (14 internal baths).',
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies and events across 13,000 m² of green areas with giant event-sized tents for up to 1,000 guests, 20 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site guest lodging for up to 81 guests (18 internal baths).',
     canonicalPath: '/bodas',
     lang: language,
   });
@@ -220,14 +221,14 @@ export const WeddingsPageDesktop: React.FC = () => {
           "Convertimos tu Boda Soñada En una Historia Inolvidable ♡"
       ====================================================================== */}
       <section
-        aria-label="Portada de Bodas Hacienda Le Plus"
+        aria-label={tr("Hacienda Le Plus Weddings Cover", "Portada de Bodas Hacienda Le Plus")}
         className="relative w-full min-h-[580px] lg:min-h-[660px] flex items-center bg-[#F6EFE6] overflow-hidden border-b border-[#E6DDD0] pt-[88px] sm:pt-[96px] lg:pt-[104px]"
       >
         {/* 1. IMAGEN DE FONDO CON FUSIÓN SUAVE A CREMA EN LA IZQUIERDA Y BOKEH CÁLIDO A LA DERECHA */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
             src="/images/hacienda/boda-hero-editorial.jpg"
-            alt="Novios en arco floral de Hacienda Le Plus Píntag"
+            alt={tr("Couple under floral arch at Hacienda Le Plus Píntag", "Novios en arco floral de Hacienda Le Plus Píntag")}
             fetchPriority="high"
             className="w-full h-full object-cover object-[48%_center] sm:object-[50%_center] lg:object-[52%_center] transform translate-x-4 sm:translate-x-8 lg:translate-x-12 xl:translate-x-16 scale-105 transition-transform duration-500"
           />
@@ -392,8 +393,8 @@ export const WeddingsPageDesktop: React.FC = () => {
                   </p>
                   <p className="text-xs sm:text-[13.5px] text-[#4A433B] leading-[1.65]">
                     {tr(
-                      "Say \"I do\" surrounded by blooming Andean landscapes, toast under illuminated gala tents with signature cuisine, and let your family and close guests unwind comfortably on-site without rushing the night away.",
-                      "Da el “sí, acepto” rodeado de paisajes andinos, celebra un banquete de autor bajo elegantes carpas iluminadas y brinda a tus seres queridos la comodidad de hospedarse en la misma hacienda sin prisas."
+                      "Say \"I do\" surrounded by blooming Andean landscapes, toast under giant event-sized tents mounted across 13,000 m² of green areas with signature cuisine, and let your family and close guests unwind comfortably on-site without rushing the night away.",
+                      "Da el “sí, acepto” rodeado de paisajes andinos, celebra un banquete de autor bajo carpas gigantes dimensionadas a tu evento en 13.000 m² de áreas verdes y brinda a tus seres queridos la comodidad de hospedarse en la misma hacienda sin prisas."
                     )}
                   </p>
                 </div>
@@ -417,7 +418,7 @@ export const WeddingsPageDesktop: React.FC = () => {
               {/* Fila inferior de 3 Estadísticas con Iconos Line-Art Dorados */}
               <ScrollReveal direction="up" delay={330}>
                 <div className="pt-5 flex flex-wrap items-center gap-6 sm:gap-8">
-                  {/* Métrica 1: 300+ Invitados / Bodas */}
+                  {/* Métrica 1: Hasta 1.000 Invitados Áreas Externas / Bodas */}
                   <div className="flex items-center gap-3 pr-6 sm:pr-8 border-r border-[#D8CBB8]">
                     <svg
                       viewBox="0 0 40 40"
@@ -440,15 +441,15 @@ export const WeddingsPageDesktop: React.FC = () => {
                     </svg>
                     <div>
                       <span className="block font-sans-ui text-xl sm:text-2xl font-bold text-[#181512] leading-none">
-                        300+
+                        {tr("Up to 1,000", "Hasta 1.000")}
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        {tr("Gala Capacity", "Capacidad en Gala")}
+                        {tr("Green Areas · Giant Tents", "Áreas Verdes · Carpas")}
                       </span>
                     </div>
                   </div>
 
-                  {/* Métrica 2: 14 Habitaciones / Experiencia */}
+                  {/* Métrica 2: Alojamiento 81 Pax · 18 Baños */}
                   <div className="flex items-center gap-3 pr-6 sm:pr-8 border-r border-[#D8CBB8]">
                     <svg
                       viewBox="0 0 40 40"
@@ -475,10 +476,10 @@ export const WeddingsPageDesktop: React.FC = () => {
                     </svg>
                     <div>
                       <span className="block font-sans-ui text-xl sm:text-2xl font-bold text-[#181512] leading-none">
-                        {tr("65 Pax · 14 Baths", "65 Pax · 14 Baños")}
+                        {tr("81 Pax · 18 Baths", "81 Pax · 18 Baños")}
                       </span>
                       <span className="block text-[11px] sm:text-xs text-[#544B42] mt-1">
-                        {tr("Lodging (7 Double + 59 Single)", "Alojamiento (7 Matr. + 59 Indiv.)")}
+                        {tr("Lodging (7 Double + 75 Single)", "Alojamiento (7 Matr. + 75 Indiv.)")}
                       </span>
                     </div>
                   </div>
@@ -664,7 +665,7 @@ export const WeddingsPageDesktop: React.FC = () => {
             <ScrollReveal direction="left" duration={850} className="lg:col-span-6 relative min-h-[360px] sm:min-h-[420px] lg:min-h-0 lg:h-full overflow-hidden bg-[#EDE5D8]">
               <img
                 src="/images/hacienda/boda-arco-editorial.jpg"
-                alt="Ceremonia de boda al aire libre en Hacienda Le Plus Píntag"
+                alt={tr("Outdoor wedding ceremony at Hacienda Le Plus Píntag", "Ceremonia de boda al aire libre en Hacienda Le Plus Píntag")}
                 className="w-full h-full object-cover object-center"
               />
 
@@ -931,7 +932,7 @@ export const WeddingsPageDesktop: React.FC = () => {
                       <Check className="w-3 h-3 stroke-[3]" />
                     </span>
                     <span className="text-xs sm:text-[12.5px] font-medium text-[#2C2621] leading-snug">
-                      {tr("Setups, gardens & gala marquee tent (80 to 300 pax)", "Montajes, jardines y carpa de gala (80 a 300 pax)")}
+                      {tr("Giant tents in 13,000 m² green areas (up to 1,000 pax)", "Carpas gigantes en 13.000 m² áreas verdes (hasta 1.000 pax)")}
                     </span>
                   </div>
 
@@ -989,7 +990,7 @@ export const WeddingsPageDesktop: React.FC = () => {
           <ScrollReveal direction="zoom-in" duration={850} className="lg:col-span-6 relative min-h-[360px] sm:min-h-[420px] lg:min-h-0 lg:h-full overflow-hidden bg-[#EDE5D8]">
             <img
               src="/images/hacienda/boda-suite-lounge.jpg"
-              alt="Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag"
+              alt={tr("Lounge and Bridal Suite overlooking the gardens of Hacienda Le Plus in Píntag", "Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag")}
               className="w-full h-full object-cover object-center"
               loading="lazy"
             />
@@ -1145,14 +1146,11 @@ export const WeddingsPageDesktop: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* PRECIO Y BOTÓN "VER DETALLES" */}
+                    {/* COTIZACIÓN A MEDIDA Y BOTÓN "VER DETALLES" */}
                     <div className="pt-2 flex items-center justify-between">
                       <div>
-                        <span className="font-serif-luxury text-xl sm:text-2xl font-bold text-[#181512]">
-                          {card.price}
-                        </span>
-                        <span className="text-xs text-[#6E6357] font-normal ml-1">
-                          {card.unit}
+                        <span className="text-xs sm:text-[13px] font-semibold text-[#8C6D3F]">
+                          {tr("Tailored Proposal", "Cotización a Medida")}
                         </span>
                       </div>
 
@@ -1261,7 +1259,7 @@ export const WeddingsPageDesktop: React.FC = () => {
           <ScrollReveal direction="right" duration={850} className="lg:col-span-5 relative min-h-[280px] sm:min-h-[340px] lg:min-h-full overflow-hidden">
             <img
               src="/images/hacienda/boda-banner-gastronomia.jpg"
-              alt="Banquete de bodas, tartaletas y menú nupcial en Hacienda Le Plus Píntag"
+              alt={tr("Wedding banquet, patisserie and bridal menu at Hacienda Le Plus Píntag", "Banquete de bodas, tartaletas y menú nupcial en Hacienda Le Plus Píntag")}
               className="w-full h-full object-cover object-right"
               loading="lazy"
             />

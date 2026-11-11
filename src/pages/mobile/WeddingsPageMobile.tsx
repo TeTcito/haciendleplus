@@ -35,16 +35,16 @@ const WEDDING_SERVICES_CARDS = [
     id: 'srv-planning',
     title: 'Ceremonias & Recepción',
     description:
-      'Ceremonias al aire libre o en salón colonial, protocolo integral y recepción de gala en Quito–Píntag.',
-    priceTag: 'Desde $42 / invitado',
+      'Ceremonias en 13.000 m² de áreas verdes donde montamos carpas gigantes según evento, 20 baños ext. y protocolo en Quito–Píntag.',
+    priceTag: 'Protocolo Integral',
     iconType: 'rings' as const,
   },
   {
     id: 'srv-theme',
-    title: 'Jardines & Decoración',
+    title: '13.000 m² Áreas Verdes & Carpas',
     description:
-      'Jardines exclusivos, decoración floral personalizada, carpa estructural de gala y mesas imperiales.',
-    priceTag: '80 a 300 invitados',
+      'Exclusivas 13.000 m² de áreas verdes donde montamos carpas gigantes según evento, flores y mesas imperiales.',
+    priceTag: 'Carpas hasta 1.000 Pax',
     iconType: 'flower' as const,
   },
   {
@@ -52,15 +52,15 @@ const WEDDING_SERVICES_CARDS = [
     title: 'Catering & Restaurante',
     description:
       'Catering nupcial propio (cóctel, menú de 3 tiempos, mesa de dulces), descorche libre y restaurante como complemento.',
-    priceTag: 'Desde $70 / invitado',
+    priceTag: 'Gastronomía Propia',
     iconType: 'camera' as const,
   },
   {
     id: 'srv-destination',
     title: 'Hospedaje para Invitados',
     description:
-      'Aloja hasta 65 invitados (14 baños internos · 7 matr. + 59 indiv.), fortalecido con piscina 84 m² (70 pax), 8 baños ext. y áreas deportivas.',
-    priceTag: 'Desde $95 / invitado',
+      'Aloja hasta 81 invitados (18 baños internos · 7 matr. + 75 indiv.), fortalecido con piscina 84 m² (70 pax), 20 baños ext. y áreas deportivas.',
+    priceTag: 'Hasta 81 Pax · 18 Baños',
     iconType: 'couple' as const,
   },
   {
@@ -222,33 +222,33 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
   {
     id: 'boda-campestre-imperial',
     title: 'Ceremonia, Recepción & Jardines',
-    subtitle: 'Quito–Píntag · 13.000 m² Jardines & Carpa Gala',
+    subtitle: 'Quito–Píntag · 13.000 m² Áreas Verdes · Carpas Gigantes según Evento',
     badge: 'Más Solicitado',
     badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
     image: '/images/hacienda/boda-carpa-gala.jpg',
     specs: [
-      { label: '80 a 300 Pax', icon: 'users' },
-      { label: '13.000 m² Jardines', icon: 'tent' },
+      { label: 'Carpas hasta 1.000', icon: 'users' },
+      { label: '13.000 m² Áreas Verdes', icon: 'tent' },
       { label: '80–100 Parqueos', icon: 'utensils' },
     ],
-    price: '$42',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
   {
     id: 'boda-destino-14-suites',
     title: 'Boda + Hospedaje para Invitados',
-    subtitle: 'Quito–Píntag · Hasta 65 Pax · 14 Baños Internos',
+    subtitle: 'Quito–Píntag · Hasta 81 Pax · 18 Baños Internos',
     badge: 'Hospedaje Invitados',
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
     image: '/images/hacienda/bodas-exteriores.jpg',
     specs: [
-      { label: 'Hasta 65 Pax', icon: 'users' },
-      { label: '14 Baños (66 Camas)', icon: 'bed' },
+      { label: 'Hasta 81 Pax', icon: 'users' },
+      { label: '18 Baños (82 Camas)', icon: 'bed' },
       { label: 'Piscina 84 m² (70 Pax)', icon: 'sparkles' },
     ],
-    price: '$95',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
   {
@@ -263,30 +263,30 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
       { label: 'Catering Propio', icon: 'utensils' },
       { label: 'Decoración Floral', icon: 'sparkles' },
     ],
-    price: '$70',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
   {
     id: 'ceremonia-jardin-palmeras',
     title: 'Ceremonia en Jardines de la Hacienda',
-    subtitle: 'Quito–Píntag · Altares & Decoración Natural',
+    subtitle: 'Quito–Píntag · 13.000 m² Áreas Verdes · Carpas según Evento',
     badge: 'Ceremonias',
     badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
     image: '/images/hacienda/boda-ceremonia-arco.jpg',
     specs: [
-      { label: '50 a 300 Pax', icon: 'users' },
+      { label: 'Hasta 1.000 Pax', icon: 'users' },
       { label: 'Arco & Decoración', icon: 'sparkles' },
       { label: 'Sillas Tiffany', icon: 'sparkles' },
     ],
-    price: '$35',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
   {
     id: 'experiencia-zona-humeda',
     title: 'Complemento: Piscina, Restaurante & Recreación',
-    subtitle: 'Quito–Píntag · Fortalece la Estadía de Invitados',
+    subtitle: 'Quito–Píntag · Hidromasajes en grupos grandes c/ costo adicional',
     badge: 'Complemento Nupcial',
     badgeClass: 'bg-[#7A6A58]/90 text-[#FAF7F2]',
     image: '/images/hacienda/area-humeda.jpg',
@@ -295,8 +295,8 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
       { label: 'Restaurante', icon: 'utensils' },
       { label: 'Áreas Recreativas', icon: 'sparkles' },
     ],
-    price: '$55',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
   {
@@ -311,8 +311,8 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
       { label: 'Decoración & Menú', icon: 'utensils' },
       { label: 'Hospedaje Opcional', icon: 'bed' },
     ],
-    price: '$48',
-    unit: '/ invitado',
+    price: '',
+    unit: '',
     serviceType: 'bodas',
   },
 ];
@@ -358,7 +358,7 @@ const SectionDividerTitle: React.FC<SectionDividerTitleProps> = ({
 
 export const WeddingsPageMobile: React.FC = () => {
   const { siteConfig, packages, photos, weddingProposals, openQuoteModal } = useCMS();
-  const { language, isEn, tr } = useLanguage();
+  const { language, tr } = useLanguage();
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const weddingServices = getWeddingServices(language);
@@ -371,7 +371,8 @@ export const WeddingsPageMobile: React.FC = () => {
             if (matched) {
               return {
                 ...matched,
-                price: prop.price,
+                price: '',
+                unit: '',
                 image: prop.image,
                 imagePosition: prop.imagePosition,
                 videoUrl: prop.videoUrl,
@@ -397,9 +398,9 @@ export const WeddingsPageMobile: React.FC = () => {
     title: 'Bodas y Celebraciones en Quito–Píntag | Hacienda Le Plus',
     title_en: 'Weddings & Celebrations in Quito–Píntag | Hacienda Le Plus',
     description:
-      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias en 13.000 m² de jardines, recepción, 8 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 65 invitados (14 baños internos). Cotiza al WhatsApp 0969817891.',
+      'Bodas y eventos sociales en Hacienda Le Plus (Quito–Píntag): ceremonias y eventos en 13.000 m² de áreas verdes donde montamos carpas gigantes según el evento (hasta 1.000 personas), recepción, 20 baños externos, 80–100 parqueaderos, catering, decoración, piscina 84 m² y hospedaje hasta 81 invitados (18 baños internos). Cotiza al WhatsApp 0969817891.',
     description_en:
-      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies across 13,000 m² gardens, 8 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site lodging for up to 65 guests (14 internal baths).',
+      'Weddings and social celebrations at Hacienda Le Plus (Quito–Píntag): ceremonies and events across 13,000 m² of green areas with giant event-sized tents for up to 1,000 guests, 20 external restrooms, 80–100 parking spaces, reception, catering, decor, 84 m² pool, and on-site guest lodging for up to 81 guests (18 internal baths).',
     canonicalPath: '/bodas',
     lang: language,
   });
@@ -416,7 +417,7 @@ export const WeddingsPageMobile: React.FC = () => {
           "Convertimos tu Boda Soñada En una Historia Inolvidable ♡"
       ====================================================================== */}
       <section
-        aria-label="Portada de Bodas Hacienda Le Plus"
+        aria-label={tr("Hacienda Le Plus Weddings Cover", "Portada de Bodas Hacienda Le Plus")}
         className="relative w-full bg-[#F6EFE6] overflow-hidden border-b border-[#E6DDD0]"
       >
         {/* Canvas 16:9 Full Bleed */}
@@ -425,7 +426,7 @@ export const WeddingsPageMobile: React.FC = () => {
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
               src="/images/hacienda/boda-hero-editorial.jpg"
-              alt="Novios en arco floral de Hacienda Le Plus Píntag"
+              alt={tr("Couple under floral arch at Hacienda Le Plus Píntag", "Novios en arco floral de Hacienda Le Plus Píntag")}
               fetchPriority="high"
               className="absolute inset-0 w-[calc(100%+80px)] -left-10 h-full object-cover object-[72%_center] translate-x-[40px]"
             />
@@ -482,16 +483,16 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/85 backdrop-blur-xs border border-[#8C6D3F]/30 shadow-2xs">
                     <Users className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
-                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">300+</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("Capacity", "Capacidad")}</span>
+                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{tr("1,000", "1.000")}</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("Green · Tents", "Verdes · Carpas")}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-white/85 backdrop-blur-xs border border-[#8C6D3F]/30 shadow-2xs">
                     <BedDouble className="w-3 h-3 text-[#8C6D3F] shrink-0" />
                     <div className="leading-tight">
-                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{tr("Max 65 Pax", "Máx. 65 Pax")}</span>
-                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("14 Baths", "14 Baños")}</span>
+                      <span className="block font-sans-ui text-[10px] font-bold text-[#181512]">{tr("Max 81 Pax", "Máx. 81 Pax")}</span>
+                      <span className="block text-[7.5px] text-[#544B42] -mt-0.5">{tr("18 Baths", "18 Baños")}</span>
                     </div>
                   </div>
 
@@ -592,7 +593,7 @@ export const WeddingsPageMobile: React.FC = () => {
               <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-[#E6DDD0] bg-[#EDE5D8]">
                 <img
                   src="/images/hacienda/boda-arco-editorial.jpg"
-                  alt="Ceremonia de boda al aire libre en Hacienda Le Plus Píntag"
+                  alt={tr("Outdoor wedding ceremony at Hacienda Le Plus Píntag", "Ceremonia de boda al aire libre en Hacienda Le Plus Píntag")}
                   className="w-full h-full object-cover object-center"
                 />
 
@@ -622,8 +623,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                     <Heart className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
-                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    {tr("Personal", "Atención")}<br />{tr("Care", "Personal")}
+                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                    {tr("Personal\nCare", "Atención\nPersonal")}
                   </span>
                 </div>
 
@@ -631,8 +632,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                     <Sparkles className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
-                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    {tr("Unique", "Jardines")}<br />{tr("Gardens", "Únicos")}
+                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                    {tr("Unique\nGardens", "Jardines\nÚnicos")}
                   </span>
                 </div>
 
@@ -640,8 +641,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                     <Utensils className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
-                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    {tr("In-House", "Cocina")}<br />{tr("Cuisine", "Propia")}
+                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                    {tr("In-House\nCuisine", "Cocina\nPropia")}
                   </span>
                 </div>
 
@@ -649,8 +650,8 @@ export const WeddingsPageMobile: React.FC = () => {
                   <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                     <ShieldCheck className="w-4 h-4 text-[#8C6D3F]" />
                   </div>
-                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                    {tr("Zero", "Cero")}<br />{tr("Stress", "Estrés")}
+                  <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                    {tr("Zero\nStress", "Cero\nEstrés")}
                   </span>
                 </div>
               </div>
@@ -692,7 +693,7 @@ export const WeddingsPageMobile: React.FC = () => {
             <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-[#E6DDD0] bg-[#EDE5D8]">
               <img
                 src="/images/hacienda/boda-suite-lounge.jpg"
-                alt="Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag"
+                alt={tr("Lounge and Bridal Suite overlooking the gardens of Hacienda Le Plus in Píntag", "Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag")}
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
               />
@@ -723,8 +724,8 @@ export const WeddingsPageMobile: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                   <Sparkles className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
-                <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  {tr("Setups &", "Montajes &")}<br />{tr("Gala Tent", "Carpa Gala")}
+                <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                  {tr("Setups &\nGala Tent", "Montajes &\nCarpa Gala")}
                 </span>
               </div>
 
@@ -732,8 +733,8 @@ export const WeddingsPageMobile: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                   <Wine className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
-                <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  {tr("Free", "Descorche")}<br />{tr("Corkage", "Libre")}
+                <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                  {tr("Free\nCorkage", "Descorche\nLibre")}
                 </span>
               </div>
 
@@ -741,8 +742,8 @@ export const WeddingsPageMobile: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                   <Heart className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
-                <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  {tr("Expert", "Asesoría")}<br />{tr("Advisory", "Experta")}
+                <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                  {tr("Expert\nAdvisory", "Asesoría\nExperta")}
                 </span>
               </div>
 
@@ -750,8 +751,8 @@ export const WeddingsPageMobile: React.FC = () => {
                 <div className="w-8 h-8 rounded-full bg-[#F2ECE1] text-[#8C6D3F] flex items-center justify-center mb-1">
                   <CheckCircle2 className="w-4 h-4 text-[#8C6D3F]" />
                 </div>
-                <span className="text-[9.5px] font-bold text-[#181512] leading-tight">
-                  {tr("Happy", "Bodas")}<br />{tr("Weddings", "Felices")}
+                <span className="text-[9.5px] font-bold text-[#181512] leading-tight whitespace-pre-line">
+                  {tr("Happy\nWeddings", "Bodas\nFelices")}
                 </span>
               </div>
             </div>
@@ -849,18 +850,15 @@ export const WeddingsPageMobile: React.FC = () => {
 
                       <div className="mt-1.5 pt-1 border-t border-[#EBE3D6]/70 flex items-center gap-1 text-[9px] text-[#6E6357] truncate">
                         <Users className="w-2.5 h-2.5 text-[#8C6D3F] shrink-0" />
-                        <span className="truncate">{card.specs[0]?.label || '80-300 pax'}</span>
+                        <span className="truncate">{card.specs[0]?.label || tr('Up to 1,000 (Tents)', 'Hasta 1.000 (Carpas)')}</span>
                       </div>
                     </div>
 
-                    {/* PRECIO Y BOTÓN "VER" REDUCIDO A 2PX ALREDEDOR DE LA PALABRA */}
+                    {/* COTIZACIÓN A MEDIDA Y BOTÓN "VER" REDUCIDO A 2PX ALREDEDOR DE LA PALABRA */}
                     <div className="mt-2 pt-1.5 border-t border-[#EBE3D6]/80 flex items-center justify-between text-[#8C6D3F]">
                       <div>
-                        <span className="text-[10.5px] font-bold text-[#181512]">
-                          {card.price}
-                        </span>
-                        <span className="text-[8.5px] text-[#7A6A58] block -mt-0.5">
-                          {card.unit}
+                        <span className="text-[9px] font-bold text-[#8C6D3F] leading-tight">
+                          {tr("Custom Quote", "A medida")}
                         </span>
                       </div>
 
@@ -901,7 +899,7 @@ export const WeddingsPageMobile: React.FC = () => {
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
               src="/images/hacienda/boda-banner-gastronomia.jpg"
-              alt="Banquete de bodas y gastronomía en Hacienda Le Plus Píntag"
+              alt={tr("Wedding banquet and gastronomy at Hacienda Le Plus Píntag", "Banquete de bodas y gastronomía en Hacienda Le Plus Píntag")}
               className="absolute inset-0 w-full h-full object-cover object-right"
               loading="lazy"
             />

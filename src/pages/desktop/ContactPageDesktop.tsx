@@ -24,7 +24,7 @@ import { ScrollReveal } from '../../components/ScrollReveal';
 
 export const ContactPageDesktop: React.FC = () => {
   const { siteConfig, addLead } = useCMS();
-  const { language, isEn, t, tr } = useLanguage();
+  const { language, tr } = useLanguage();
 
   useDocumentMeta({
     title: 'Contáctanos y Ubicación en Píntag | Hacienda Le Plus',
@@ -129,7 +129,7 @@ export const ContactPageDesktop: React.FC = () => {
         <div className="absolute inset-0 z-0">
           <img
             src="/images/hacienda/corporate-salon-hd.jpg"
-            alt="Contacto Hacienda Le Plus"
+            alt={tr("Contact Hacienda Le Plus", "Contacto Hacienda Le Plus")}
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#06150F]/90 via-[#06150F]/75 to-[#06150F]/95 backdrop-blur-[2px]" />
@@ -243,7 +243,7 @@ export const ContactPageDesktop: React.FC = () => {
                     href="https://facebook.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Facebook Hacienda Le Plus"
+                    aria-label={tr("Hacienda Le Plus Facebook", "Facebook Hacienda Le Plus")}
                     className="w-10 h-10 rounded-full bg-[#06150F] hover:bg-[#1B4735] text-white hover:text-[#E2C585] transition-all flex items-center justify-center shadow-sm"
                   >
                     <Facebook className="w-4 h-4 fill-current" />
@@ -252,7 +252,7 @@ export const ContactPageDesktop: React.FC = () => {
                     href="https://instagram.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="Instagram Hacienda Le Plus"
+                    aria-label={tr("Hacienda Le Plus Instagram", "Instagram Hacienda Le Plus")}
                     className="w-10 h-10 rounded-full bg-[#06150F] hover:bg-[#1B4735] text-white hover:text-[#E2C585] transition-all flex items-center justify-center shadow-sm"
                   >
                     <Instagram className="w-4 h-4" />
@@ -261,7 +261,7 @@ export const ContactPageDesktop: React.FC = () => {
                     href={whatsappContactUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="WhatsApp Oficial"
+                    aria-label={tr("Official WhatsApp", "WhatsApp Oficial")}
                     className="w-10 h-10 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white transition-all flex items-center justify-center shadow-sm"
                   >
                     <WhatsAppIcon variant="monochrome" className="w-4 h-4 text-white fill-current" />
@@ -270,7 +270,7 @@ export const ContactPageDesktop: React.FC = () => {
                     href="https://youtube.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label="YouTube Hacienda Le Plus"
+                    aria-label={tr("Hacienda Le Plus YouTube", "YouTube Hacienda Le Plus")}
                     className="w-10 h-10 rounded-full bg-[#06150F] hover:bg-[#1B4735] text-white hover:text-[#E2C585] transition-all flex items-center justify-center shadow-sm"
                   >
                     <Youtube className="w-4 h-4" />
@@ -308,7 +308,7 @@ export const ContactPageDesktop: React.FC = () => {
                       href={buildContextualWhatsAppUrl({
                         phone: siteConfig.whatsappNumber,
                         context: 'general',
-                        itemName: formData.subject || 'Consulta Web',
+                        itemName: formData.subject || tr('Web Inquiry', 'Consulta Web'),
                       })}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -439,13 +439,7 @@ export const ContactPageDesktop: React.FC = () => {
                       className="w-full py-4 rounded-xl font-bold text-sm bg-[#06150F] hover:bg-[#1B4735] text-white hover:text-[#E2C585] shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center justify-center gap-2 group disabled:opacity-50"
                     >
                       <span>
-                        {isEn
-                          ? isSubmitting
-                            ? 'Sending...'
-                            : 'Send Message'
-                          : isSubmitting
-                          ? 'Enviando...'
-                          : 'Enviar Mensaje'}
+                        {isSubmitting ? tr('Sending...', 'Enviando...') : tr('Send Message', 'Enviar Mensaje')}
                       </span>
                       <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -465,7 +459,7 @@ export const ContactPageDesktop: React.FC = () => {
         <ScrollReveal direction="up" duration={850}>
           <div className="w-full h-[450px] sm:h-[500px] lg:h-[550px] relative">
             <iframe
-              title="Mapa de Ubicación de Hacienda Le Plus en Pintag, Quito"
+              title={tr("Hacienda Le Plus Location Map in Píntag, Quito", "Mapa de Ubicación de Hacienda Le Plus en Pintag, Quito")}
               src={siteConfig.googleMapsEmbedUrl}
               className="w-full h-full border-0"
               loading="lazy"

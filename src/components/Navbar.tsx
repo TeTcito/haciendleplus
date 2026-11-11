@@ -10,7 +10,7 @@ import { useIsMobile } from '../utils/useIsMobile';
 export const Navbar: React.FC = () => {
   const isMobile = useIsMobile();
   const { siteConfig } = useCMS();
-  const { t } = useLanguage();
+  const { t, tr } = useLanguage();
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -88,11 +88,11 @@ export const Navbar: React.FC = () => {
           <Link
             to="/"
             className="flex items-center gap-3 group focus:outline-none shrink-0"
-            aria-label="Hacienda Le Plus Inicio"
+            aria-label={tr("Hacienda Le Plus Home", "Hacienda Le Plus Inicio")}
           >
             <img
               src="/logo-leplus.png"
-              alt="Logo Oficial Hacienda Le Plus"
+              alt={tr("Hacienda Le Plus Official Logo", "Logo Oficial Hacienda Le Plus")}
               className="h-12 sm:h-14 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-[1.03]"
             />
             <div className="flex flex-col justify-center leading-tight">
@@ -116,7 +116,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Navigation — Strictly Single Line (4 Páginas Oficiales) */}
           <nav
             className="hidden lg:flex items-center gap-1 xl:gap-1.5 whitespace-nowrap"
-            aria-label="Navegación Principal"
+            aria-label={tr("Main Navigation", "Navegación Principal")}
           >
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path;
@@ -150,7 +150,7 @@ export const Navbar: React.FC = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-[13px] font-semibold bg-gradient-to-r from-[#C8A45D] to-[#DFB96E] text-[#06150F] hover:brightness-110 shadow-lg shadow-[#C8A45D]/20 whitespace-nowrap transition-all cursor-pointer"
-              title="Solicitar cotización por WhatsApp al 0969817891"
+              title={tr("Request quote via WhatsApp at +593 96 981 7891", "Solicitar cotización por WhatsApp al 0969817891")}
             >
               <Calendar className="w-3.5 h-3.5" />
               <span>{t.nav.quote}</span>

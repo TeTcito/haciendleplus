@@ -105,7 +105,7 @@ export const getDomeIntegratedAreas = (langOrIsEn?: SupportedLanguage | boolean)
   trList(
     [
       'Integrated dedicated Bar & Cocktail Service Wing',
-      'In-house Catering Kitchen & Operational Storage Rooms (Bodegas)',
+      'In-house Catering Kitchen & Operational Storage Rooms',
       'Dedicated Men’s, Women’s & Accessible Restrooms in one unified complex',
       '20m diameter × 10m height column-free arena for 200 to 250 guests',
     ],

@@ -375,7 +375,7 @@ export const AdminDashboard: React.FC = () => {
       videoUrl: '',
       mediaType: 'image',
       specs: [
-        { label: 'De 60 a 350 invitados', icon: 'users' },
+        { label: 'Hasta 1.000 invitados (exteriores)', icon: 'users' },
         { label: 'Jardines y salón principal incluidos', icon: 'tent' },
         { label: 'Gastronomía nupcial de autor', icon: 'utensils' },
       ],
@@ -455,7 +455,7 @@ export const AdminDashboard: React.FC = () => {
       priceLabel: 'Desde $45 USD',
       priceValue: 45,
       unit: 'por participante (según requerimientos)',
-      capacity: 'De 20 a 350 participantes',
+      capacity: 'De 20 a 1.000 participantes (exteriores)',
       setupInfo: 'Auditorio, Escuela, Imperial o Jardines al Aire Libre',
       description: '',
       inclusions: [
@@ -546,7 +546,7 @@ export const AdminDashboard: React.FC = () => {
       id: `corp-macro-${Date.now()}`,
       title: '',
       subtitle: '',
-      highlightMetric: 'Hasta 350+ pax',
+      highlightMetric: 'Hasta 1.000 pax (ext.)',
       image: '/images/hacienda/jardines-teambuilding.jpg',
       rawImage: '/images/hacienda/jardines-teambuilding.jpg',
       imagePosition: '50% 50%',
@@ -1989,7 +1989,7 @@ export const AdminDashboard: React.FC = () => {
                             onChange={(e) =>
                               setEditingWedding((prev) => prev ? { ...prev, subtitle: e.target.value } : null)
                             }
-                            placeholder="Ej: De 60 a 350 invitados · Producción integral"
+                            placeholder="Ej: Hasta 1.000 invitados en exteriores · Producción integral"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs"
                           />
                         </div>
@@ -2713,7 +2713,7 @@ export const AdminDashboard: React.FC = () => {
                                 highlightMetric: e.target.value,
                               } : null)
                             }
-                            placeholder="Ej: Hasta 350+ pax / Desde $40 / pax"
+                            placeholder="Ej: Hasta 1.000 pax (exteriores) / Desde $40 / pax"
                             className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-white text-xs font-bold text-[#A6823C]"
                           />
                         </div>
