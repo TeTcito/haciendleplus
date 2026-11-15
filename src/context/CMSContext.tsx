@@ -606,53 +606,73 @@ export const DEFAULT_FAQS: FAQItem[] = [
   },
 ];
 
-export const DEFAULT_LEADS: LeadSubmission[] = [
-  {
-    id: 'lead-demo-1',
-    createdAt: '2026-10-16 16:40',
-    clientName: 'Valeria Andrade & Mateo Cueva',
-    organizationOrCouple: 'Boda Andrade - Cueva',
-    email: 'valeria.andrade@email.com',
-    phone: '0998451230',
-    serviceType: 'bodas',
-    tentativeDate: '2027-02-20',
-    estimatedVolume: '150 invitados (con 35 huéspedes en suites)',
-    notes: 'Deseamos agendar visita técnica este sábado para ver las áreas exteriores, carpa y las Suites No. 1 y No. 2.',
-    targetCorporateEmail: 'bodas@haciendaleplus.com',
-    sourcePage: '/bodas',
-    status: 'Visita Agendada',
-  },
-  {
-    id: 'lead-demo-2',
-    createdAt: '2026-10-17 09:15',
-    clientName: 'Ing. Roberto Salazar',
-    organizationOrCouple: 'Coordinación Interinstitucional Pichincha',
-    email: 'rsalazar@institucion.gob.ec',
-    phone: '0987123490',
-    serviceType: 'corporativo',
-    tentativeDate: '2026-11-28',
-    estimatedVolume: '90 participantes',
-    notes: 'Jornada de planificación y team building en áreas verdes con coffee break y parrillada.',
-    targetCorporateEmail: 'corporativo@haciendaleplus.com',
-    sourcePage: '/corporativo',
-    status: 'Propuesta Enviada',
-  },
-  {
-    id: 'lead-demo-3',
-    createdAt: '2026-10-17 11:30',
-    clientName: 'Sarah Jenkins',
-    organizationOrCouple: 'HXP / International Youth Delegation',
-    email: 'sjenkins@hxp-missions.org',
-    phone: '+1 801 555 0192',
-    serviceType: 'grupos',
-    tentativeDate: '2027-06-10',
-    estimatedVolume: '55 personas × 18 noches (Bloque Completo · 18 baños)',
-    notes: 'Looking for full-board accommodation (breakfast, lunch, dinner), laundry service, and airport bus transfer.',
-    targetCorporateEmail: 'reservas@haciendaleplus.com',
-    sourcePage: '/hospedaje',
-    status: 'Nuevo',
-  },
-];
+export const DEFAULT_LEADS: LeadSubmission[] = [];
+
+const BLOCKED_FICTIONAL_LEAD_IDS = new Set([
+  'lead-demo-1',
+  'lead-demo-2',
+  'lead-demo-3',
+  'lead-1794744519016',
+  'lead-1794660265493',
+  'lead-1794527609063',
+  'lead-1794527626058',
+  'lead-1794412243613',
+  'lead-1794203402980',
+  'lead-1794203386471',
+  'lead-1793975549833',
+]);
+
+const BLOCKED_FICTIONAL_EMAILS = new Set([
+  'valeria.andrade@email.com',
+  'rsalazar@institucion.gob.ec',
+  'sjenkins@hxp-missions.org',
+  'clara@tourvisiting.com',
+  'raymond.abbott@jmailservice.com',
+  'e.g.uf.o.d.i3.5.1@gmail.com',
+  'j.i.q.o.z.u.w.a.di.2.6@gmail.com',
+  'dolomec.i.065@gmail.com',
+  'mf.rosales@empresa.ec',
+  'cvillacis@corpandina.com',
+  'erichardson@globalmission.org',
+]);
+
+function isRandomGibberishToken(text: string): boolean {
+  const clean = (text || '').trim();
+  if (!clean) return false;
+  // Single word >= 16 chars with mixed upper/lower case and no spaces (bot payload)
+  if (!/\s/.test(clean) && clean.length >= 16 && /[a-z]/.test(clean) && /[A-Z]/.test(clean)) {
+    return true;
+  }
+  // 6 or more consecutive consonants in Latin alphabet
+  if (/[bcdfghjklmnpqrstvwxzBCDFGHJKLMNPQRSTVWXZ]{6,}/.test(clean)) {
+    return true;
+  }
+  return false;
+}
+
+export function isFictionalOrSpamLead(lead: Partial<LeadSubmission> | null | undefined): boolean {
+  if (!lead) return true;
+  const id = (lead.id || '').trim();
+  if (id.startsWith('lead-demo-') || BLOCKED_FICTIONAL_LEAD_IDS.has(id)) {
+    return true;
+  }
+  const email = (lead.email || '').trim().toLowerCase();
+  if (BLOCKED_FICTIONAL_EMAILS.has(email)) {
+    return true;
+  }
+  if ((lead.tentativeDate || '').trim() === '1970-05-31') {
+    return true;
+  }
+  if (isRandomGibberishToken(lead.clientName || '') || isRandomGibberishToken(lead.estimatedVolume || '')) {
+    return true;
+  }
+  return false;
+}
+
+function filterRealLeads(leads: LeadSubmission[] | undefined | null): LeadSubmission[] {
+  if (!Array.isArray(leads)) return [];
+  return leads.filter((l) => !isFictionalOrSpamLead(l));
+}
 
 // ============================================================================
 // NUEVOS MÓDULOS POR DEFECTO (SINCRONIZADOS CON PANEL ADMINISTRATIVO)
@@ -1029,7 +1049,7 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           photos: parsed.photos?.length ? parsed.photos : DEFAULT_PHOTOS,
           caseStudies: parsed.caseStudies?.length ? parsed.caseStudies : DEFAULT_CASE_STUDIES,
           faqs: parsed.faqs?.length ? parsed.faqs : DEFAULT_FAQS,
-          leads: parsed.leads || DEFAULT_LEADS,
+          leads: filterRealLeads(parsed.leads),
         };
       }
     } catch (e) {
@@ -1079,12 +1099,11 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Sincronización inicial desde Supabase
   useEffect(() => {
     fetchLeadsFromSupabase().then((remoteLeads) => {
-      if (remoteLeads && remoteLeads.length > 0) {
-        setState((prev) => {
-          const existingIds = new Set(remoteLeads.map((l) => l.id));
-          const uniqueLocal = prev.leads.filter((l) => !existingIds.has(l.id));
-          return { ...prev, leads: [...remoteLeads, ...uniqueLocal] };
-        });
+      if (remoteLeads !== null) {
+        setState((prev) => ({
+          ...prev,
+          leads: filterRealLeads(remoteLeads),
+        }));
       }
     });
 
@@ -1407,6 +1426,10 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       createdAt: formattedDate,
       status: 'Nuevo',
     };
+
+    if (isFictionalOrSpamLead(newLead)) {
+      return newLead;
+    }
 
     setState((prev) => ({
       ...prev,
