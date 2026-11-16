@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /portal-admin
 
 Sitemap: https://www.haciendaleplus.com/sitemap.xml

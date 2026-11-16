@@ -7,6 +7,7 @@ import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { FloatingWhatsAppAndMobileBar } from './components/FloatingWhatsAppAndMobileBar';
 import { QuickQuoteModal } from './components/QuickQuoteModal';
+import { DynamicSEO } from './components/DynamicSEO';
 import { HomePage } from './pages/HomePage';
 import { WeddingsPage } from './pages/WeddingsPage';
 import { CorporatePage } from './pages/CorporatePage';
@@ -23,6 +24,7 @@ const AppShell: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#0A1F17]">
+      <DynamicSEO />
       {!isAdminRoute && <Navbar />}
       <div className="flex-1">
         <Routes>
