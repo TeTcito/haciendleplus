@@ -1,0 +1,6 @@
+# Legacy URL redirects (Cloudflare Pages handles SPA fallback to /index.html natively)
+/eventos /corporativo 301
+/estadias-largas /hospedaje 301
+/escapadas /hospedaje 301
+/contactos /contacto 301
+/book-online /hospedaje 301

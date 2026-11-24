@@ -196,7 +196,7 @@ ${waClosing}`;
       ),
       author: 'Sarah Mitchell',
       role: tr('HXP Mission Coordinator · International NGO', 'Coordinación Misión HXP · ONG Internacional'),
-      avatar: '/images/avatars/mision-hxp.jpg',
+      avatar: '/images/avatars/mision-hxp.webp',
       rating: 5,
     },
     {
@@ -207,7 +207,7 @@ ${waClosing}`;
       ),
       author: 'Dr. Carlos Enríquez',
       role: tr('Executive Board · Corporate & Project Operations', 'Directorio Ejecutivo · Empresas & Proyectos'),
-      avatar: '/images/avatars/dr-carlos.jpg',
+      avatar: '/images/avatars/dr-carlos.webp',
       rating: 5,
     },
     {
@@ -218,7 +218,7 @@ ${waClosing}`;
       ),
       author: 'IMC Delegation',
       role: tr('International Delegation · Extended Stay', 'Delegación Internacional · Estadía Prolongada'),
-      avatar: '/images/avatars/familia-andrade.jpg',
+      avatar: '/images/avatars/familia-andrade.webp',
       rating: 5,
     },
     {
@@ -229,7 +229,7 @@ ${waClosing}`;
       ),
       author: 'Valeria & Mateo',
       role: tr('Group Lodging & Events', 'Hospedaje Grupal & Eventos'),
-      avatar: '/images/avatars/valeria-mateo.jpg',
+      avatar: '/images/avatars/valeria-mateo.webp',
       rating: 5,
     },
   ];
@@ -311,7 +311,7 @@ ${waClosing}`;
         {/* Background Image: Auténtica foto de la hacienda nítida, sin logos y con luz cálida */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/hacienda/lodging-hero-hacienda.jpg"
+            src="/images/hacienda/lodging-hero-hacienda.webp"
             alt={tr("Lodging for Companies, Delegations and Groups at Hacienda Le Plus Quito–Píntag", "Hospedaje para Empresas, Delegaciones y Grupos en Hacienda Le Plus Quito–Píntag")}
             className="w-full h-full object-cover object-center"
           />
@@ -839,7 +839,7 @@ ${waClosing}`;
                   />
                 ) : (
                   <img
-                    src={lodgingHeroBanner.image || '/images/hacienda/piscina-nocturna.jpg'}
+                    src={lodgingHeroBanner.image || '/images/hacienda/piscina-nocturna.webp'}
                     alt={tr("Facilities and Amenities for Companies and Groups in Quito–Píntag", "Instalaciones y Complementos para Empresas y Grupos en Quito–Píntag")}
                     className="absolute inset-0 w-full h-full object-cover object-center pointer-events-none"
                   />
@@ -1124,7 +1124,7 @@ ${waClosing}`;
             <ScrollReveal direction="up" duration={850} className="lg:col-span-5 h-full">
               <div className="relative rounded-3xl overflow-hidden min-h-[420px] sm:min-h-[480px] h-full w-full shadow-xl border border-[#0A1F17]/10 hover:scale-[1.015] hover:shadow-2xl transition-all duration-300 group bg-[#0A1F17]">
                 <img
-                  src="/images/hacienda/privilegio-piscina-clean.jpg"
+                  src="/images/hacienda/privilegio-piscina-clean.webp"
                   alt={tr("Lodging and Pool Amenities at Hacienda Le Plus", "Instalaciones de hospedaje y piscina como complemento en Hacienda Le Plus")}
                   className="w-full h-full object-cover object-center block"
                   loading="lazy"
@@ -1203,7 +1203,7 @@ ${waClosing}`;
         {/* Fondo panorámico */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/hacienda/vista-aerea.jpg"
+            src="/images/hacienda/vista-aerea.webp"
             alt={tr("Long-Stay Quote by Number of Guests and Duration at Hacienda Le Plus", "Cotización de Larga Estadía según Número de Personas y Duración en Hacienda Le Plus")}
             className="w-full h-full object-cover object-center"
           />
@@ -1508,7 +1508,7 @@ ${waClosing}`;
               ) : (
                 <>
                   <img
-                    src={lodgingHeroBanner.image || '/images/hacienda/lodging-hero-hacienda.jpg'}
+                    src={lodgingHeroBanner.image || '/images/hacienda/lodging-hero-hacienda.webp'}
                     alt={tr("Hacienda Le Plus View", "Vista Hacienda Le Plus")}
                     className="w-full h-full object-cover opacity-85"
                   />

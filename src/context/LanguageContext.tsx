@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useMemo, useCallback } from 'react';
 import { SupportedLanguage, LanguageInfo, AVAILABLE_LANGUAGES, Translations } from '../i18n/types';
 import { translationsMap, esTranslations } from '../i18n/translations';
-import { tr as trHelper } from '../i18n/phraseDictionary';
+import { tr as trHelper, ensureLanguageDictionary } from '../i18n/phraseDictionary';
 
 interface LanguageContextType {
   language: SupportedLanguage;
@@ -46,11 +46,24 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  // Sync <html lang="es"|"en"|"pt"|"fr"|"de"|"zh"> dynamically whenever language changes
+  const [dictVersion, setDictVersion] = useState(0);
+
+  // Sync <html lang="es"|"en"|"pt"|"fr"|"de"|"zh"> and lazily load pt/fr/de/zh dictionary on demand
   useEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.lang = language;
     }
+    let cancelled = false;
+    if (language !== 'es' && language !== 'en') {
+      ensureLanguageDictionary(language).then((loaded) => {
+        if (!cancelled && loaded) {
+          setDictVersion((v) => v + 1);
+        }
+      });
+    }
+    return () => {
+      cancelled = true;
+    };
   }, [language]);
 
   const currentTranslations = useMemo(() => {
@@ -59,9 +72,10 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   const tr = useCallback(
     (enText: string, esText: string) => {
+      void dictVersion;
       return trHelper(enText, esText, language);
     },
-    [language]
+    [language, dictVersion]
   );
 
   const contextValue = useMemo<LanguageContextType>(
@@ -78,7 +92,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       isDe: language === 'de',
       isZh: language === 'zh',
     }),
-    [language, currentTranslations, tr]
+    [language, currentTranslations, tr, dictVersion]
   );
 
   return (

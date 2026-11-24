@@ -56,7 +56,7 @@ export const DynamicSEO: React.FC = () => {
         },
         image: cabin.image?.startsWith('http')
           ? cabin.image
-          : `https://www.haciendaleplus.com${cabin.image || '/images/hacienda/vista-aerea.jpg'}`,
+          : `https://www.haciendaleplus.com${cabin.image || '/images/hacienda/vista-aerea.webp'}`,
       }));
 
     const jsonLdData = {

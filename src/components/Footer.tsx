@@ -51,6 +51,8 @@ export const Footer: React.FC = () => {
               <img
                 src="/logo-leplus.png"
                 alt={tr("Hacienda Le Plus Logo", "Logo Hacienda Le Plus")}
+                loading="lazy"
+                decoding="async"
                 className="h-14 w-auto object-contain shrink-0 transition-transform duration-300 group-hover:scale-105"
               />
               <div className="flex flex-col leading-tight">

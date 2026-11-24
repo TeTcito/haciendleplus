@@ -33,6 +33,13 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
   const { language, tr } = useLanguage();
   const { siteConfig } = useCMS();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
+
+  const selectSlide = (next: number) => {
+    const normalized = ((next % gallery.length) + gallery.length) % gallery.length;
+    setLoadedSlides((prev) => (prev.includes(normalized) ? prev : [...prev, normalized]));
+    setActiveSlide(normalized);
+  };
 
   const specs = getDomeSpecs(language);
   const integratedAreas = getDomeIntegratedAreas(language);
@@ -53,19 +60,23 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
       <div className="lg:col-span-7 flex flex-col bg-[#040D09]">
         {/* Clean Unobstructed Photograph */}
         <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] lg:flex-1 lg:min-h-[430px] overflow-hidden group">
-          {gallery.map((item, idx) => (
-            <img
-              key={item.id}
-              src={item.src}
-              alt={item.alt}
-              loading={idx === 0 ? 'eager' : 'lazy'}
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ${
-                idx === activeSlide
-                  ? 'opacity-100 scale-100'
-                  : 'opacity-0 scale-105 pointer-events-none'
-              }`}
-            />
-          ))}
+          {gallery.map((item, idx) => {
+            if (idx !== activeSlide && !loadedSlides.includes(idx)) return null;
+            return (
+              <img
+                key={item.id}
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+                className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ${
+                  idx === activeSlide
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-105 pointer-events-none'
+                }`}
+              />
+            );
+          })}
 
           {/* Subtle top/bottom gradient only for corner badges */}
           <div
@@ -87,7 +98,7 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
           {/* Left / Right Carousel Arrows */}
           <button
             type="button"
-            onClick={() => setActiveSlide((prev) => (prev - 1 + gallery.length) % gallery.length)}
+            onClick={() => selectSlide(activeSlide - 1)}
             aria-label={tr('Previous dome view', 'Vista anterior del domo')}
             className="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#06150F]/75 hover:bg-[#E5C98B] text-white hover:text-[#06150F] border border-white/20 flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
           >
@@ -95,7 +106,7 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
           </button>
           <button
             type="button"
-            onClick={() => setActiveSlide((prev) => (prev + 1) % gallery.length)}
+            onClick={() => selectSlide(activeSlide + 1)}
             aria-label={tr('Next dome view', 'Siguiente vista del domo')}
             className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#06150F]/75 hover:bg-[#E5C98B] text-white hover:text-[#06150F] border border-white/20 flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
           >
@@ -126,7 +137,7 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
                 <button
                   key={item.id}
                   type="button"
-                  onClick={() => setActiveSlide(idx)}
+                  onClick={() => selectSlide(idx)}
                   aria-pressed={isSelected}
                   className={`inline-flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full border text-left transition-all cursor-pointer ${
                     isSelected
@@ -135,9 +146,13 @@ export const ExpansionDomeFeature: React.FC<ExpansionDomeFeatureProps> = ({
                   }`}
                 >
                   <img
-                    src={item.src}
+                    src={item.src.replace('/images/hacienda/', '/images/thumbs/')}
                     alt=""
                     aria-hidden="true"
+                    width={28}
+                    height={28}
+                    loading="lazy"
+                    decoding="async"
                     className="w-7 h-7 rounded-full object-cover shrink-0 border border-black/25"
                   />
                   <span className="text-[11px] font-bold whitespace-nowrap">{item.label}</span>

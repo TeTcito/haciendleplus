@@ -222,7 +222,7 @@ export const AdminLogin: React.FC = () => {
          ================================================================= */}
       <div className="hidden lg:block lg:flex-1 relative bg-[#06150F] overflow-hidden min-h-screen">
         <img
-          src="/images/admin/login-hero.jpg"
+          src="/images/admin/login-hero.webp"
           alt="Hacienda Le Plus - Píntag, Quito"
           className="w-full h-full object-cover object-center select-none"
         />

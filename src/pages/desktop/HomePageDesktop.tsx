@@ -229,6 +229,7 @@ export const HomePageDesktop: React.FC = () => {
 
   // Estado y transiciones de entrada/salida de la tarjeta Hero
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [loadedHeroSlides, setLoadedHeroSlides] = useState<number[]>([0]);
   const [heroCardTransition, setHeroCardTransition] = useState<'visible' | 'exiting'>('visible');
   const [videoEnabled, setVideoEnabled] = useState(false);
 
@@ -243,7 +244,14 @@ export const HomePageDesktop: React.FC = () => {
       const saved = localStorage.getItem('hacienda_leplus_client_reviews_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].avatarUrl) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].avatarUrl) {
+          return parsed.map((r: ClientReviewItem) => ({
+            ...r,
+            avatarUrl: typeof r.avatarUrl === 'string'
+              ? r.avatarUrl.replace(/^(\/images\/avatars\/[A-Za-z0-9_.-]+)\.jpe?g$/i, '$1.webp')
+              : r.avatarUrl,
+          }));
+        }
       }
     } catch {
       // ignore storage errors
@@ -267,11 +275,11 @@ export const HomePageDesktop: React.FC = () => {
     fetchReviewsFromSupabase().then((remote) => {
       if (remote && remote.length > 0) {
         const avatarMap: Record<string, string> = {
-          'Bodas & Recepciones': '/images/avatars/sofia-sebastian.jpg',
-          'Corporativo & GADs': '/images/avatars/gad-pichincha.jpg',
-          'Delegación ONG / HXP': '/images/avatars/mision-hxp.jpg',
-          'Suites & Zona Húmeda': '/images/avatars/familia-andrade.jpg',
-          'Gastronomía & Eventos': '/images/avatars/valeria-mateo.jpg',
+          'Bodas & Recepciones': '/images/avatars/sofia-sebastian.webp',
+          'Corporativo & GADs': '/images/avatars/gad-pichincha.webp',
+          'Delegación ONG / HXP': '/images/avatars/mision-hxp.webp',
+          'Suites & Zona Húmeda': '/images/avatars/familia-andrade.webp',
+          'Gastronomía & Eventos': '/images/avatars/valeria-mateo.webp',
         };
         const mapped: ClientReviewItem[] = remote.map((r: any) => ({
           id: r.id,
@@ -279,7 +287,7 @@ export const HomePageDesktop: React.FC = () => {
           role: r.role,
           rating: r.rating || 5,
           comment: r.comment,
-          avatarUrl: avatarMap[r.role] || '/images/avatars/dr-carlos.jpg',
+          avatarUrl: avatarMap[r.role] || '/images/avatars/dr-carlos.webp',
         }));
         setUserReviews((prev) => {
           const remoteIds = new Set(mapped.map((m) => m.id));
@@ -293,6 +301,7 @@ export const HomePageDesktop: React.FC = () => {
   // Transición suave de entrada/salida al cambiar el ambiente en Hero
   const handleSelectHeroStop = (nextIdx: number) => {
     if (nextIdx === activeCardIndex || heroCardTransition !== 'visible') return;
+    setLoadedHeroSlides((prev) => (prev.includes(nextIdx) ? prev : [...prev, nextIdx]));
     setHeroCardTransition('exiting');
     setTimeout(() => {
       setActiveCardIndex(nextIdx);
@@ -351,11 +360,11 @@ export const HomePageDesktop: React.FC = () => {
     if (!newReviewAuthor.trim() || !newReviewComment.trim()) return;
 
     const avatarMap: Record<string, string> = {
-      'Bodas & Recepciones': '/images/avatars/sofia-sebastian.jpg',
-      'Corporativo & GADs': '/images/avatars/gad-pichincha.jpg',
-      'Delegación ONG / HXP': '/images/avatars/mision-hxp.jpg',
-      'Suites & Zona Húmeda': '/images/avatars/familia-andrade.jpg',
-      'Gastronomía & Eventos': '/images/avatars/valeria-mateo.jpg',
+      'Bodas & Recepciones': '/images/avatars/sofia-sebastian.webp',
+      'Corporativo & GADs': '/images/avatars/gad-pichincha.webp',
+      'Delegación ONG / HXP': '/images/avatars/mision-hxp.webp',
+      'Suites & Zona Húmeda': '/images/avatars/familia-andrade.webp',
+      'Gastronomía & Eventos': '/images/avatars/valeria-mateo.webp',
     };
 
     const created: ClientReviewItem = {
@@ -364,7 +373,7 @@ export const HomePageDesktop: React.FC = () => {
       role: newReviewRole,
       rating: newReviewRating,
       comment: newReviewComment.trim(),
-      avatarUrl: avatarMap[newReviewRole] || '/images/avatars/dr-carlos.jpg',
+      avatarUrl: avatarMap[newReviewRole] || '/images/avatars/dr-carlos.webp',
     };
 
     const updated = [created, ...userReviews];
@@ -440,12 +449,14 @@ export const HomePageDesktop: React.FC = () => {
           <div className="absolute inset-0 z-0">
             {heroStopCards.map((stop, idx) => {
               const isActive = idx === activeCardIndex;
+              if (!isActive && !loadedHeroSlides.includes(idx)) return null;
               return (
                 <img
                   key={stop.id}
                   src={stop.bgImage}
                   alt={stop.title}
                   fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  decoding="async"
                   className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-1000 ease-out ${
                     isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-105 pointer-events-none'
                   }`}
@@ -529,23 +540,35 @@ export const HomePageDesktop: React.FC = () => {
                   <div className="pt-3 flex items-center gap-4">
                     <div className="flex -space-x-3 shrink-0">
                       <img
-                        src="/images/hacienda/grupos-hxp.jpg"
+                        src="/images/thumbs/grupos-hxp.webp"
                         alt={tr("Long-Stay Lodging for Companies and NGOs", "Hospedaje Larga Estadía Empresas y ONGs")}
+                        width={44}
+                        height={44}
+                        decoding="async"
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
-                        src="/images/hacienda/reunion-corporativa.jpg"
+                        src="/images/thumbs/reunion-corporativa.webp"
                         alt={tr("Major Corporate Events and Team Retreats", "Grandes Eventos Corporativos e Integraciones")}
+                        width={44}
+                        height={44}
+                        decoding="async"
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
-                        src="/images/hacienda/bodas-exteriores.jpg"
+                        src="/images/thumbs/bodas-exteriores.webp"
                         alt={tr("Weddings and Celebrations at Hacienda Le Plus", "Bodas y Celebraciones en Hacienda Le Plus")}
+                        width={44}
+                        height={44}
+                        decoding="async"
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                       <img
-                        src="/images/hacienda/piscina-aerea.jpg"
+                        src="/images/thumbs/piscina-aerea.webp"
                         alt={tr("Pool, Restaurant and Recreation Amenities", "Complemento Piscina, Restaurante y Áreas Recreativas")}
+                        width={44}
+                        height={44}
+                        decoding="async"
                         className="w-11 h-11 rounded-full object-cover border-2 border-[#FAF7F2] shadow-md transition-transform duration-300 hover:scale-110 hover:z-10"
                       />
                     </div>
@@ -848,8 +871,10 @@ export const HomePageDesktop: React.FC = () => {
               <ScrollReveal direction="tilt-left" delay={40} distance={85}>
                 <div className="rounded-3xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-48 sm:h-56 -rotate-1 group">
                   <img
-                    src="/images/hacienda/cabana-exterior.jpg"
+                    src="/images/hacienda/cabana-exterior.webp"
                     alt={tr("Lodging Facilities at Hacienda Le Plus Quito–Píntag", "Instalaciones de Hospedaje en Hacienda Le Plus Quito–Píntag")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -858,8 +883,10 @@ export const HomePageDesktop: React.FC = () => {
               <ScrollReveal direction="tilt-right" delay={160} distance={85}>
                 <div className="rounded-3xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-48 sm:h-56 translate-y-4 rotate-1 group">
                   <img
-                    src="/images/hacienda/piscina-aerea.jpg"
+                    src="/images/hacienda/piscina-aerea.webp"
                     alt={tr("14×6m Pool (84 m² · 70 pax) and two 2×2m hot tubs (large groups with extra fee)", "Piscina de 14×6m (84 m² · cap. 70 pax) y dos hidromasajes 2×2m (solo grupos grandes con costo adicional)")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -868,8 +895,10 @@ export const HomePageDesktop: React.FC = () => {
               <ScrollReveal direction="up" delay={260} distance={80} className="col-span-2">
                 <div className="rounded-3xl overflow-hidden shadow-xl border border-[#0A1F17]/10 h-52 sm:h-60 mt-2 group">
                   <img
-                    src="/images/hacienda/jardines-teambuilding.jpg"
+                    src="/images/hacienda/jardines-teambuilding.webp"
                     alt={tr("13,000 m² gardens in Quito–Píntag for Major Events and Long Stays", "13.000 m² de jardines en Quito–Píntag para Grandes Eventos y Larga Estadía")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -1078,6 +1107,8 @@ export const HomePageDesktop: React.FC = () => {
                 <img
                   src={activePortfolioService.image}
                   alt={activePortfolioService.title}
+                  loading="lazy"
+                  decoding="async"
                   className={`w-full h-full object-cover transition-all duration-500 ease-out ${
                     portfolioTransition === 'exiting'
                       ? 'opacity-0 scale-105'

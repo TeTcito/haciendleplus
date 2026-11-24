@@ -225,7 +225,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · 13.000 m² Áreas Verdes · Carpas Gigantes según Evento',
     badge: 'Más Solicitado',
     badgeClass: 'bg-[#13281F]/90 text-[#E2C585] border border-[#C8A45D]/40',
-    image: '/images/hacienda/boda-carpa-gala.jpg',
+    image: '/images/hacienda/boda-carpa-gala.webp',
     specs: [
       { label: 'Carpas hasta 1.000', icon: 'users' },
       { label: '13.000 m² Áreas Verdes', icon: 'tent' },
@@ -241,7 +241,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · Hasta 81 Pax · 18 Baños Internos',
     badge: 'Hospedaje Invitados',
     badgeClass: 'bg-[#8C6D3F]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/bodas-exteriores.jpg',
+    image: '/images/hacienda/bodas-exteriores.webp',
     specs: [
       { label: 'Hasta 81 Pax', icon: 'users' },
       { label: '18 Baños (82 Camas)', icon: 'bed' },
@@ -257,7 +257,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · Gastronomía & Montaje',
     badge: 'Catering & Decoración',
     badgeClass: 'bg-[#1A382B]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/boda-mesa-imperial.jpg',
+    image: '/images/hacienda/boda-mesa-imperial.webp',
     specs: [
       { label: 'Descorche Libre', icon: 'glass' },
       { label: 'Catering Propio', icon: 'utensils' },
@@ -273,7 +273,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · 13.000 m² Áreas Verdes · Carpas según Evento',
     badge: 'Ceremonias',
     badgeClass: 'bg-[#6B7052]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/boda-ceremonia-arco.jpg',
+    image: '/images/hacienda/boda-ceremonia-arco.webp',
     specs: [
       { label: 'Hasta 1.000 Pax', icon: 'users' },
       { label: 'Arco & Decoración', icon: 'sparkles' },
@@ -289,7 +289,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · Hidromasajes en grupos grandes c/ costo adicional',
     badge: 'Complemento Nupcial',
     badgeClass: 'bg-[#7A6A58]/90 text-[#FAF7F2]',
-    image: '/images/hacienda/area-humeda.jpg',
+    image: '/images/hacienda/area-humeda.webp',
     specs: [
       { label: 'Piscina 14×6m', icon: 'sparkles' },
       { label: 'Restaurante', icon: 'utensils' },
@@ -305,7 +305,7 @@ const WEDDING_CAROUSEL_SERVICES: CarouselServiceItem[] = [
     subtitle: 'Quito–Píntag · Bodas Civiles & Celebraciones',
     badge: 'Recepción & Sociales',
     badgeClass: 'bg-[#221D1A]/90 text-[#E2C585]',
-    image: '/images/hacienda/suite-1.jpg',
+    image: '/images/hacienda/suite-1.webp',
     specs: [
       { label: '30 a 90 Pax', icon: 'users' },
       { label: 'Decoración & Menú', icon: 'utensils' },
@@ -425,7 +425,7 @@ export const WeddingsPageMobile: React.FC = () => {
           {/* FOTOGRAFÍA DE FONDO: DESPLAZADA 40PX A LA DERECHA */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="/images/hacienda/boda-hero-editorial.jpg"
+              src="/images/hacienda/boda-hero-editorial.webp"
               alt={tr("Couple under floral arch at Hacienda Le Plus Píntag", "Novios en arco floral de Hacienda Le Plus Píntag")}
               fetchPriority="high"
               className="absolute inset-0 w-[calc(100%+80px)] -left-10 h-full object-cover object-[72%_center] translate-x-[40px]"
@@ -592,7 +592,7 @@ export const WeddingsPageMobile: React.FC = () => {
             <ScrollReveal direction="up" delay={80}>
               <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-[#E6DDD0] bg-[#EDE5D8]">
                 <img
-                  src="/images/hacienda/boda-arco-editorial.jpg"
+                  src="/images/hacienda/boda-arco-editorial.webp"
                   alt={tr("Outdoor wedding ceremony at Hacienda Le Plus Píntag", "Ceremonia de boda al aire libre en Hacienda Le Plus Píntag")}
                   className="w-full h-full object-cover object-center"
                 />
@@ -692,7 +692,7 @@ export const WeddingsPageMobile: React.FC = () => {
           <ScrollReveal direction="up" delay={80}>
             <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden shadow-md border border-[#E6DDD0] bg-[#EDE5D8]">
               <img
-                src="/images/hacienda/boda-suite-lounge.jpg"
+                src="/images/hacienda/boda-suite-lounge.webp"
                 alt={tr("Lounge and Bridal Suite overlooking the gardens of Hacienda Le Plus in Píntag", "Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag")}
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
@@ -898,7 +898,7 @@ export const WeddingsPageMobile: React.FC = () => {
           {/* FOTOGRAFÍA DE FONDO CON DEGRADADO SUAVE */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="/images/hacienda/boda-banner-gastronomia.jpg"
+              src="/images/hacienda/boda-banner-gastronomia.webp"
               alt={tr("Wedding banquet and gastronomy at Hacienda Le Plus Píntag", "Banquete de bodas y gastronomía en Hacienda Le Plus Píntag")}
               className="absolute inset-0 w-full h-full object-cover object-right"
               loading="lazy"

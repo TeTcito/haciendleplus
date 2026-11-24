@@ -23,6 +23,13 @@ export const ExpansionDomeMobileFeature: React.FC<ExpansionDomeMobileFeatureProp
 }) => {
   const { tr } = useLanguage();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [loadedSlides, setLoadedSlides] = useState<number[]>([0]);
+
+  const selectSlide = (next: number) => {
+    const normalized = ((next % gallery.length) + gallery.length) % gallery.length;
+    setLoadedSlides((prev) => (prev.includes(normalized) ? prev : [...prev, normalized]));
+    setActiveSlide(normalized);
+  };
 
   const currentImg = gallery[activeSlide] || gallery[0];
 
@@ -71,19 +78,23 @@ export const ExpansionDomeMobileFeature: React.FC<ExpansionDomeMobileFeatureProp
       {/* UNOBSTRUCTED PHOTO CAROUSEL + CAPTION BAR + RESERVE CTA */}
       <div className="flex flex-col bg-[#040D09]">
         <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] overflow-clip group">
-          {gallery.map((item, idx) => (
-            <img
-              key={item.id}
-              src={item.src}
-              alt={item.alt}
-              loading={idx === 0 ? 'eager' : 'lazy'}
-              className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ${
-                idx === activeSlide
-                  ? 'opacity-100 scale-100'
-                  : 'opacity-0 scale-105 pointer-events-none'
-              }`}
-            />
-          ))}
+          {gallery.map((item, idx) => {
+            if (idx !== activeSlide && !loadedSlides.includes(idx)) return null;
+            return (
+              <img
+                key={item.id}
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                decoding="async"
+                className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ${
+                  idx === activeSlide
+                    ? 'opacity-100 scale-100'
+                    : 'opacity-0 scale-105 pointer-events-none'
+                }`}
+              />
+            );
+          })}
 
           {/* Subtle top/bottom gradient only for corner badges */}
           <div
@@ -105,7 +116,7 @@ export const ExpansionDomeMobileFeature: React.FC<ExpansionDomeMobileFeatureProp
           {/* Left / Right Carousel Arrows */}
           <button
             type="button"
-            onClick={() => setActiveSlide((prev) => (prev - 1 + gallery.length) % gallery.length)}
+            onClick={() => selectSlide(activeSlide - 1)}
             aria-label={tr('Previous dome view', 'Vista anterior del domo')}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#06150F]/75 hover:bg-[#E5C98B] text-white hover:text-[#06150F] border border-white/20 flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
           >
@@ -113,7 +124,7 @@ export const ExpansionDomeMobileFeature: React.FC<ExpansionDomeMobileFeatureProp
           </button>
           <button
             type="button"
-            onClick={() => setActiveSlide((prev) => (prev + 1) % gallery.length)}
+            onClick={() => selectSlide(activeSlide + 1)}
             aria-label={tr('Next dome view', 'Siguiente vista del domo')}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-11 h-11 rounded-full bg-[#06150F]/75 hover:bg-[#E5C98B] text-white hover:text-[#06150F] border border-white/20 flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer"
           >

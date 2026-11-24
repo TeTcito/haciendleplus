@@ -212,7 +212,7 @@ ${waClosing}`;
       quote: tr("We lodged our international HXP mission of 42 volunteers with full comfort. The 3-course catering, dedicated fiber optic WiFi, and bus parking operated seamlessly.", "Alojamos a nuestra misión internacional HXP de 42 voluntarios con capacidad holgada en nuestras suites y habitaciones. La alimentación de 3 tiempos, el internet por fibra óptica y los parqueaderos para buses funcionaron a la perfección."),
       author: 'Sarah Mitchell',
       role: tr("HXP Mission Coordinator · International NGO", "Coordinación Misión HXP · ONG Internacional"),
-      avatar: '/images/avatars/mision-hxp.jpg',
+      avatar: '/images/avatars/mision-hxp.webp',
       rating: 5,
     },
     {
@@ -220,7 +220,7 @@ ${waClosing}`;
       quote: tr("Outstanding extended-stay option for our technical and executive staff close to Quito and the Airport. Comfortable rooms, stable internet, punctual meals, and corporate invoicing.", "Excelente opción de larga estadía para nuestro personal técnico y directivo cerca de Quito y el Aeropuerto. Habitaciones cómodas, internet estable, alimentación puntual y facturación corporativa."),
       author: 'Dr. Carlos Enríquez',
       role: tr("Board of Directors · Corporate Operations", "Directorio Ejecutivo · Empresas & Proyectos"),
-      avatar: '/images/avatars/dr-carlos.jpg',
+      avatar: '/images/avatars/dr-carlos.webp',
       rating: 5,
     },
     {
@@ -228,7 +228,7 @@ ${waClosing}`;
       quote: tr("Our international delegation stayed the entire week in Píntag. The heated pool, on-site dining, and outdoor sports courts were the perfect complement after intense field days.", "Tuvimos a nuestra delegación alojada toda la semana en Píntag. La piscina temperada, el restaurante y las canchas deportivas fueron el complemento ideal tras cada jornada de trabajo."),
       author: tr("IMC Coordination", "Coordinación IMC"),
       role: tr("International Delegation · Extended Stay", "Delegación Internacional · Estadía Prolongada"),
-      avatar: '/images/avatars/familia-andrade.jpg',
+      avatar: '/images/avatars/familia-andrade.webp',
       rating: 5,
     },
     {
@@ -236,7 +236,7 @@ ${waClosing}`;
       quote: tr("We booked the room wing for our guests and organizing crew. Spacious, 24/7 security, and transparent volume and duration quoting.", "Reservamos el bloque de habitaciones para nuestros invitados y equipo organizador. Espacioso, seguro las 24 horas y con opciones claras de cotización según número de personas y días."),
       author: 'Valeria & Mateo',
       role: tr("Group Lodging & Operations", "Hospedaje Grupal & Eventos"),
-      avatar: '/images/avatars/valeria-mateo.jpg',
+      avatar: '/images/avatars/valeria-mateo.webp',
       rating: 5,
     },
   ];
@@ -313,7 +313,7 @@ ${waClosing}`;
           {/* Fotografía de Fondo con degradado asimétrico */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="/images/hacienda/lodging-hero-hacienda.jpg"
+              src="/images/hacienda/lodging-hero-hacienda.webp"
               alt={tr("Lodging for Companies, Delegations and Groups at Hacienda Le Plus Quito–Píntag", "Hospedaje para Empresas, Delegaciones y Grupos en Hacienda Le Plus Quito–Píntag")}
               className="w-full h-full object-cover object-[65%_center]"
               fetchPriority="high"
@@ -796,7 +796,7 @@ ${waClosing}`;
             <ScrollReveal direction="up" duration={850} className="lg:col-span-5 h-full">
               <div className="relative rounded-3xl overflow-hidden min-h-[420px] sm:min-h-[480px] h-full w-full shadow-xl border border-[#0A1F17]/10 hover:scale-[1.015] hover:shadow-2xl transition-all duration-300 group bg-[#0A1F17]">
                 <img
-                  src="/images/hacienda/privilegio-piscina-clean.jpg"
+                  src="/images/hacienda/privilegio-piscina-clean.webp"
                   alt={tr("Lodging and Pool Amenities at Hacienda Le Plus", "Instalaciones de hospedaje y piscina como complemento en Hacienda Le Plus")}
                   className="w-full h-full object-cover object-center block"
                   loading="lazy"
@@ -876,7 +876,7 @@ ${waClosing}`;
           {/* Fotografía de Fondo con degradado asimétrico */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="/images/hacienda/vista-aerea.jpg"
+              src="/images/hacienda/vista-aerea.webp"
               alt={tr("Long-Stay Quote by Number of Guests and Duration at Hacienda Le Plus", "Cotización de Larga Estadía según Número de Personas y Duración en Hacienda Le Plus")}
               className="absolute inset-0 w-full h-full object-cover object-right"
               loading="lazy"
@@ -1088,7 +1088,7 @@ ${waClosing}`;
             {/* Simulación y bienvenida al recorrido */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-black flex items-center justify-center">
               <img
-                src="/images/hacienda/lodging-hero-hacienda.jpg"
+                src="/images/hacienda/lodging-hero-hacienda.webp"
                 alt={tr("Hacienda Le Plus View", "Vista Hacienda Le Plus")}
                 className="w-full h-full object-cover opacity-85"
               />

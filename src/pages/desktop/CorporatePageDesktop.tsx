@@ -149,7 +149,7 @@ export const CorporatePageDesktop: React.FC = () => {
         {/* Imagen de fondo integrada a todo el ancho */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/hacienda/corporate-hero-composite.jpg"
+            src="/images/hacienda/corporate-hero-composite.webp"
             alt={tr("Corporate Events and Conventions at Hacienda Le Plus Hall", "Eventos y Convenciones en Salón de Hacienda Le Plus")}
             className="w-full h-full object-cover object-right sm:object-center select-none"
           />
@@ -803,7 +803,7 @@ export const CorporatePageDesktop: React.FC = () => {
               </clipPath>
             </defs>
             <image
-              href="/images/hacienda/boda-suite-lounge.jpg"
+              href="/images/hacienda/boda-suite-lounge.webp"
               width="320"
               height="220"
               preserveAspectRatio="xMidYMid slice"

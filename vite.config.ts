@@ -17,8 +17,17 @@ export default defineConfig({
           if (id.includes('node_modules/')) {
             return 'vendor';
           }
-          if (id.includes('src/i18n/phraseDictionary')) {
-            return 'i18n-dict';
+          if (id.includes('src/i18n/dicts/pt')) {
+            return 'i18n-pt';
+          }
+          if (id.includes('src/i18n/dicts/fr')) {
+            return 'i18n-fr';
+          }
+          if (id.includes('src/i18n/dicts/de')) {
+            return 'i18n-de';
+          }
+          if (id.includes('src/i18n/dicts/zh')) {
+            return 'i18n-zh';
           }
         },
       },

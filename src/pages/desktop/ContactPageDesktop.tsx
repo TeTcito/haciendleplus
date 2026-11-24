@@ -128,7 +128,7 @@ export const ContactPageDesktop: React.FC = () => {
         {/* Imagen de fondo con atmósfera de hospitalidad */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/hacienda/corporate-salon-hd.jpg"
+            src="/images/hacienda/corporate-salon-hd.webp"
             alt={tr("Contact Hacienda Le Plus", "Contacto Hacienda Le Plus")}
             className="w-full h-full object-cover object-center"
           />

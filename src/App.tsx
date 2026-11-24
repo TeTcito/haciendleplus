@@ -8,12 +8,13 @@ import { Footer } from './components/Footer';
 import { FloatingWhatsAppAndMobileBar } from './components/FloatingWhatsAppAndMobileBar';
 import { QuickQuoteModal } from './components/QuickQuoteModal';
 import { DynamicSEO } from './components/DynamicSEO';
-import { HomePage } from './pages/HomePage';
-import { WeddingsPage } from './pages/WeddingsPage';
-import { CorporatePage } from './pages/CorporatePage';
-import { LodgingPage } from './pages/LodgingPage';
-import { ContactPage } from './pages/ContactPage';
 import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute';
+
+const HomePage = lazy(() => import('./pages/HomePage'));
+const WeddingsPage = lazy(() => import('./pages/WeddingsPage'));
+const CorporatePage = lazy(() => import('./pages/CorporatePage'));
+const LodgingPage = lazy(() => import('./pages/LodgingPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
 
 const AdminLogin = lazy(() =>
   import('./pages/admin/AdminLogin').then((m) => ({ default: m.AdminLogin }))

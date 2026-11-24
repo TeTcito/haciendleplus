@@ -294,6 +294,7 @@ export const HomePageMobile: React.FC = () => {
 
   // Estado y transiciones de entrada/salida de la tarjeta Hero
   const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const [loadedHeroSlides, setLoadedHeroSlides] = useState<number[]>([0]);
   const [heroCardTransition, setHeroCardTransition] = useState<'visible' | 'exiting'>('visible');
   const [videoEnabled, setVideoEnabled] = useState(false);
 
@@ -308,7 +309,14 @@ export const HomePageMobile: React.FC = () => {
       const saved = localStorage.getItem('hacienda_leplus_client_reviews_v2');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].avatarUrl) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].avatarUrl) {
+          return parsed.map((r: ClientReviewItem) => ({
+            ...r,
+            avatarUrl: typeof r.avatarUrl === 'string'
+              ? r.avatarUrl.replace(/^(\/images\/avatars\/[A-Za-z0-9_.-]+)\.jpe?g$/i, '$1.webp')
+              : r.avatarUrl,
+          }));
+        }
       }
     } catch {
       // ignore storage errors
@@ -330,6 +338,7 @@ export const HomePageMobile: React.FC = () => {
   // Transición suave de entrada/salida al cambiar el ambiente en Hero
   const handleSelectHeroStop = (nextIdx: number) => {
     if (nextIdx === activeCardIndex || heroCardTransition !== 'visible') return;
+    setLoadedHeroSlides((prev) => (prev.includes(nextIdx) ? prev : [...prev, nextIdx]));
     setHeroCardTransition('exiting');
     setTimeout(() => {
       setActiveCardIndex(nextIdx);
@@ -388,11 +397,11 @@ export const HomePageMobile: React.FC = () => {
     if (!newReviewAuthor.trim() || !newReviewComment.trim()) return;
 
     const avatarMap: Record<string, string> = {
-      'Bodas & Recepciones': '/images/avatars/sofia-sebastian.jpg',
-      'Corporativo & GADs': '/images/avatars/gad-pichincha.jpg',
-      'Delegación ONG / HXP': '/images/avatars/mision-hxp.jpg',
-      'Suites & Zona Húmeda': '/images/avatars/familia-andrade.jpg',
-      'Gastronomía & Eventos': '/images/avatars/valeria-mateo.jpg',
+      'Bodas & Recepciones': '/images/avatars/sofia-sebastian.webp',
+      'Corporativo & GADs': '/images/avatars/gad-pichincha.webp',
+      'Delegación ONG / HXP': '/images/avatars/mision-hxp.webp',
+      'Suites & Zona Húmeda': '/images/avatars/familia-andrade.webp',
+      'Gastronomía & Eventos': '/images/avatars/valeria-mateo.webp',
     };
 
     const created: ClientReviewItem = {
@@ -401,7 +410,7 @@ export const HomePageMobile: React.FC = () => {
       role: newReviewRole,
       rating: newReviewRating,
       comment: newReviewComment.trim(),
-      avatarUrl: avatarMap[newReviewRole] || '/images/avatars/dr-carlos.jpg',
+      avatarUrl: avatarMap[newReviewRole] || '/images/avatars/dr-carlos.webp',
     };
 
     const updated = [created, ...userReviews];
@@ -453,12 +462,14 @@ export const HomePageMobile: React.FC = () => {
           <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
             {heroStopCards.map((stop, idx) => {
               const isActive = idx === activeCardIndex;
+              if (!isActive && !loadedHeroSlides.includes(idx)) return null;
               return (
                 <img
                   key={stop.id}
                   src={stop.bgImage}
                   alt={stop.title}
                   fetchPriority={idx === 0 ? 'high' : 'auto'}
+                  decoding="async"
                   className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-out ${
                     isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-100 pointer-events-none'
                   }`}
@@ -710,8 +721,10 @@ export const HomePageMobile: React.FC = () => {
               <ScrollReveal direction="tilt-left" delay={40} distance={40}>
                 <div className="rounded-2xl overflow-hidden shadow-md border border-[#0A1F17]/10 h-36 sm:h-44 -rotate-1 group">
                   <img
-                    src="/images/hacienda/cabana-exterior.jpg"
+                    src="/images/hacienda/cabana-exterior.webp"
                     alt={tr("Lodging Facilities at Hacienda Le Plus", "Instalaciones de Hospedaje en Hacienda Le Plus")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -720,8 +733,10 @@ export const HomePageMobile: React.FC = () => {
               <ScrollReveal direction="tilt-right" delay={120} distance={40}>
                 <div className="rounded-2xl overflow-hidden shadow-md border border-[#0A1F17]/10 h-36 sm:h-44 translate-y-2 rotate-1 group">
                   <img
-                    src="/images/hacienda/piscina-aerea.jpg"
+                    src="/images/hacienda/piscina-aerea.webp"
                     alt={tr("14×6m Pool (84 m² · 70 pax) and two 2×2m hot tubs (large groups with extra fee)", "Piscina 14×6m (84 m² · 70 pax) y dos hidromasajes 2×2m (grupos grandes con costo adicional)")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -730,8 +745,10 @@ export const HomePageMobile: React.FC = () => {
               <ScrollReveal direction="up" delay={180} distance={40} className="col-span-2">
                 <div className="rounded-2xl overflow-hidden shadow-lg border border-[#0A1F17]/10 h-40 sm:h-48 mt-1 group">
                   <img
-                    src="/images/hacienda/jardines-teambuilding.jpg"
+                    src="/images/hacienda/jardines-teambuilding.webp"
                     alt={tr("Gardens and Tents for Major Events and Long Stays", "Jardines y Carpas para Grandes Eventos y Larga Estadía")}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -806,6 +823,8 @@ export const HomePageMobile: React.FC = () => {
           <img
             src={activePortfolioService.image}
             alt={activePortfolioService.title}
+            loading="lazy"
+            decoding="async"
             className={`w-full h-full object-cover transition-all duration-500 ease-out ${
               portfolioTransition === 'exiting' ? 'opacity-0 scale-105' : 'opacity-100 scale-100'
             }`}

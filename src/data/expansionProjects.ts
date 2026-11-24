@@ -20,7 +20,7 @@ export const getDomeGalleryImages = (
 ): ExpansionGalleryImage[] => [
   {
     id: 'dome-complex',
-    src: '/images/hacienda/domo-eventos-complejo.jpg',
+    src: '/images/hacienda/domo-eventos-complejo.webp',
     label: tr('Complex & Service Wings', 'Complejo y Áreas Integradas', langOrIsEn),
     caption: tr(
       '20m × 10m Geodesic Dome integrated with Bar, Kitchen, Storage & Men/Women Restrooms in one zone',
@@ -35,7 +35,7 @@ export const getDomeGalleryImages = (
   },
   {
     id: 'dome-entrance',
-    src: '/images/hacienda/domo-eventos-entrada.jpg',
+    src: '/images/hacienda/domo-eventos-entrada.webp',
     label: tr('Grand Entrance Canopy', 'Ingreso Monumental', langOrIsEn),
     caption: tr(
       'Glass-roofed arrival portal and illuminated red-carpet steps welcoming 200–250 guests',
@@ -50,7 +50,7 @@ export const getDomeGalleryImages = (
   },
   {
     id: 'dome-interior',
-    src: '/images/hacienda/domo-eventos-interior.jpg',
+    src: '/images/hacienda/domo-eventos-interior.webp',
     label: tr('Interior Gala (250 Pax)', 'Interior Gala (250 Pax)', langOrIsEn),
     caption: tr(
       '10m clear-span draped ceiling, stage screen, dance floor, and banquet seating for 200–250 guests',
@@ -69,7 +69,7 @@ export const getCabinGalleryImage = (
   langOrIsEn?: SupportedLanguage | boolean
 ): ExpansionGalleryImage => ({
   id: 'cabins-complex',
-  src: '/images/hacienda/cabanas-domo-2pisos.jpg',
+  src: '/images/hacienda/cabanas-domo-2pisos.webp',
   label: tr('4 Two-Story Dome Cabins', '4 Cabañas de Dos Pisos', langOrIsEn),
   caption: tr(
     '4 terraced two-story cabins: wood suite + balcony downstairs, geodesic dome + couple jacuzzi terrace upstairs',

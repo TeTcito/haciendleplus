@@ -1,18 +1,12 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { useIsMobile } from '../utils/useIsMobile';
-import { LodgingPageDesktop } from './desktop/LodgingPageDesktop';
-import { LodgingPageMobile } from './mobile/LodgingPageMobile';
 
-/**
- * Vista Adaptativa (LodgingPage)
- * - En escritorio (>= 768px): Carga LodgingPageDesktop desde ./desktop/LodgingPageDesktop.tsx
- * - En móvil (< 768px): Carga LodgingPageMobile desde ./mobile/LodgingPageMobile.tsx
- * - Soporta override con URL (?view=mobile o ?view=desktop)
- */
+const LodgingPageDesktop = lazy(() => import('./desktop/LodgingPageDesktop'));
+const LodgingPageMobile = lazy(() => import('./mobile/LodgingPageMobile'));
+
 export const LodgingPage: React.FC = () => {
   const isMobile = useIsMobile();
   return isMobile ? <LodgingPageMobile /> : <LodgingPageDesktop />;
 };
 
-export { LodgingPageDesktop, LodgingPageMobile };
 export default LodgingPage;

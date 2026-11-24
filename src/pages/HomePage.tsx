@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { useIsMobile } from '../utils/useIsMobile';
-import { HomePageDesktop } from './desktop/HomePageDesktop';
-import { HomePageMobile } from './mobile/HomePageMobile';
+
+const HomePageDesktop = lazy(() => import('./desktop/HomePageDesktop'));
+const HomePageMobile = lazy(() => import('./mobile/HomePageMobile'));
 
 /**
- * Vista Adaptativa (HomePage)
- * - En escritorio (>= 768px): Carga HomePageDesktop desde ./desktop/HomePageDesktop.tsx
- * - En móvil (< 768px): Carga HomePageMobile desde ./mobile/HomePageMobile.tsx
- * - Soporta override con URL (?view=mobile o ?view=desktop)
+ * Vista Adaptativa (HomePage) con carga diferida por dispositivo
+ * - En escritorio (>= 768px): Solo descarga HomePageDesktop
+ * - En móvil (< 768px): Solo descarga HomePageMobile
  */
 export const HomePage: React.FC = () => {
   const isMobile = useIsMobile();
   return isMobile ? <HomePageMobile /> : <HomePageDesktop />;
 };
 
-export { HomePageDesktop, HomePageMobile };
 export default HomePage;

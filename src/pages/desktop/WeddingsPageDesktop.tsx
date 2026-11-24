@@ -227,7 +227,7 @@ export const WeddingsPageDesktop: React.FC = () => {
         {/* 1. IMAGEN DE FONDO CON FUSIÓN SUAVE A CREMA EN LA IZQUIERDA Y BOKEH CÁLIDO A LA DERECHA */}
         <div className="absolute inset-0 z-0 overflow-hidden">
           <img
-            src="/images/hacienda/boda-hero-editorial.jpg"
+            src="/images/hacienda/boda-hero-editorial.webp"
             alt={tr("Couple under floral arch at Hacienda Le Plus Píntag", "Novios en arco floral de Hacienda Le Plus Píntag")}
             fetchPriority="high"
             className="w-full h-full object-cover object-[48%_center] sm:object-[50%_center] lg:object-[52%_center] transform translate-x-4 sm:translate-x-8 lg:translate-x-12 xl:translate-x-16 scale-105 transition-transform duration-500"
@@ -664,7 +664,7 @@ export const WeddingsPageDesktop: React.FC = () => {
             {/* MITAD IZQUIERDA (6 COLUMNAS): FOTO DEL ARCO CEREMONIAL + SCRIPT "Porque cada detalle importa... ♡" */}
             <ScrollReveal direction="left" duration={850} className="lg:col-span-6 relative min-h-[360px] sm:min-h-[420px] lg:min-h-0 lg:h-full overflow-hidden bg-[#EDE5D8]">
               <img
-                src="/images/hacienda/boda-arco-editorial.jpg"
+                src="/images/hacienda/boda-arco-editorial.webp"
                 alt={tr("Outdoor wedding ceremony at Hacienda Le Plus Píntag", "Ceremonia de boda al aire libre en Hacienda Le Plus Píntag")}
                 className="w-full h-full object-cover object-center"
               />
@@ -989,7 +989,7 @@ export const WeddingsPageDesktop: React.FC = () => {
           {/* MITAD DERECHA (6 COLUMNAS): FOTO AL RAS HASTA EL FINAL DE LA PESTAÑA (DIMENSIÓN SIMÉTRICA A LA ANTERIOR) */}
           <ScrollReveal direction="zoom-in" duration={850} className="lg:col-span-6 relative min-h-[360px] sm:min-h-[420px] lg:min-h-0 lg:h-full overflow-hidden bg-[#EDE5D8]">
             <img
-              src="/images/hacienda/boda-suite-lounge.jpg"
+              src="/images/hacienda/boda-suite-lounge.webp"
               alt={tr("Lounge and Bridal Suite overlooking the gardens of Hacienda Le Plus in Píntag", "Lounge y Suite Nupcial con ventanales hacia los jardines de Hacienda Le Plus en Píntag")}
               className="w-full h-full object-cover object-center"
               loading="lazy"
@@ -1258,7 +1258,7 @@ export const WeddingsPageDesktop: React.FC = () => {
           {/* BLOQUE DERECHO (5 COLUMNAS): IMAGEN ARTÍSTICA GASTRONOMÍA & MENÚ NUPCIAL */}
           <ScrollReveal direction="right" duration={850} className="lg:col-span-5 relative min-h-[280px] sm:min-h-[340px] lg:min-h-full overflow-hidden">
             <img
-              src="/images/hacienda/boda-banner-gastronomia.jpg"
+              src="/images/hacienda/boda-banner-gastronomia.webp"
               alt={tr("Wedding banquet, patisserie and bridal menu at Hacienda Le Plus Píntag", "Banquete de bodas, tartaletas y menú nupcial en Hacienda Le Plus Píntag")}
               className="w-full h-full object-cover object-right"
               loading="lazy"
