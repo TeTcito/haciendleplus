@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect, useEffect, useCallback, useMemo } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Home, Heart, BedDouble, Building2, PhoneCall } from 'lucide-react';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useLanguage } from '../context/LanguageContext';
@@ -33,13 +33,12 @@ const getBgPath = (cx: number, w: number) => {
 
 export const MobileBottomNav: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { language, tr } = useLanguage();
 
   const menuRef = useRef<HTMLDivElement>(null);
   const borderPathRef = useRef<SVGPathElement>(null);
   const bgPathRef = useRef<SVGPathElement>(null);
-  const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   const navWidthRef = useRef<number>(
     typeof window !== 'undefined' ? window.innerWidth : 390
   );
@@ -126,10 +125,7 @@ export const MobileBottomNav: React.FC = () => {
     });
   }, [springX]);
 
-  const handleTabClick = (path: string) => {
-    if (location.pathname !== path) {
-      navigate(path);
-    }
+  const handleTabClick = () => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
@@ -137,7 +133,7 @@ export const MobileBottomNav: React.FC = () => {
   const initialCx = initialW / 2;
 
   // No renderizar en el panel de administración
-  if (location.pathname.startsWith('/admin')) {
+  if (location.pathname.startsWith('/admin') || location.pathname.startsWith('/portal-admin')) {
     return null;
   }
 
@@ -189,19 +185,21 @@ export const MobileBottomNav: React.FC = () => {
         />
       </svg>
 
-      {/* CONTENEDOR DE LOS BOTONES CON ANIMACIÓN SUAVE */}
+      {/* CONTENEDOR DE LOS ENLACES NATIVOS <a href> CON ANIMACIÓN SUAVE (100% RASTREABLE MOBILE-FIRST) */}
       <div className="flex items-center justify-around max-w-md mx-auto relative z-30 h-full pointer-events-auto px-1">
         {navItems.map((item, index) => {
           const Icon = item.icon;
           const isActive = activeIndex === index;
 
           return (
-            <button
+            <Link
               key={item.path}
+              to={item.path}
               ref={(el) => {
                 itemRefs.current[index] = el;
               }}
-              onClick={() => handleTabClick(item.path)}
+              onClick={handleTabClick}
+              aria-current={isActive ? 'page' : undefined}
               className="relative flex-1 h-full flex flex-col items-center justify-center py-0.5 px-0.5 cursor-pointer select-none group"
               aria-label={item.label}
               title={item.label}
@@ -237,7 +235,7 @@ export const MobileBottomNav: React.FC = () => {
                   </div>
                 )}
               </motion.div>
-            </button>
+            </Link>
           );
         })}
       </div>

@@ -22,8 +22,27 @@ const VALID_LANGS: SupportedLanguage[] = ['es', 'en', 'pt', 'fr', 'de', 'zh'];
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+const readLangFromUrl = (): SupportedLanguage | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const param = new URLSearchParams(window.location.search).get('lang')?.toLowerCase();
+    if (param && VALID_LANGS.includes(param as SupportedLanguage)) {
+      return param as SupportedLanguage;
+    }
+  } catch {
+    // ignore URL parsing error
+  }
+  return null;
+};
+
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<SupportedLanguage>(() => {
+    // 1. Prioridad máxima: parámetro ?lang= en URL (indispensable para Googlebot hreflang y enlaces compartidos)
+    const urlLang = readLangFromUrl();
+    if (urlLang) {
+      return urlLang;
+    }
+    // 2. Preferencia guardada del usuario en localStorage
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved && VALID_LANGS.includes(saved as SupportedLanguage)) {
@@ -43,8 +62,35 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
       } catch {
         // ignore storage error
       }
+      // Sincroniza ?lang= en la URL para mantener coherencia canonical/hreflang
+      if (typeof window !== 'undefined') {
+        try {
+          const url = new URL(window.location.href);
+          if (lang === 'es') {
+            url.searchParams.delete('lang');
+          } else {
+            url.searchParams.set('lang', lang);
+          }
+          const nextSearch = url.searchParams.toString();
+          const nextUrl = `${url.pathname}${nextSearch ? `?${nextSearch}` : ''}${url.hash}`;
+          window.history.replaceState(window.history.state, '', nextUrl);
+        } catch {
+          // ignore history error
+        }
+      }
     }
   };
+
+  // Mantener sincronizado el idioma al navegar atrás/adelante en el historial
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const handlePopState = () => {
+      const urlLang = readLangFromUrl();
+      setLanguageState(urlLang || 'es');
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const [dictVersion, setDictVersion] = useState(0);
 

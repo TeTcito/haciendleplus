@@ -24,6 +24,7 @@ import {
   saveModulesToSupabase,
   fetchModulesFromSupabase,
 } from '../lib/supabase';
+import { trackLeadConversion } from '../utils/analytics';
 
 const STORAGE_KEY = 'hacienda_leplus_cms_v7';
 
@@ -1443,6 +1444,12 @@ export const CMSProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }));
 
     saveLeadToSupabase(newLead);
+
+    trackLeadConversion({
+      serviceType: newLead.serviceType,
+      sourcePage: newLead.sourcePage,
+      estimatedVolume: newLead.estimatedVolume,
+    });
 
     return newLead;
   };

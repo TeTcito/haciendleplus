@@ -1,12 +1,76 @@
 {
   "hosting": {
     "public": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
+    "redirects": [
+      {
+        "source": "/eventos",
+        "destination": "/corporativo",
+        "type": 301
+      },
+      {
+        "source": "/estadias-largas",
+        "destination": "/hospedaje",
+        "type": 301
+      },
+      {
+        "source": "/escapadas",
+        "destination": "/hospedaje",
+        "type": 301
+      },
+      {
+        "source": "/contactos",
+        "destination": "/contacto",
+        "type": 301
+      },
+      {
+        "source": "/book-online",
+        "destination": "/hospedaje",
+        "type": 301
+      }
+    ],
     "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          }
+        ]
+      },
+      {
+        "source": "/@(admin|portal-admin){,/**}",
+        "headers": [
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow, noarchive"
+          }
+        ]
+      },
+      {
+        "source": "/@(sitemap.xml|robots.txt|site.webmanifest)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
       {
         "source": "/assets/**",
         "headers": [

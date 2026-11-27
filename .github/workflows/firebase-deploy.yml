@@ -20,6 +20,10 @@ jobs:
         run: npm ci
 
       - name: Build Project
+        env:
+          VITE_GA4_MEASUREMENT_ID: ${{ vars.VITE_GA4_MEASUREMENT_ID }}
+          VITE_GSC_VERIFICATION: ${{ vars.VITE_GSC_VERIFICATION }}
+          VITE_SOCIAL_SAME_AS: ${{ vars.VITE_SOCIAL_SAME_AS }}
         run: npm run build
 
       - name: Deploy to Firebase Hosting

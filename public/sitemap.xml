@@ -4,10 +4,10 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
   xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
 >
-  <!-- 1. Inicio: Hacienda Turística, Hospedaje y Eco Resort en Píntag, Quito -->
+  <!-- 1. Inicio: Hacienda Le Plus Quito–Píntag (Hospedaje, Eventos Corporativos y Bodas) -->
   <url>
     <loc>https://www.haciendaleplus.com/</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.haciendaleplus.com/" />
@@ -17,12 +17,22 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.haciendaleplus.com/?lang=de" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://www.haciendaleplus.com/?lang=zh" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.haciendaleplus.com/" />
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/og/hacienda-le-plus-home.jpg</image:loc>
+      <image:title>Hacienda Le Plus Quito–Píntag – Vista aérea del Eco Resort</image:title>
+      <image:caption>Vista aérea de Hacienda Le Plus en Píntag, Quito: 13.000 m² de jardines para hospedaje, eventos corporativos y bodas.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/hacienda/piscina-aerea.webp</image:loc>
+      <image:title>Piscina temperada cubierta de 84 m² en Hacienda Le Plus</image:title>
+      <image:caption>Piscina temperada cubierta de 84 m², sauna, turco y jacuzzi en Píntag, Quito.</image:caption>
+    </image:image>
   </url>
 
-  <!-- 2. Hospedaje y Turismo: Suites, Habitaciones y Estadías Grupales (81 Huéspedes) -->
+  <!-- 2. Hospedaje Larga Estadía y Grupos: Empresas, Delegaciones, ONGs y Familias (81 Pax) -->
   <url>
     <loc>https://www.haciendaleplus.com/hospedaje</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.haciendaleplus.com/hospedaje" />
@@ -32,12 +42,22 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.haciendaleplus.com/hospedaje?lang=de" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://www.haciendaleplus.com/hospedaje?lang=zh" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.haciendaleplus.com/hospedaje" />
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/og/hacienda-le-plus-hospedaje.jpg</image:loc>
+      <image:title>Hospedaje para Empresas, Delegaciones y Grupos en Quito–Píntag</image:title>
+      <image:caption>Alojamiento turístico y larga estadía hasta 81 personas en 82 camas y 18 baños internos en Hacienda Le Plus.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/hacienda/habitacion-panoramica.webp</image:loc>
+      <image:title>Habitación Panorámica para 16 personas en Hacienda Le Plus</image:title>
+      <image:caption>Habitación Panorámica con 8 literas de 2 pisos y 4 baños junto a la habitación para delegaciones y equipos.</image:caption>
+    </image:image>
   </url>
 
-  <!-- 3. Bodas Destino y Eventos Campestres con Hospedaje en Píntag -->
+  <!-- 3. Bodas Campestres y Bodas Destino en Quito–Píntag -->
   <url>
     <loc>https://www.haciendaleplus.com/bodas</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.haciendaleplus.com/bodas" />
@@ -47,12 +67,22 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.haciendaleplus.com/bodas?lang=de" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://www.haciendaleplus.com/bodas?lang=zh" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.haciendaleplus.com/bodas" />
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/og/hacienda-le-plus-bodas.jpg</image:loc>
+      <image:title>Hacienda para Bodas Campestres en Quito–Píntag</image:title>
+      <image:caption>Ceremonias y recepciones de boda al aire libre hasta 1.000 invitados con hospedaje para 81 familiares en Píntag.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/hacienda/boda-carpa-gala.webp</image:loc>
+      <image:title>Carpa de Gala para Bodas en Hacienda Le Plus</image:title>
+      <image:caption>Montaje de carpa de gala, iluminación editorial y banquete en los jardines de Hacienda Le Plus Quito.</image:caption>
+    </image:image>
   </url>
 
-  <!-- 4. Turismo Corporativo, Retiros, Convivencias y Hospedaje de Delegaciones -->
+  <!-- 4. Grandes Eventos Corporativos, Convenciones, Fin de Año y Team Building -->
   <url>
     <loc>https://www.haciendaleplus.com/corporativo</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.haciendaleplus.com/corporativo" />
@@ -62,12 +92,22 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.haciendaleplus.com/corporativo?lang=de" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://www.haciendaleplus.com/corporativo?lang=zh" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.haciendaleplus.com/corporativo" />
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/og/hacienda-le-plus-corporativo.jpg</image:loc>
+      <image:title>Hacienda para Eventos Corporativos y Convenciones en Quito</image:title>
+      <image:caption>Grandes eventos empresariales, fiestas de fin de año e integraciones hasta 1.000 personas en Quito–Píntag.</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/hacienda/jardines-teambuilding.webp</image:loc>
+      <image:title>Jardines y canchas para Team Building empresarial en Quito</image:title>
+      <image:caption>13.000 m² de áreas verdes y canchas deportivas para jornadas corporativas en Hacienda Le Plus.</image:caption>
+    </image:image>
   </url>
 
-  <!-- 5. Reservas de Hospedaje y Ubicación Turística en Píntag, Quito -->
+  <!-- 5. Reservas, Cotizaciones y Ubicación en Píntag, Quito -->
   <url>
     <loc>https://www.haciendaleplus.com/contacto</loc>
-    <lastmod>2026-11-16</lastmod>
+    <lastmod>2026-11-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="es" href="https://www.haciendaleplus.com/contacto" />
@@ -77,5 +117,10 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://www.haciendaleplus.com/contacto?lang=de" />
     <xhtml:link rel="alternate" hreflang="zh" href="https://www.haciendaleplus.com/contacto?lang=zh" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.haciendaleplus.com/contacto" />
+    <image:image>
+      <image:loc>https://www.haciendaleplus.com/images/og/hacienda-le-plus-contacto.jpg</image:loc>
+      <image:title>Ubicación y Reservas de Hacienda Le Plus en Píntag, Quito</image:title>
+      <image:caption>Barrio San Juan de la Tola, Calle Deus N.º 100, Píntag, Quito — a 30 min del Aeropuerto Mariscal Sucre.</image:caption>
+    </image:image>
   </url>
 </urlset>

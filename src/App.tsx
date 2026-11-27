@@ -8,6 +8,7 @@ import { Footer } from './components/Footer';
 import { FloatingWhatsAppAndMobileBar } from './components/FloatingWhatsAppAndMobileBar';
 import { QuickQuoteModal } from './components/QuickQuoteModal';
 import { DynamicSEO } from './components/DynamicSEO';
+import { AnalyticsTracker } from './components/AnalyticsTracker';
 import { AdminProtectedRoute } from './components/admin/AdminProtectedRoute';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -31,6 +32,7 @@ const AppShell: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#0A1F17]">
       <DynamicSEO />
+      <AnalyticsTracker />
       {!isAdminRoute && <Navbar />}
       <div className="flex-1">
         <Suspense fallback={<div className="min-h-screen bg-[#FAF7F2]" />}>

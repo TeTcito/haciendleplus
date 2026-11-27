@@ -52,6 +52,16 @@ export const ScrollReveal: React.FC<ScrollRevealProps> = ({
   const isVisibleRef = useRef(false);
 
   useEffect(() => {
+    // Accesibilidad (prefers-reduced-motion): mostrar de inmediato sin animaciones
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches
+    ) {
+      isVisibleRef.current = true;
+      setIsVisible(true);
+      return;
+    }
+
     let rafId: number | null = null;
 
     const evaluatePosition = () => {
