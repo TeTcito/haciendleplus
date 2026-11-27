@@ -4,3 +4,11 @@
 /escapadas /hospedaje 301
 /contactos /contacto 301
 /book-online /hospedaje 301
+
+# Legacy Wix migration 301 redirects (verified in Google Search Console)
+/servicios-y-actividades /hospedaje 301
+/quienes-somos / 301
+/qui%C3%A9nes-somos / 301
+/quiénes-somos / 301
+/product-page/* /hospedaje 301
+/product-page /hospedaje 301

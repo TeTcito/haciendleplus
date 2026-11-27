@@ -33,6 +33,26 @@
         "source": "/book-online",
         "destination": "/hospedaje",
         "type": 301
+      },
+      {
+        "source": "/servicios-y-actividades",
+        "destination": "/hospedaje",
+        "type": 301
+      },
+      {
+        "source": "/quienes-somos",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/quiénes-somos",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/product-page/**",
+        "destination": "/hospedaje",
+        "type": 301
       }
     ],
     "headers": [

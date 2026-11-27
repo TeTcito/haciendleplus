@@ -63,6 +63,9 @@ const AppShell: React.FC = () => {
             <Route path="/escapadas" element={<Navigate to="/hospedaje" replace />} />
             <Route path="/contactos" element={<Navigate to="/contacto" replace />} />
             <Route path="/book-online" element={<Navigate to="/hospedaje" replace />} />
+            <Route path="/servicios-y-actividades" element={<Navigate to="/hospedaje" replace />} />
+            <Route path="/quienes-somos" element={<Navigate to="/" replace />} />
+            <Route path="/product-page/*" element={<Navigate to="/hospedaje" replace />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Suspense>
